@@ -1,0 +1,183 @@
+# Lockport Energy Associates LP — Market & Regulatory Context
+# ISO, BA, NERC region, LMP nodes, eGRID subregion, RGGI exposure, gas market.
+# Per consolidation plan §6 + docs/assumptions/status_taxonomy.md.
+
+iso:
+  name:
+    value: "NYISO"
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024 — derived from BA assignment"
+  zone:
+    value: "Zone A"
+    status: real_reported
+    source: "NYISO via DIM_PRICING node_crosswalk; both Lockport nodes settle in Zone A"
+
+balancing_authority:
+  code:
+    value: "NYIS"
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+  name:
+    value: "New York Independent System Operator"
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024"
+
+nerc_region:
+  code:
+    value: "NPCC"
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024"
+
+grid:
+  voltage_kv:
+    value: 115
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024 — Grid Voltage (kV)"
+
+regulatory_status:
+  code:
+    value: "NR"
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024"
+    caveat: "NR = Non-Regulated, merchant. No FERC Form 1 rate-regulated cost recovery."
+
+# LMP node assignment — per DIM_PRICING node_crosswalk (lab-built).
+# Different nodes for CTs vs ST — common at older multi-component plants.
+lmp_nodes:
+  primary_cts:
+    ptid:
+      value: 23791
+      status: real_reported
+      source: "NYISO node_crosswalk; applies to GEN1, GEN2, GEN3"
+    confidence:
+      value: "HIGH"
+      status: real_reported
+      source: "node_crosswalk match_method = eia_direct"
+    substation:
+      name:
+        value: "NEG WEST_LEA_LOCKPORT"
+        status: real_reported
+        source: "node_crosswalk substation_name"
+      latitude:
+        value: 43.161820
+        status: real_reported
+        source: "node_crosswalk substation_lat (coord_source: nyiso_direct)"
+      longitude:
+        value: -78.738675
+        status: real_reported
+        source: "node_crosswalk substation_lon (coord_source: nyiso_direct)"
+  primary_st:
+    ptid:
+      value: 323769
+      status: real_reported
+      source: "NYISO node_crosswalk; applies to GEN4"
+    confidence:
+      value: "MEDIUM"
+      status: real_reported
+      source: "node_crosswalk match_method = eia_crossref"
+    substation:
+      name:
+        value: "LOCKPORT___CC1"
+        status: real_reported
+        source: "node_crosswalk substation_name"
+      latitude:
+        value: 43.161820
+        status: real_reported
+        source: "node_crosswalk substation_lat (coord_source: nyiso_direct)"
+      longitude:
+        value: -78.738675
+        status: real_reported
+        source: "node_crosswalk substation_lon (coord_source: nyiso_direct)"
+
+hub:
+  name:
+    value: "NYISO Zone A"
+    status: real_reported
+    source: "NYISO node_crosswalk hub assignment — both Lockport nodes settle in Zone A"
+
+# Reference into data/paths/lockport/ — actual time-series files live there
+paths_reference:
+  lmp_da_hourly_file:
+    value: "data/paths/lockport/lmp_da_hourly.parquet"
+    status: real_reported
+    source: "Phase E copy from model-gpr; NYISO DA LMP at PTID 23791"
+  lmp_rt_intervals_file:
+    value: "data/paths/lockport/lmp_rt_intervals.parquet"
+    status: real_reported
+    source: "Phase E copy from model-gpr; NYISO RT LMP at PTID 23791"
+  lmp_west_zone_backup_file:
+    value: "data/paths/lockport/lmp_west_zone_da.parquet"
+    status: real_reported
+    source: "Phase E copy from model-gpr; NYISO WEST zone DA backup reference"
+  gas_history_file:
+    value: "data/paths/lockport/gas_price_history.parquet"
+    status: real_reported
+    source: "Phase E copy from model-gpr; 8 hubs 1997-2026 daily"
+  weather_hourly_file:
+    value: "data/paths/lockport/weather_hourly.parquet"
+    status: real_reported
+    source: "Phase E copy from model-gpr; 46 yr hourly @ plant coordinates"
+  weather_forecast_file:
+    value: "data/paths/lockport/weather_forecast_seas5.json"
+    status: real_reported
+    source: "Phase E copy from model-gpr; SEAS5 init 2026-04-02"
+
+gas_market:
+  delivery_hub:
+    value: "Algonquin Citygate"
+    status: real_reported
+    source: "Lab-curated assignment for Northeast US delivery point; NYISO Zone A relevant"
+    caveat: "Used as the delivered-gas reference for Lockport dispatch economics. Algonquin Citygate basis is captured in data/paths/lockport/gas_price_history.parquet alongside Henry Hub."
+  forward_reference_hub:
+    value: "Henry Hub"
+    status: real_reported
+    source: "Per Step 1 plan §'Gas Price Path Construction' — Henry Hub is the forward-anchor reference, Algonquin Citygate provides the basis overlay"
+  delivered_gas_formula:
+    value: "delivered_gas_t = Henry_Hub_forward + Algonquin_basis + historical_daily_shape"
+    status: real_reported
+    source: "Step 1 plan §'Gas Price Path Construction'"
+
+  v1_modeling_choice:
+    hub_used_for_delivered_gas:
+      value: "Henry Hub"
+      status: assumed_industry
+      source: "ADR-001 (Frame A v1 plumbing validation decision)"
+      confidence: LOW
+      caveat: "v1 uses Henry Hub daily prices directly as delivered gas. The asset's actual delivery point is Algonquin Citygate (see delivery_hub above), but our gas_price_history.parquet has only 2014-2017 Algonquin data. Applying that forward would overstate post-2017 basis (Atlantic Sunrise + other Northeast pipeline capacity expansions). Consequence: dual-fuel switching never fires in v1; winter dispatch risk under-represented. See docs/decisions/001-gas-hub-treatment-v1.md."
+      validation_path: "v2 follow-on ADR will document proper Algonquin basis modeling (likely daily distribution + temperature conditioning + external sources for post-2017 period). When that lands, this field's value resets to 'Algonquin Citygate'."
+    dual_fuel_switching_fires_in_v1:
+      value: false
+      status: assumed_industry
+      source: "Direct consequence of v1_modeling_choice.hub_used_for_delivered_gas = Henry Hub"
+      confidence: HIGH
+      caveat: "Henry Hub never crosses the oil-switching economic threshold (~$14-22/MMBtu delivered gas). Dual-fuel logic in src/dispatch/ is present but unfired in v1. See ADR-001 'Consequences' and caveats.md §4."
+      validation_path: "Becomes true when v2 basis modeling lands per ADR-001"
+
+egrid:
+  subregion_code:
+    value: "NYUP"
+    status: real_reported
+    source: "EPA eGRID 2023 rev2"
+  subregion_name:
+    value: "NPCC Upstate NY"
+    status: real_reported
+    source: "EPA eGRID 2023 rev2 subregion reference"
+
+rggi:
+  exposed:
+    value: true
+    status: real_computed
+    source: "NY state participates in Regional Greenhouse Gas Initiative; Lockport in NYUP subregion confirms exposure"
+    caveat: "CO2 allowance cost must be layered into delivered fuel cost in dispatch modeling. Allowance price is a model parameter (Phase I src/markets/rggi.py module). Typical recent RGGI clearing: $15-20/short ton CO2."
+
+# Capacity market context — informational only, not modeled in v1
+capacity_market:
+  iso_program:
+    value: "NYISO ICAP — Zone A"
+    status: real_reported
+    source: "NYISO market design"
+  modeled_in_v1:
+    value: false
+    status: real_reported
+    source: "Consolidation plan §9 open question — capacity revenue deferred to v2"
+    caveat: "Data room file '3.6.1.5 Lockport DMNC CC 1-3 Winter 2025.xls' is the input source when v2 ships. Capacity revenue is 20-40% of typical CCGT revenue; energy-only v1 omits this."

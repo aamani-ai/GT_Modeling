@@ -1,0 +1,127 @@
+# Lockport Energy Associates LP — Identity
+# Per consolidation plan §6 + docs/assumptions/status_taxonomy.md.
+# Every leaf value carries {value, status, source} metadata.
+
+plant:
+  id:
+    value: 54041
+    status: real_reported
+    source: "EIA-860M Jan 2026 — primary plant identifier"
+  name:
+    value: "Lockport Energy Associates LP"
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+  short_name:
+    value: "Lockport"
+    status: real_reported
+    source: "EPA eGRID 2023 rev2 — eGRID plant name"
+  sector:
+    value: "IPP CHP"
+    status: real_reported
+    source: "EIA-860M Jan 2026 — Sector field"
+    caveat: "Independent Power Producer with Combined Heat and Power. Drives modeling: cogen plant, not merchant CCGT. See caveats.md §Cogen markup."
+  status:
+    value: "OP"
+    status: real_reported
+    source: "EIA-860M Jan 2026 — Status field"
+    caveat: "Officially 'Operating' — but the public renewablesinfo brief earlier flagged 2024 as 'likely mothballed' from one PDF page. The diligence-extractor MOR notebook corrected this: Lockport generated 192,494 MWh in 2024. See caveats.md §Operational status correction."
+  configuration:
+    value: "3-on-1 CCGT cogeneration, dual-fuel"
+    status: real_computed
+    source: "Derived from 3 × CT + 1 × CA generator inventory + EIA-860 schedule 3_5 dual-fuel flags"
+  combined_cycle_unit_code:
+    value: "LEA1"
+    status: real_reported
+    source: "EIA-860 schedule 6_2 Y2024 — shared by all 4 generators"
+
+operator:
+  name:
+    value: "Lockport Energy Associates LP"
+    status: real_reported
+    source: "EIA-860 schedule 1 Y2024"
+  entity_id:
+    value: 11127
+    status: real_reported
+    source: "EIA-860 schedule 1 Y2024"
+  entity_type_code:
+    value: "Q"
+    status: real_reported
+    source: "EIA-860 schedule 1 Y2024"
+    caveat: "Entity Type Q = cogeneration entity. PURPA-era 1992 plant."
+
+operating_dates:
+  cts_operating_since:
+    value: "1992-07"
+    status: real_reported
+    source: "EIA-860 schedule 3_1 Y2024 — generators GEN1, GEN2, GEN3 Operating Year/Month"
+  st_operating_since:
+    value: "1992-09"
+    status: real_reported
+    source: "EIA-860 schedule 3_1 Y2024 — generator GEN4 Operating Year/Month"
+
+location:
+  address:
+    value: "5087 Junction Road, Lockport, NY 14094"
+    status: real_reported
+    source: "EIA Atlas reference CSV"
+  county:
+    value: "Niagara"
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+  state:
+    value: "NY"
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+  latitude:
+    value: 43.161947
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+  longitude:
+    value: -78.744970
+    status: real_reported
+    source: "EIA-860M Jan 2026"
+
+cross_system_ids:
+  eia_plant_id:
+    value: 54041
+    status: real_reported
+    source: "EIA-860M Jan 2026 — primary identifier"
+  epa_orispl:
+    value: 54041
+    status: real_computed
+    source: "ORISPL is identical to EIA Plant ID for this plant (true for all US plants in eGRID)"
+  egrid_subregion_code:
+    value: "NYUP"
+    status: real_reported
+    source: "EPA eGRID 2023 rev2"
+  nyiso_ptid_cts:
+    value: 23791
+    status: real_reported
+    source: "NYISO node assignment via DIM_PRICING node_crosswalk (lab-built); match_method = eia_direct"
+    caveat: "Applies to GEN1, GEN2, GEN3 (CT side). See market_context.yaml.lmp_nodes for details."
+  nyiso_ptid_st:
+    value: 323769
+    status: real_reported
+    source: "NYISO node assignment via DIM_PRICING node_crosswalk (lab-built); match_method = eia_crossref"
+    caveat: "Applies to GEN4 (CA, ST side). See market_context.yaml.lmp_nodes for details."
+
+regulatory:
+  status_code:
+    value: "NR"
+    status: real_reported
+    source: "EIA-860 schedule 2 Y2024 — Regulatory Status field"
+    caveat: "NR = Non-Regulated, merchant. No FERC Form 1 coverage. Financial data limited; LTSA terms pending data room extraction (see ltsa_terms.yaml)."
+
+ownership:
+  sole_owner:
+    value: "Lockport Energy Associates LP"
+    status: real_reported
+    source: "EIA-860 schedule 4 Y2024 — Owner Names; 100% sole ownership"
+  percent_owned:
+    value: 100.0
+    status: real_reported
+    source: "EIA-860 schedule 4 Y2024 — Percent Owned"
+  is_joint_ownership:
+    value: false
+    status: real_reported
+    source: "EIA-860 schedule 4 Y2024 — sole owner"

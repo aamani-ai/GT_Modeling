@@ -1,0 +1,544 @@
+# Lockport Energy Associates LP — Engineering Specs
+# Plant + per-generator physical specs. Per consolidation plan §6 + docs/assumptions/status_taxonomy.md.
+# Every leaf value carries {value, status, source} metadata.
+
+plant:
+  total_nameplate_mw:
+    value: 221.3
+    status: real_computed
+    source: "Sum of generators[*].nameplate_capacity_mw (3 × 48.7 + 75.2)"
+  total_net_summer_mw:
+    value: 219.0
+    status: real_computed
+    source: "Sum of generators[*].net_summer_capacity_mw (3 × 47.0 + 78.0)"
+  total_net_winter_mw:
+    value: 230.0
+    status: real_computed
+    source: "Sum of generators[*].net_winter_capacity_mw (3 × 50.0 + 80.0)"
+  configuration:
+    value: "3-on-1 CCGT cogeneration, dual-fuel"
+    status: real_computed
+    source: "From generator inventory + EIA-860 schedule 3_5 dual-fuel flags"
+  combined_cycle_unit_code:
+    value: "LEA1"
+    status: real_reported
+    source: "EIA-860 schedule 6_2 Y2024 — shared by all 4 generators"
+  hrsg_count:
+    value: 3
+    status: real_reported
+    source: "EIA-860 schedule 6_2 + equipment profile §2 topology — one HRSG per CT"
+  is_ambient_sensitive:
+    value: true
+    status: real_computed
+    source: "All four generators have sum(|summer_derate|, |winter_boost|) > 5% — see caveats.md §7"
+  is_chp:
+    value: true
+    status: real_reported
+    source: "EIA-860 schedule 3_1 — Associated with CHP System = Yes for all four generators"
+    caveat: "Cogen plant. Tech-class merchant-CCGT defaults under-state VOM by 30-50% — see caveats.md §2."
+  has_repower_planned:
+    value: false
+    status: real_reported
+    source: "EIA-860 schedule 3_1 — Planned Repower fields all null"
+  has_carbon_capture:
+    value: false
+    status: real_reported
+    source: "EIA-860 schedule 3_1 — Carbon Capture Technology = No for all generators"
+
+generators:
+  GEN1:
+    id:
+      value: "GEN1"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    prime_mover_code:
+      value: "CT"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    cc_role:
+      value: "topping"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 — Topping or Bottoming = T"
+    cc_unit_code:
+      value: "LEA1"
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024"
+    energy_source_code:
+      value: "NG"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    secondary_energy_source_code:
+      value: "DFO"
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    operating_since:
+      value: "1992-07"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Operating Year/Month"
+    # Capacity ratings
+    nameplate_capacity_mw:
+      value: 48.7
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Nameplate Capacity (MW)"
+    net_summer_capacity_mw:
+      value: 47.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Net Summer Capacity (MW)"
+    net_winter_capacity_mw:
+      value: 50.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Net Winter Capacity (MW)"
+    summer_derate_pct:
+      value: 3.5
+      status: real_computed
+      source: "(nameplate - net_summer) / nameplate × 100"
+    winter_boost_pct:
+      value: 2.7
+      status: real_computed
+      source: "(net_winter - nameplate) / nameplate × 100"
+    # Operating range
+    min_load_mw:
+      value: 30.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Minimum Load (MW)"
+      caveat: "Design/permit floor (62% of nameplate). Not observed economic min — see caveats.md."
+    min_load_pct:
+      value: 62.0
+      status: real_computed
+      source: "min_load_mw / nameplate_capacity_mw × 100"
+    time_to_full_load_min_eia_reported:
+      value: 720
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Time from Cold Shutdown to Full Load"
+      caveat: "12 hr — EIA reporting clustering convention (86% of CCGTs report exactly 720 min). For dispatch modeling use vendor 8 hr from operating_profile.yaml / tech_class_defaults lookup. See caveats.md §5."
+    # CC topology
+    has_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — one HRSG per CT in this 3-on-1 block"
+    can_bypass_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Can Bypass HRSG = Yes"
+    has_duct_burners:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Duct Burners (none on CT side; only GEN4 has them)"
+    # Dual-fuel
+    is_dual_fuel:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    can_switch_when_operating:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Switch When Operating = Yes"
+    switch_time_gas_to_oil_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Time to Switch From Gas to Oil"
+    switch_time_oil_to_gas_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Time to Switch From Oil to Gas"
+    fuel_switch_storage_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Storage Limits"
+      caveat: "On-site oil tank ~3-7 days of full-burn capacity"
+    fuel_switch_air_permit_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Air Permit Limits"
+      caveat: "Title V cap on hours/year of oil firing"
+    capacity_mw_with_gas_summer:
+      value: 42.6
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Natural Gas"
+    capacity_mw_with_oil_summer:
+      value: 43.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Oil"
+    # CHP / cogen
+    is_chp_flagged:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Associated with Combined Heat and Power System"
+    # Advanced tech
+    has_carbon_capture:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+
+  GEN2:
+    id:
+      value: "GEN2"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    prime_mover_code:
+      value: "CT"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    cc_role:
+      value: "topping"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 — Topping or Bottoming = T"
+    cc_unit_code:
+      value: "LEA1"
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024"
+    energy_source_code:
+      value: "NG"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    secondary_energy_source_code:
+      value: "DFO"
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    operating_since:
+      value: "1992-07"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    nameplate_capacity_mw:
+      value: 48.7
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    net_summer_capacity_mw:
+      value: 47.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    net_winter_capacity_mw:
+      value: 50.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    summer_derate_pct:
+      value: 3.5
+      status: real_computed
+      source: "(nameplate - net_summer) / nameplate × 100"
+    winter_boost_pct:
+      value: 2.7
+      status: real_computed
+      source: "(net_winter - nameplate) / nameplate × 100"
+    min_load_mw:
+      value: 30.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "Design/permit floor (62% of nameplate). See caveats.md."
+    min_load_pct:
+      value: 62.0
+      status: real_computed
+      source: "min_load_mw / nameplate_capacity_mw × 100"
+    time_to_full_load_min_eia_reported:
+      value: 720
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "EIA reporting clustering (see caveats.md §5)."
+    has_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — one HRSG per CT"
+    can_bypass_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    has_duct_burners:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    is_dual_fuel:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    can_switch_when_operating:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_gas_to_oil_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_oil_to_gas_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    fuel_switch_storage_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+      caveat: "On-site oil tank ~3-7 days of full-burn capacity"
+    fuel_switch_air_permit_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+      caveat: "Title V hours/year cap"
+    capacity_mw_with_gas_summer:
+      value: 41.6
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Natural Gas"
+    capacity_mw_with_oil_summer:
+      value: 43.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Oil"
+    is_chp_flagged:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    has_carbon_capture:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+
+  GEN3:
+    id:
+      value: "GEN3"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    prime_mover_code:
+      value: "CT"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    cc_role:
+      value: "topping"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 — Topping or Bottoming = T"
+    cc_unit_code:
+      value: "LEA1"
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024"
+    energy_source_code:
+      value: "NG"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    secondary_energy_source_code:
+      value: "DFO"
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    operating_since:
+      value: "1992-07"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    nameplate_capacity_mw:
+      value: 48.7
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    net_summer_capacity_mw:
+      value: 47.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    net_winter_capacity_mw:
+      value: 50.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    summer_derate_pct:
+      value: 3.5
+      status: real_computed
+      source: "(nameplate - net_summer) / nameplate × 100"
+    winter_boost_pct:
+      value: 2.7
+      status: real_computed
+      source: "(net_winter - nameplate) / nameplate × 100"
+    min_load_mw:
+      value: 30.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "Design/permit floor (62% of nameplate). See caveats.md."
+    min_load_pct:
+      value: 62.0
+      status: real_computed
+      source: "min_load_mw / nameplate_capacity_mw × 100"
+    time_to_full_load_min_eia_reported:
+      value: 720
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "EIA reporting clustering (see caveats.md §5)."
+    has_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — one HRSG per CT"
+    can_bypass_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    has_duct_burners:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    is_dual_fuel:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    can_switch_when_operating:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_gas_to_oil_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_oil_to_gas_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    fuel_switch_storage_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+      caveat: "On-site oil tank ~3-7 days of full-burn capacity"
+    fuel_switch_air_permit_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+      caveat: "Title V hours/year cap"
+    capacity_mw_with_gas_summer:
+      value: 41.6
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Natural Gas"
+    capacity_mw_with_oil_summer:
+      value: 43.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Oil"
+    is_chp_flagged:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    has_carbon_capture:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+
+  GEN4:
+    id:
+      value: "GEN4"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    prime_mover_code:
+      value: "CA"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — CA = combined-cycle steam turbine"
+    cc_role:
+      value: "bottoming"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 — Topping or Bottoming = T (interpretation: bottoming side of the 3-on-1 block)"
+      caveat: "EIA-860 reports T for all 4 generators (per equipment profile §3). 'Bottoming' here means the steam-side of the CCGT block — distinct from the CT topping side semantically, even though EIA's T flag doesn't differentiate."
+    cc_unit_code:
+      value: "LEA1"
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — same Unit Code as CTs"
+    energy_source_code:
+      value: "NG"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    secondary_energy_source_code:
+      value: "DFO"
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    operating_since:
+      value: "1992-09"
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Operating Year/Month"
+    # Capacity ratings — note ST gains capacity in summer (negative derate)
+    nameplate_capacity_mw:
+      value: 75.2
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    net_summer_capacity_mw:
+      value: 78.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "ST gains capacity in summer — condenser efficiency on cool days outweighs ambient effects on the gas side. See caveats.md §7."
+    net_winter_capacity_mw:
+      value: 80.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    summer_derate_pct:
+      value: -3.7
+      status: real_computed
+      source: "(nameplate - net_summer) / nameplate × 100 — negative = gain"
+      caveat: "ST-side summer gain; treat as negative derate (positive ambient adjustment in summer)"
+    winter_boost_pct:
+      value: 6.4
+      status: real_computed
+      source: "(net_winter - nameplate) / nameplate × 100"
+    # Operating range — ST is much more flexible than the CTs
+    min_load_mw:
+      value: 14.0
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Minimum Load (MW)"
+      caveat: "19% of nameplate — unusually low, reflecting steam-side throttling capability. The ST can run while CTs are partially shut down, enabling multi-mode dispatch (see caveats.md §3)."
+    min_load_pct:
+      value: 19.0
+      status: real_computed
+      source: "min_load_mw / nameplate_capacity_mw × 100"
+    time_to_full_load_min_eia_reported:
+      value: 720
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+      caveat: "Same EIA reporting clustering — see caveats.md §5."
+    # Topology — ST owns the HRSG row in 6_2
+    has_hrsg:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — GEN4 owns the boiler/HRSG row"
+    can_bypass_hrsg:
+      value: null
+      status: not_applicable
+      source: "GEN4 is the bottoming steam turbine — HRSG bypass is a CT-side concept; not applicable for the ST itself"
+    has_duct_burners:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024 — Duct Burners = Yes (only GEN4)"
+      caveat: "Supplemental firing inside the HRSG. Adds steam-side flexibility — confirmed in MOR data: 460 of 1,826 days (25.2%) operate with 0 MWh + non-zero gas + non-zero DHTS. See operating_profile.yaml.steam_only_mode for the empirical parameters."
+    boiler_id:
+      value: 4
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — Boiler Info & Design Parameters. Linked to GEN4 via 6_1 Boiler-Generator association"
+    boiler_type:
+      value: "Db"
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — Type of Boiler = 'Db' (Duct Burner)"
+      caveat: "Federally-documented classification confirming the steam-only mode mechanism. The HRSG has duct burners that can fire gas DIRECTLY into the HRSG without CT exhaust. Critical for understanding the 25% steam-only operating days in MOR."
+    boiler_count:
+      value: 1
+      status: real_reported
+      source: "EIA-860 schedule 6_2 Y2024 — one boiler entry for the plant (the duct-burner-equipped HRSG)"
+    # Dual-fuel (symmetric with CTs)
+    is_dual_fuel:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    can_switch_when_operating:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_gas_to_oil_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    switch_time_oil_to_gas_hr:
+      value: 1.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    fuel_switch_storage_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    fuel_switch_air_permit_limited:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024"
+    capacity_mw_with_gas_summer:
+      value: 78.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Natural Gas"
+    capacity_mw_with_oil_summer:
+      value: 78.0
+      status: real_reported
+      source: "EIA-860 schedule 3_5 Y2024 — Net Summer Capacity with Oil (symmetric)"
+    is_chp_flagged:
+      value: true
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"
+    has_carbon_capture:
+      value: false
+      status: real_reported
+      source: "EIA-860 schedule 3_1 Y2024"

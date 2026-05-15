@@ -1,0 +1,311 @@
+# Lockport Energy Associates LP — Operating Profile
+# Heat rate by mode, cold-start gas, mode distribution, annual generation patterns.
+# Derived from 5 years (2021-2025) of daily Monthly Operating Reports analyzed in
+# the diligence-extractor MOR notebook.
+#
+# Source: ~/code/personal/diligence-extractor/notebooks/daily_heat_rate_analysis.ipynb
+# Stage 2 final-summary table + Stage 1 findings.
+#
+# Per consolidation plan §6 + docs/assumptions/status_taxonomy.md.
+
+# ============================================================================
+# Heat rate by operating mode (volume-weighted) — THE HEADLINE DELIVERABLE
+# ============================================================================
+# A 3-on-1 CCGT cogen has multiple distinct operating modes with materially
+# different heat rates. A single "plant heat rate" misses 15-20% variation.
+# The lookup is block-level; this is mode-specific.
+
+heat_rate_by_mode:
+  3xCC_full:
+    btu_per_kwh:
+      value: 8901
+      status: real_observed
+      source: "MOR notebook Stage 2: volume-weighted heat rate across 189 active days, 2021-2025"
+      caveat: "Volume-weighted: sum(gas_mmbtu) × 1000 / sum(net_mwh). Operating-days filter applied (net_output > 0). Outliers (HR outside 5000-30000 Btu/kWh, 16% of CC days) excluded per Stage 2 §2.1 outlier policy."
+    median_daily_btu_per_kwh:
+      value: 8989
+      status: real_observed
+      source: "MOR notebook Stage 2: median of daily ratios across same 189 days"
+    operating_days:
+      value: 189
+      status: real_observed
+      source: "MOR notebook Stage 2: count of clean CC days in 3×CC_full mode after outlier filter"
+    share_of_active_cc_days_pct:
+      value: 64.9
+      status: real_observed
+      source: "MOR notebook Stage 2: 189 / 291 clean CC days"
+
+  2xCC:
+    btu_per_kwh:
+      value: 9598
+      status: real_observed
+      source: "MOR notebook Stage 2: volume-weighted across 76 active days"
+    median_daily_btu_per_kwh:
+      value: 9611
+      status: real_observed
+      source: "MOR notebook Stage 2: median of daily ratios"
+    operating_days:
+      value: 76
+      status: real_observed
+      source: "MOR notebook Stage 2"
+    share_of_active_cc_days_pct:
+      value: 26.1
+      status: real_observed
+      source: "MOR notebook Stage 2: 76 / 291 clean CC days"
+
+  1xCC:
+    btu_per_kwh:
+      value: 10424
+      status: real_observed
+      source: "MOR notebook Stage 2: volume-weighted across 26 active days"
+      caveat: "Small sample (n=26). Year-by-year values are noisy (2022: 12,199; 2023: 7,370). Pool across years for headline."
+    median_daily_btu_per_kwh:
+      value: 10290
+      status: real_observed
+      source: "MOR notebook Stage 2: median of daily ratios"
+    operating_days:
+      value: 26
+      status: real_observed
+      source: "MOR notebook Stage 2"
+    share_of_active_cc_days_pct:
+      value: 8.9
+      status: real_observed
+      source: "MOR notebook Stage 2: 26 / 291 clean CC days"
+
+  simple_cycle_observed:
+    btu_per_kwh:
+      value: null
+      status: not_applicable
+      source: "MOR notebook Stage 1: only 7 simple-cycle days observed across 5 years — insufficient sample to compute reliable HR"
+    operating_days:
+      value: 7
+      status: real_observed
+      source: "MOR notebook Stage 1 operating-mode classifier"
+      caveat: "Lockport CAN bypass HRSG (per engineering.yaml.GEN1-3.can_bypass_hrsg), but rarely does. Present in MOR data; not enough sample to derive heat rate."
+
+# ============================================================================
+# Cross-validation: 2023 MOR-derived HR vs eGRID 2023 placeholder
+# ============================================================================
+
+cross_validation:
+  egrid_2023_implied_hr_btu_per_kwh:
+    value: 9228
+    status: real_reported
+    source: "EPA eGRID 2023 rev2: annual heat input / annual generation (plant grain)"
+  mor_2023_all_cc_volume_weighted_btu_per_kwh:
+    value: 9293
+    status: real_observed
+    source: "MOR notebook Stage 2.4: 2023-only volume-weighted across all CC modes"
+  delta_pct:
+    value: 0.7
+    status: real_computed
+    source: "(mor_2023 - egrid_2023) / egrid_2023 × 100"
+    caveat: "Strong validation: proprietary 2023 reproduces public eGRID placeholder within <1%. Confirms parser + mode classifier + volume-weighting convention are correct."
+
+# ============================================================================
+# Cold-start gas — separately reported, NOT in operating heat rate
+# ============================================================================
+# 35 "idle_gas_baseline" days observed: gas burned (≥100 MMBtu) but neither
+# electricity nor steam-to-host produced. Stage 1 §spot-check confirms these
+# are warming days — gas burned to warm HRSGs and ST before generation.
+# 97% of these days are followed by an active CC mode the next day.
+
+cold_start_gas:
+  warming_days_observed_5yr:
+    value: 35
+    status: real_observed
+    source: "MOR notebook Stage 1 + Stage 2: idle_gas_baseline classification + warming-day spot-check"
+  total_warming_gas_mmbtu_5yr:
+    value: 88785
+    status: real_observed
+    source: "MOR notebook Stage 2.3 cold-start summary"
+  mean_per_cold_start_mmbtu:
+    value: 2537
+    status: real_observed
+    source: "MOR notebook Stage 2.3: 88,785 / 35"
+  range_per_cold_start_mmbtu:
+    min:
+      value: 109
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+    max:
+      value: 7203
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+  next_day_distribution:
+    followed_by_3xCC_full:
+      value: 19
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+    followed_by_2xCC:
+      value: 12
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+    followed_by_1xCC:
+      value: 3
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+    followed_by_thermal_only:
+      value: 1
+      status: real_observed
+      source: "MOR notebook Stage 1 spot-check"
+  pct_followed_by_active_cc_mode:
+    value: 97.0
+    status: real_computed
+    source: "(19 + 12 + 3) / 35 × 100"
+
+# ============================================================================
+# Annual generation pattern — including the 2024 correction
+# ============================================================================
+# Public renewablesinfo brief originally said "0 MWh for 11/12 months of 2024".
+# That was inferred from one PDF page. MOR daily aggregation shows 192,494 MWh
+# in 2024. See caveats.md §1.
+
+annual_generation:
+  data_source:
+    value: "MOR daily aggregation (sum of net_output_mwh across days)"
+    status: real_observed
+    source: "MOR notebook Stage 1 annual summary cell"
+
+  corrected_2024_annual_mwh:
+    value: 192494
+    status: real_observed
+    source: "MOR notebook Stage 1 finding §7: full 2024 daily record"
+    caveat: "Corrects the public renewablesinfo brief which inferred Lockport was likely mothballed from one PDF page. Plant was active in 2024."
+
+  yearly_summary_table:
+    value: null
+    status: placeholder
+    source: "MOR notebook Stage 1 'annual summary' table (years 2021-2025)"
+    validation_path: "When Notebook 1 (Phase G) runs the MOR loader, extract the full yearly DataFrame and populate annual generation, fired hours, capacity factor, mean ambient temp per year. Not strictly needed for v1 dispatch but useful for sanity-checks."
+
+# ============================================================================
+# Operating-mode classifier thresholds (from MOR Stage 1)
+# ============================================================================
+# Used by the dispatch model to interpret historical operating patterns.
+
+mode_classifier:
+  ct_threshold_mwh_per_day:
+    value: 5.0
+    status: assumed_industry
+    source: "MOR notebook Stage 1 classifier: minimum daily MWh to count a CT as 'on'"
+    confidence: MEDIUM
+    caveat: "Heuristic. Sensitivity to threshold not tested in Stage 1."
+  st_threshold_mwh_per_day:
+    value: 5.0
+    status: assumed_industry
+    source: "MOR notebook Stage 1 classifier: minimum daily MWh to count ST as 'on'"
+    confidence: MEDIUM
+  gas_baseline_threshold_mmbtu_per_day:
+    value: 100
+    status: assumed_industry
+    source: "MOR notebook Stage 1 classifier: minimum daily gas burn to identify idle-gas-baseline days"
+    confidence: MEDIUM
+  dhts_threshold_mmbtu_per_day:
+    value: 50
+    status: assumed_industry
+    source: "MOR notebook Stage 1 classifier: minimum daily DHTS to identify thermal-only operation"
+    confidence: MEDIUM
+
+# ============================================================================
+# DHTS (steam-to-host) — for cogen must-run constraint
+# ============================================================================
+# The plant delivers steam to an industrial host. When the host needs steam,
+# the plant has a must-run constraint regardless of LMP. See caveats.md §6.
+
+dhts:
+  total_annual_mmbtu_typical:
+    value: 80000
+    status: real_observed
+    source: "MOR notebook Stage 1 annual summary: ~80,000 MMBtu/yr DHTS delivery, except 2024 (~64,000 MMBtu)"
+    caveat: "Stable host steam demand most years; 2024 dip flagged in Stage 1 finding 4. Worth tracking per-year."
+  dip_year_2024_mmbtu:
+    value: 64000
+    status: real_observed
+    source: "MOR notebook Stage 1 annual summary §4"
+    caveat: "2024 was lower than typical — possibly host downtime or seasonal pattern. Doesn't change the must-run-during-delivery logic."
+
+  must_run_constraint:
+    value: "Plant must run minimum mode when DHTS daily MMBtu exceeds threshold"
+    status: real_observed
+    source: "MOR data shows 1,826 days with DHTS delivery pattern; thermal-only days demonstrate gas burn for host steam even when no electric output"
+    caveat: "Encoded in src/cogen/host_steam_constraint.py at Phase I. Phase G Notebook 1 should extract day-level DHTS flag (above threshold) for use as a must-run input."
+
+# ============================================================================
+# Steam-only operating mode — duct-burner-driven steam delivery without MWh
+# ============================================================================
+# When dispatch is uneconomic but the cogen host needs steam, Lockport often
+# operates in "steam-only" mode: gas burns through the HRSG duct burners
+# (boiler_type "Db" per EIA-860; see engineering.yaml.generators.GEN4.boiler_type)
+# delivering process steam without spinning the CTs or producing electricity.
+#
+# All values empirically derived from 5 years of MOR daily data (2021-2025).
+# Source: notebooks/scratch/modeled_vs_mor_vs_eia923.py + data/paths/lockport/mor_daily.parquet
+# Filter: days with net_output_mwh == 0 AND total_gas_mmbtu > 100 AND dhts_net_thermal_mmbtu > 100.
+
+steam_only_mode:
+  days_observed:
+    value: 460
+    status: real_observed
+    source: "MOR daily 2021-2025: 460 days with 0 MWh + non-zero gas + non-zero DHTS"
+  days_total:
+    value: 1826
+    status: real_observed
+    source: "MOR daily coverage: 2021-01-01 to 2025-12-31"
+  share_of_all_days_pct:
+    value: 25.2
+    status: real_observed
+    source: "460 / 1826"
+    caveat: "1 in 4 days at Lockport operates in steam-only mode. v1 N4 does not currently model this — see backtest_findings.md §3.4."
+  gas_mmbtu_per_day_median:
+    value: 871
+    status: real_observed
+    source: "Median of total_gas_mmbtu across 460 steam-only days"
+    caveat: "Use median (not mean) for dispatch modeling — gas distribution is right-skewed with start-up / outlier days."
+  gas_mmbtu_per_day_mean:
+    value: 1270
+    status: real_observed
+    source: "Mean of total_gas_mmbtu across 460 steam-only days (std 2426)"
+    caveat: "High std reflects warming/transition days mixed with steady steam-only days."
+  dhts_mmbtu_per_day_median:
+    value: 589
+    status: real_observed
+    source: "Median of dhts_net_thermal_mmbtu across 460 steam-only days"
+  dhts_mmbtu_per_day_mean:
+    value: 582
+    status: real_observed
+    source: "Mean of dhts_net_thermal_mmbtu across 460 steam-only days (std 105)"
+    caveat: "Low std → DHTS delivery in steam-only mode is consistent ~600 MMBtu/day. The variance lives on the gas side, not the steam side."
+  gas_to_steam_efficiency_overall:
+    value: 0.458
+    status: real_observed
+    source: "Sum of DHTS / Sum of gas across 460 days = 267,792 / 584,160 = 0.458"
+    caveat: "Ratio-of-totals (correct accounting). Mean-of-per-day-ratios is 0.643 but biased high due to start-up/transition days inflating per-day numerator. Use 0.458 for dispatch."
+  mechanism:
+    value: "HRSG duct burner — gas fired directly into HRSG, bypasses CTs"
+    status: real_reported
+    source: "EIA-860 6_2 Y2024 — boiler_type='Db' for boiler ID 4 linked to GEN4 (per engineering.yaml)"
+    caveat: "v1 N4 must add a steam-only branch in must-run logic. Decision rule: when must_run AND uneconomic, compare cost(1×CC dispatch) vs cost(steam-only) and pick lower-cost. Steam-only uses ~871 MMBtu/day gas, no EOH accumulation, no CT operation."
+  v1_modeling_treatment:
+    value: "Add as a third option in must-run branch of N4 dispatch loop"
+    status: placeholder
+    source: "Phase J refactor — N4 §F.run_mode()"
+    validation_path: "After implementation, modeled steam-only-day count should fall in 60-100 days/year range (vs MOR ~92/yr)"
+
+# ============================================================================
+# Annotations for dispatch modeling
+# ============================================================================
+
+modeling_notes:
+  primary_use:
+    value: "Mode-specific heat rate input for dispatch — overrides tech-class lookup block value at consumption time"
+    status: real_observed
+    source: "consolidation plan §5 D1 (prototype-as-reference, redesigned for real data)"
+  override_pattern:
+    value: "When dispatch model picks a mode (1×CC / 2×CC / 3×CC_full), use the corresponding heat_rate_by_mode entry. Apply cogen +30-50% VOM markup separately per caveats.md §2."
+    status: real_observed
+    source: "Consolidation plan §6 + caveats.md"
+  validation_strength:
+    value: "HIGH — proprietary 2023 reproduces eGRID public placeholder within <1%"
+    status: real_observed
+    source: "cross_validation block above"

@@ -1,0 +1,62 @@
+# gt_models — gitignore
+
+# Simulation outputs — regenerable, per consolidation plan §4.2
+data/outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+nb_env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+# Note: notebook output stripping is handled by nbstripout — install with `nbstripout --install`
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local config
+.env.local
+*.local
+
+# Temporary
+tmp/
+*.tmp
+.claude/
+
+# Embedded prototype's own metadata (we keep the prototype as static reference)
+docs/extra/gas-turbine-digital-twin/.git/

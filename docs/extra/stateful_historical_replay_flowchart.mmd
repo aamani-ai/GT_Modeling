@@ -1,0 +1,76 @@
+flowchart LR
+    %% Stateful Historical Replay Flow
+    %% Use in Obsidian, GitHub Markdown, or Mermaid Live.
+
+    subgraph X["Historical Exogenous Inputs X_d"]
+        X1["Hourly power price\n- node/zone/hub\n- DA or RT basis\n- USD/MWh"]
+        X2["Hourly temperature\n- plant/weather station/ERA5\n- deg F or deg C"]
+        X3["Daily delivered gas\n- gas index/location\n- HH + basis + delivery\n- USD/MMBtu"]
+        X4["Optional inputs\n- AQI / humidity / pressure\n- actual gen/fuel for validation"]
+    end
+
+    subgraph R["Source and Provenance Layer"]
+        R1["Market/weather/gas sources\nISO, weather, gas index/vendor"]
+        R2["Plant engineering sources\nEIA, CEMS, OEM, plant docs"]
+        R3["Contract sources\nLTSA/CSA, invoices,\namendments, outage reports"]
+        R4["Assumption register\nvalue, source, confidence,\nowner, snapshot date"]
+    end
+
+    subgraph C["Static Plant Config C"]
+        C1["Operating modes\n- off\n- 1x1 / 2x1\n- duct firing if modeled"]
+        C2["Capability curves\n- Pmin_m(T)\n- Pmax_m(T)\n- derate rules"]
+        C3["Fuel-burn curve\nFuelBurn_m(P,T,S_d)\nAvgHR = FuelBurn/P\nIncHR = dFuelBurn/dP"]
+        C4["Cost and constraints\n- VOM\n- start costs\n- min up/down\n- ramp rules"]
+        C5["LTSA / CSA terms\n- fixed fees\n- EOH reserve\n- start overages\n- inspection triggers\n- availability guarantees"]
+    end
+
+    subgraph S["Opening Plant State S_d"]
+        S1["Availability state\n- available\n- planned outage\n- forced outage\n- derate"]
+        S2["Operating memory\n- current mode\n- hours since shutdown\n- hot/warm/cold state"]
+        S3["Condition memory\n- EOH/headroom\n- fouling\n- HR/capacity multipliers\n- start counters"]
+        S4["Contract memory\n- LTSA counters\n- starts YTD\n- reserve balance\n- guarantee period status"]
+    end
+
+    subgraph D["Daily Replay Engine"]
+        D1{"Availability gate"}
+        D2["Build feasible set\nmode m and MW P\nPmin_eff <= P <= Pmax_eff"]
+        D3["Compute economics\nrevenue = price * MW\nfuel = gas * FuelBurn\nmargin = revenue - fuel - VOM"]
+        D4["Dispatch optimizer\nrecover start cost\nenforce constraints\nchoose mode and MW"]
+        D5["Hourly operating profile\nonline, mode, MW, MWh,\nfuel burn, starts, margin"]
+        D6["Daily state update\nEOH, starts, fouling,\nHR/capacity multipliers,\noutage state, LTSA counters"]
+        D7["Contract / cashflow rollup\nfixed fees, EOH reserve,\nstart overages, penalties,\ncovered vs uncovered outage cost"]
+    end
+
+    subgraph O["Replay Outputs"]
+        O1["Hourly dispatch table\nprice, temp, gas, mode,\nMW, fuel, margin"]
+        O2["Daily state table\nopening S_d, closing S_d+1,\nEOH, fouling, starts"]
+        O3["Monthly summary\nMWh, capacity factor,\nfuel cost, gross margin,\nspark-spread capture"]
+        O4["Validation checks\nactual gen/fuel/outage\ncontract invoices and events\nvs simulated replay"]
+        O5["Contract outputs\nLTSA fees/reserves,\ninspection timing,\navailability guarantee status"]
+    end
+
+    R1 -.-> X
+    R2 -.-> C
+    R2 -.-> S
+    R3 -.-> C5
+    R3 -.-> S4
+    R4 -.-> C
+    R4 -.-> S
+    X --> D
+    C --> D
+    S --> D1
+    D1 -->|"available"| D2
+    D1 -->|"unavailable"| D6
+    D2 --> D3 --> D4 --> D5 --> D6
+    D5 --> D7
+    D6 --> D7
+    C5 --> D7
+    S4 --> D7
+    D5 --> O1
+    D6 --> O2
+    D7 --> O5
+    O1 --> O3
+    O2 --> O3
+    O5 --> O3
+    O3 --> O4
+    D6 -->|"closing state S_d+1 becomes tomorrow opening S_d"| S

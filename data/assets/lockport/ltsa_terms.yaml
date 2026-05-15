@@ -1,0 +1,324 @@
+# Lockport Energy Associates LP — LTSA (Long-Term Service Agreement) Terms
+# Contract structure with all values flagged as PLACEHOLDER pending data room extraction.
+# Per consolidation plan §6 + §8 Phase F + docs/assumptions/status_taxonomy.md.
+#
+# IMPORTANT: every value here is a placeholder. The real values come from the
+# data room file `3.2.6.4 Lockport Trial Balances 2024-Feb 2026.xlsx` (LTSA
+# invoice line items) and the original PURPA-era contract filings.
+#
+# Placeholder values are seeded from the Athens prototype's [ASSUME] defaults
+# (a 2x1 GE 7FA.03 CCGT in NYISO Zone F). Lockport is a 3-on-1 1992 F-class
+# cogen — different scale, different vintage, different counterparty. The
+# placeholders are numerically valid (model runs without errors) but not
+# deal-realistic.
+
+# ============================================================================
+# Headline note
+# ============================================================================
+
+extraction_status:
+  value: "PENDING — all values placeholder until data room extraction completes"
+  status: placeholder
+  source: "Athens prototype [ASSUME] defaults from docs/extra/gas-turbine-digital-twin/LTSAContract.py"
+  validation_path: "Data room: '3.2.6.4 Lockport Trial Balances 2024-Feb 2026.xlsx' for LTSA invoice line items; original PURPA contract filings (NYS PSC 1990-1992) for headline terms"
+
+# ============================================================================
+# Stream 1 — Fixed monthly fee (daily accrual)
+# ============================================================================
+
+fixed_fee:
+  monthly_usd:
+    value: 850000.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — not Lockport-specific"
+    validation_path: "Data room: trial balance LTSA fixed-fee line items, monthly cadence"
+    caveat: "Athens is a 2x1 modern merchant CCGT; Lockport is 3-on-1 1992 cogen. Actual Lockport fixed fee likely materially different."
+  escalation_pct_per_year:
+    value: 3.5
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: original contract escalation clause"
+  accrual_frequency:
+    value: "daily"
+    status: placeholder
+    source: "Athens prototype convention: daily_fixed_fee = monthly_fee * 12 / 365, escalated"
+    validation_path: "Data room: contract accrual / billing terms"
+
+# ============================================================================
+# Stream 2 — Variable EOH reserve (daily, proportional to EOH accumulated)
+# ============================================================================
+
+eoh_reserve:
+  rate_usd_per_eoh:
+    value: 175.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: EOH-rate clause in original contract"
+  escalation_pct_per_year:
+    value: 3.5
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: escalation terms"
+  accrual_method:
+    value: "Daily, proportional to fired-hour EOH accumulated by all generators"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: EOH counting methodology in contract"
+    caveat: "Lockport's 3-on-1 EOH accounting may differ from Athens's 2-on-1 (4 generators vs 3). Per-generator vs per-block EOH counting is a contract detail."
+
+# ============================================================================
+# Stream 3 — Combustion Inspection (CI) event cost
+# ============================================================================
+
+inspection_ci:
+  total_cost_usd:
+    value: 3750000.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — $3.75M total CI cost"
+    validation_path: "Data room: historical CI invoices; contract CI scope and cost terms"
+  oem_covered_fraction:
+    value: 0.75
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — 75% OEM-covered, 25% owner-uncovered"
+    validation_path: "Data room: CSA coverage table"
+  owner_uncovered_usd:
+    value: 937500.0
+    status: placeholder
+    source: "Derived: 3,750,000 × 0.25 from Athens defaults"
+    validation_path: "Data room: invoiced CI line items, OEM-paid vs owner-paid breakdown"
+  outage_duration_days:
+    value: 12
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: GADS rollup or maintenance log; original contract CI duration"
+  eoh_threshold:
+    value: 24000
+    status: placeholder
+    source: "Athens prototype — GE 7FA.03 GER-3620K standard CI interval"
+    validation_path: "Data room: contract CI threshold (may differ for 1992 vintage)"
+
+# ============================================================================
+# Stream 4 — Major Inspection (MI) event cost
+# ============================================================================
+
+inspection_mi:
+  total_cost_usd:
+    value: 30000000.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — $30M total MI cost"
+    validation_path: "Data room: historical MI invoices; contract MI scope"
+  oem_covered_fraction:
+    value: 0.65
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — 65% OEM-covered, 35% owner-uncovered"
+    validation_path: "Data room: CSA coverage table"
+  owner_uncovered_usd:
+    value: 10500000.0
+    status: placeholder
+    source: "Derived: 30,000,000 × 0.35 from Athens defaults"
+    validation_path: "Data room: invoiced MI line items"
+  outage_duration_days:
+    value: 52
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: historical MI outage durations"
+  eoh_threshold:
+    value: 48000
+    status: placeholder
+    source: "Athens prototype — GE 7FA.03 GER-3620K MI interval"
+    validation_path: "Data room: contract MI threshold"
+
+# ============================================================================
+# Stream 5 — Start overage charges
+# ============================================================================
+
+start_overage:
+  annual_baseline_starts:
+    hot:
+      value: 150
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: annual start baselines in contract"
+    warm:
+      value: 35
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: contract"
+    cold:
+      value: 5
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: contract"
+    trip:
+      value: 3
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: contract"
+  overage_charge_usd_per_excess_start:
+    hot:
+      value: 8500.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: overage clause"
+    warm:
+      value: 42000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: overage clause"
+    cold:
+      value: 125000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: overage clause"
+    trip:
+      value: 80000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: overage clause"
+  accrual_method:
+    value: "Daily increment based on YTD start counts pro-rated vs annual baseline"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: contract overage methodology"
+
+# ============================================================================
+# Stream 6 — Availability penalty (annual)
+# ============================================================================
+
+availability_penalty:
+  guarantee_pct:
+    value: 95.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default — 95% annual availability guarantee"
+    validation_path: "Data room: availability guarantee clause"
+  penalty_formula:
+    value: "If annual availability < 95%: (monthly_fee / 12) × shortfall × 10"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: penalty calculation clause"
+  posting_frequency:
+    value: "annual (last day of year)"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: contract billing terms"
+
+# ============================================================================
+# Stream 7 — Heat rate penalty (cycle-end)
+# ============================================================================
+
+hr_penalty:
+  guarantee_btu_per_kwh:
+    value: null
+    status: placeholder
+    source: "Athens prototype: cycle-end HR guarantee with 2% tolerance"
+    validation_path: "Data room: HR guarantee clause + actual contract guarantee value"
+    caveat: "Should be close to plant's design HR. Lockport's 1992 F-class design HR is not in EIA-860 (boiler 6_2 reporting gap)."
+  tolerance_pct_above_guarantee:
+    value: 2.0
+    status: placeholder
+    source: "Athens prototype [ASSUME] default"
+    validation_path: "Data room: tolerance clause"
+  penalty_method:
+    value: "If cycle-avg HR > guarantee × (1 + tolerance): excess fuel cost × 1.25"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: penalty calculation"
+  posting_event:
+    value: "Computed at each inspection completion (CI / MI)"
+    status: placeholder
+    source: "Athens prototype convention"
+    validation_path: "Data room: penalty event trigger"
+
+# ============================================================================
+# Forced outage classification — which causes are OEM-covered vs owner-uncovered
+# ============================================================================
+# Critical asymmetry per the framework: HRSG / BOP / ST / generator damage
+# typically falls OUTSIDE the CSA scope. Aggressive cycling that drives HRSG
+# drum fatigue produces owner-paid repair bills the dispatch model can't see.
+
+forced_outage_coverage:
+  gt_mechanical:
+    coverage:
+      value: "OEM-covered"
+      status: placeholder
+      source: "Athens prototype [ASSUME] convention"
+      validation_path: "Data room: CSA scope inclusion list"
+    typical_repair_cost_usd:
+      value: null
+      status: placeholder
+      source: "Cost varies by failure mode"
+      validation_path: "Data room: historical forced-outage repair invoices"
+
+  hrsg:
+    coverage:
+      value: "Owner-uncovered (outside CSA scope)"
+      status: placeholder
+      source: "Athens prototype convention; consistent with industry CSA practice"
+      validation_path: "Data room: CSA scope exclusion list"
+    typical_repair_cost_usd:
+      value: 500000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: historical HRSG repair line items"
+
+  bop:
+    coverage:
+      value: "Owner-uncovered (outside CSA scope)"
+      status: placeholder
+      source: "Athens prototype convention"
+      validation_path: "Data room: CSA scope exclusion list"
+    typical_repair_cost_usd:
+      value: 750000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: historical BOP repair line items"
+
+  st:
+    coverage:
+      value: "Owner-uncovered (outside CSA scope)"
+      status: placeholder
+      source: "Athens prototype convention"
+      validation_path: "Data room: CSA scope exclusion list"
+    typical_repair_cost_usd:
+      value: 200000.0
+      status: placeholder
+      source: "Athens prototype [ASSUME] default"
+      validation_path: "Data room: historical ST repair line items"
+
+# ============================================================================
+# Contract administrative metadata
+# ============================================================================
+
+contract_metadata:
+  oem:
+    value: "TBD — likely a GE LTSA or maintenance services contract (1992 vintage)"
+    status: placeholder
+    source: "Original equipment is GE-vintage; OEM relationship not yet confirmed for Lockport"
+    validation_path: "Data room: contract counterparty + signatory page"
+    caveat: "Lockport is 1992 F-class — could be GE Power Systems era contract. Contract structure may predate modern CSA conventions."
+  effective_date:
+    value: null
+    status: placeholder
+    source: "Original contract date pending"
+    validation_path: "Data room: contract effective date"
+  expiry_or_renewal:
+    value: null
+    status: placeholder
+    source: "Pending"
+    validation_path: "Data room: contract term and renewal clause"
+
+# ============================================================================
+# Summary metadata
+# ============================================================================
+
+summary:
+  total_placeholder_cells:
+    value: "~40 cells, all flagged status: placeholder"
+    status: placeholder
+    source: "Internal count of leaf values in this file"
+    validation_path: "All cells get real values after data room extraction completes"
+  expected_extraction_completion:
+    value: "Pending diligence-extractor scripts/tabular/ module + scripts/profile/ assembler completion"
+    status: placeholder
+    source: "diligence-extractor docs/plans/improvements.md + framework_north_star.md"
+    validation_path: "Data room file 3.2.6.4 + original PURPA contract filings"
