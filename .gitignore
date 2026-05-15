@@ -60,3 +60,9 @@ tmp/
 
 # Embedded prototype's own metadata (we keep the prototype as static reference)
 docs/extra/gas-turbine-digital-twin/.git/
+
+# Local convenience symlinks to related repos (not part of gt_models)
+.model-gpr
+.diligence-extractor
+.renewablesinfo
+.renewablesinfo_org
