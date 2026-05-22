@@ -70,6 +70,13 @@ parallel outputs, not one.**
 |    must-not-run|      |  - BESS augment   |      |    outage       |
 |  - Tolling     |      |  - Known TX       |      |    (gen trip)   |
 |    constraints |      |    constraint     |      |                 |
+|                |      |                   |      | Contractual /   |
+|                |      |                   |      | regulatory:     |
+|                |      |                   |      |  - Counterparty |
+|                |      |                   |      |    default      |
+|                |      |                   |      |  - Force majeure|
+|                |      |                   |      |  - Regulatory   |
+|                |      |                   |      |    shutdown     |
 +----------------+      +-------------------+      +-----------------+
         |                         |                         |
         |                         |                         |
@@ -139,6 +146,36 @@ revenue projection are incomplete; neither alone tells a capital allocator
 whether to deploy. The output of the framework is the **joint view**, with
 revenue and risk as parallel artifacts produced from the same underlying
 stochastic model.
+
+### Causal decomposition vs. consequential measurement
+
+The decomposition `Output = Max - CL - EL` is *causal* — it separates loss
+sources by mechanism. **Consequential measurements are different**: they
+aggregate the dollar impact of those losses on a specific KPI (revenue,
+EBITDA, debt service coverage), regardless of cause.
+
+The most common consequential measurement is **Business Interruption (BI)**:
+
+    BI(t) = Σ (output_gap(t) × price(t))   summed across all causal buckets
+          = contributions from CL_det + CL_stoch + CL_step + EL + contractual
+
+BI is **not a fourth bucket** in the causal decomposition. It is an
+**attribution view on top of the decomposition** — useful for insurance
+design, hedge structuring, and the "decision-ready view" at the bottom of
+the Section 1 flowchart.
+
+Insurance products (BI policy, PD policy) interact with BI in a specific way:
+
+- **Premium** is a continuous cost → lives in CL deterministic → revenue line.
+- **Payout** is an event-triggered recovery → contractual shock absorber on
+  EL (and sometimes on specific CL causes per policy terms) → modifies the
+  *net* loss feeding the revenue line, while *gross* loss still feeds the
+  risk layer.
+
+The framework already covers both treatments structurally (via the routing
+logic below and §6.6's contractual shock absorber discussion). This
+subsection names them explicitly for the BI case so the attribution view is
+unambiguous when it appears in deliverables.
 
 ### What "routing" really means
 
@@ -967,11 +1004,25 @@ Known constraint window         | CL deterministic    | R
 Grid emergency curtailment      | EL                  | K
 PPA cap (when binding)          | Max (contractual)   | R
 Must-run obligation             | Max (contractual)   | R
+PPA counterparty default        | EL (contractual)    | K
+Force majeure (any cause)       | EL (contractual)    | K
+Regulatory shutdown order       | EL (contractual)    | K
+Tolling counterparty insolvency | EL (contractual)    | K
+BI insurance premium            | CL deterministic    | R
+BI insurance payout             | Contractual offset  | net -> R,
+                                | on EL               | gross -> K
+PD insurance premium            | CL deterministic    | R
+PD insurance payout             | Contractual offset  | net -> R,
+                                | on EL               | gross -> K
 
 Routing legend:
   R = revenue projection only
   K = risk metrics only
   B = both (mean -> revenue, distribution -> risk)
+
+Note: BI itself is not a routable component — it is the consequential
+aggregate across all causes above (CL + EL + contractual EL). See §1's
+"Causal decomposition vs. consequential measurement" subsection.
 ```
 
 ---

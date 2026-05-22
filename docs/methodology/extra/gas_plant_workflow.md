@@ -408,8 +408,63 @@ Letters: `R` = revenue projection; `K` = risk metrics; `B` = both (mean → reve
 │ Large mechanical forced outage            │ EL           │ K       │
 │ HRSG tube rupture                         │ EL           │ K       │
 │ Wildfire smoke (derate, not outage)       │ EL           │ B       │
+├──────────────────────────────────────────┼──────────────┼─────────┤
+│ PPA counterparty default                  │ EL contract. │ K       │
+│ Force majeure                             │ EL contract. │ K       │
+│ Regulatory shutdown                       │ EL contract. │ K       │
+├──────────────────────────────────────────┼──────────────┼─────────┤
+│ BI insurance premium                      │ CL det.      │ R       │
+│ BI insurance payout (covered EL)          │ Contractual  │ net → R │
+│                                           │ offset on EL │ gross→K │
 └──────────────────────────────────────────┴──────────────┴─────────┘
 ```
+
+**Note**: BI itself is not in this table — it is the *consequential aggregate* across the CL + EL + contractual-EL rows above, not a routable component. See §6.5 for the attribution view.
+
+---
+
+## §6.5. BI as a cross-cutting attribution view (not a fourth bucket)
+
+The framework's `Max − CL − EL` decomposition is *causal*. **Business Interruption (BI)** is *consequential* — it measures the dollar revenue impact of output loss, aggregated across all causal buckets. BI is not a fourth row in the routing table; it sits on top of the routing table as an attribution view.
+
+### What contributes to BI for a gas plant
+
+```
+BI(t) = Σ (output_gap × price)
+      = degradation contribution         (CL det)
+      + small forced outage contribution (CL stoch)
+      + planned inspection contribution  (CL step)
+      + EL hazard contribution           (EL)
+      + contractual / counterparty       (EL contractual)
+
+NOT in BI:
+   ▸ Economic non-dispatch     (that's a Max constraint, not loss)
+   ▸ Policy self-curtailment   (operator choice — Modes B/C deferring
+                                wear — not a loss)
+```
+
+### Where each BI contribution lives institutionally
+
+| Cause | Where it's computed | gt_models status |
+| :--- | :--- | :--- |
+| CL det (HR drift, fouling) | gt_models | ✓ via `loss_degradation` |
+| CL stoch (small forced outage) | gt_models | ✓ via `loss_forced` |
+| CL step (CI / MI outage) | gt_models | ✓ via `loss_planned` |
+| EL (weather, fuel, grid hazards) | hazard team | ⚙ separate pipeline |
+| Contractual EL (PPA default etc.) | currently nobody | (real gap — portfolio scope) |
+
+### Insurance interaction (BI policy specifically)
+
+- **BI premium** — continuous cost; CL deterministic; would live in gt_models's Fixed O&M line if that existed (currently not modeled in v1).
+- **BI payout** — event-triggered recovery against covered EL causes; modifies the *net* EL loss feeding the revenue arm; *gross* EL loss still feeds the hazard team's risk artifact. Out of gt_models scope.
+
+### Why this is worth pinning down
+
+The twin-dispatch loss-attribution columns gt_models already produces (`loss_degradation`, `loss_planned`, `loss_forced`) are **exactly the CL contributions to BI**. If a colleague asks "where is BI in your model?" — the answer is:
+
+> *The CL portion is already in the loss-attribution columns; the EL portion comes from the hazard team's pipeline; combined BI is the asset-level deliverable. BI itself is not a row in the model — it is a reporting view on top of the loss decomposition.*
+
+See [`performance_and_risk_framework.md`](performance_and_risk_framework.md) §1 (*Causal decomposition vs. consequential measurement*) for the generic framework treatment.
 
 ---
 
