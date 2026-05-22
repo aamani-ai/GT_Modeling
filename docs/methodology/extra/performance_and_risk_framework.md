@@ -1098,6 +1098,58 @@ share of EAL?" may mean revisiting how freeze was bucketed.
 Qualitative-first is the *primary ordering* and the *leading work*
 — not one-pass-and-done.
 
+### A caution: overlapping calculations
+
+A failure mode that can sneak in even when the qualitative discipline
+above is followed: **double-counting losses across categories**. The
+risk is silent because the framework's structure does not automatically
+prevent it — it depends on the modeling approach and the data sources
+used.
+
+Common ways overlapping calculations creep in:
+
+- **CL stochastic vs. EL boundary blur.** Small mechanical outages
+  belong to CL stochastic; large catastrophic ones to EL. The boundary
+  is fuzzy. A "medium" mechanical outage modeled in both is
+  double-counted.
+- **Causal + consequential reported side-by-side.** BI is the
+  consequential view of CL + EL contributions. Reporting BI *and* the
+  individual CL / EL components in the same total — without being
+  clear which is the gross loss and which is the dollar aggregate —
+  leads to double-counting.
+- **Hazard correlations.** Peril-specific EALs summed naively assume
+  independence. The same physical event modeled in multiple peril
+  catalogs (Uri-class freeze + grid emergency + gas supply
+  interruption) can be a double-count or a missed correlation,
+  depending on the direction of the modeling error.
+- **Gross vs. net of recovery.** If both gross loss (feeding the risk
+  arm) and net loss (feeding the revenue arm) are summed into a single
+  "loss" without distinction, the contract recovery is implicitly
+  counted twice.
+- **Hazard-triggered LTSA events.** A hurricane that damages a turbine
+  and triggers an unplanned major inspection could be counted as EL
+  (insurance + repair) AND as a CL step (LTSA inspection cost). Pick
+  one primary cause; cross-reference the other.
+- **Policy-mode parameter mixing.** Fitting CL distributions from
+  historical data without isolating policy mode mixes operator
+  behavior into the stochastic parameter — and the same loss can then
+  be implicitly attributed to both "stochastic CL" and "policy effect"
+  in downstream sensitivity analysis.
+
+**Discipline.** The risk is heightened when modeling approaches
+change, when data sources change, when new perils are added, or when
+multiple teams contribute to a joint output. Treat overlapping-
+calculation review as a *periodic audit step*, not a one-time
+guarantee. When in doubt, prefer single-attribution to a primary
+cause and note the others as cross-references rather than additive
+contributions.
+
+**This section flags the risk; it does not solve it.** Concrete audit
+procedures and reconciliation checks are deferred to a future pass.
+The point is to make the risk visible so that it is not silently
+missed when modeling approaches, data sources, or peril catalogs
+change.
+
 ### For pitching the framework's posture
 
 This sequencing is also a defensible answer to common reviewer
