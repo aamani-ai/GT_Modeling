@@ -2,6 +2,8 @@
 
 > **Purpose**: A navigational ASCII flowchart for thinking through gas-fired generation modeling, using the conceptual framework `Output = Max − CL − EL` plus routing, policy mode, and horizon discipline. Applied to gas specifically.
 >
+> **Scope**: this doc focuses specifically on the **gas-revenue-projection arm** of the broader risk framework — what `gt_models` produces. The risk arm (hazard catalog, EP / EAL / PML, BI metrics) is owned by a separate team via a different pipeline. EL items appear in the routing tables below for *decomposition completeness*, but their actual modeling is deliberately out of scope here. See §1.1 for the institutional split and the InfraSure risk-spine doc (`the_risk_spine.md`) for the full revenue + risk composition picture.
+>
 > **Why this exists**: Gas plant modeling components get mixed up in practice — economic curtailment booked as a loss, EL events lumped with CL stochastic, policy mode hidden inside parameter fits, single-horizon analysis claimed as both pro forma and risk. This doc separates them visually so each component can be placed and routed deliberately.
 >
 > **Companion to**: [`forward_looking_framing.md`](forward_looking_framing.md) (the *why*) and the framework reference doc (the generic version that covers all asset types).
