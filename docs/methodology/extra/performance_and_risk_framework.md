@@ -211,6 +211,47 @@ Insurance products specifically interact with both moves:
   while *gross* loss still feeds risk. *(Move 1 transition + Move 2
   routing.)*
 
+#### How BI is actually computed (the join across arms)
+
+BI payout is not produced by either arm alone — it is a **computational
+join** requiring three inputs:
+
+1. **Counterfactual baseline** (from the revenue arm): what the asset
+   would have produced and earned absent the event — Max(t), price(t),
+   and the CL trajectory.
+2. **Event indicator** (from the hazard arm): which days an EL event
+   takes the asset offline, with severity — the hazard team's IDF +
+   fragility output.
+3. **Contract transformation** (the Move 1 layer): policy limit,
+   retention, waiting period, covered-causes filter applied to the
+   join output.
+
+```
+   Revenue arm baseline   ⊗   Hazard arm event indicator
+   (Max, prices, CL)          (peril × duration × severity)
+              │                              │
+              └──────────────┬───────────────┘
+                             ▼
+                  Gross BI per event per peril
+                  = Σ (event-day output_gap × price)
+                             │
+                             │ ← apply contract terms
+                             ▼
+                       Net BI (owner-paid)
+```
+
+**Institutional implication**: the revenue arm's Max(t) and price
+series propagate into the hazard team's dollar-denominated risk metrics
+too. Hazard outputs in physical units (MWh lost, event count) need the
+revenue arm's $/MWh conversion to become EAL, PML, or BI dollars in
+the first place. The revenue arm is not just a producer of pro-forma
+cashflow — it is a **shared baseline input** for the entire downstream
+risk + insurance stack.
+
+(The BI premium side does not need this join — premiums are paid
+regardless of events, so they live in CL deterministic on the revenue
+arm with no transformation.)
+
 Neither move changes the framework's decomposition structure. They
 clarify how the existing structure handles the gap between physical
 loss and owner revenue impact, and where BI sits in that picture.
