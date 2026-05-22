@@ -14,6 +14,8 @@ Given a specific gas-fired generation asset, a forward market environment (uncer
 
 The deliverable is not a single forecast number. It's a **distribution shape** — and critically, the question is what dimensions of uncertainty feed that distribution. For a renewable asset, the answer is mostly weather + price. For a thermal asset, the answer includes **operator behavior** as a first-class uncertainty source. This doc is about why.
 
+**Scope note**: `gt_models` specifically delivers the *generation revenue* arm of the probabilistic distribution. Event-loss (EL) hazards — weather, fuel supply, grid faults, catastrophic mechanical events — are scoped to InfraSure's hazard team, who produces those through a separate two-phase pipeline (IDF + fragility / damage curves). The two arms compose at the portfolio / asset-evaluation level. This positioning doc is about the revenue arm only; references below to "the deliverable" mean the revenue-arm output unless explicitly stated otherwise. See [`gas_plant_workflow.md`](gas_plant_workflow.md) §1.1 for the institutional-split diagram.
+
 ---
 
 ## §2. Why thermal asset probabilistic revenue ≠ renewable asset probabilistic revenue
@@ -128,6 +130,8 @@ What this gives an investor that a pure physics + market model can't:
 3. **A quantified optionality value** — `(Mode A revenue) − (Mode C revenue)` at the P50 line is roughly the dispatch flexibility value at median market conditions
 4. **A defensible answer to "what assumption are you making about how the plant is run?"** — the answer is "we're not assuming; we're bracketing"
 
+**Scope reminder**: this envelope is the *revenue arm* of the asset-level deliverable (per the §1 scope note). The full asset-level distribution combines this revenue envelope with the hazard team's separate EP / EAL / PML outputs from their IDF + fragility pipeline. `gt_models` does not produce the risk arm.
+
 ---
 
 ## §6. The two claims to separate when pitching this externally
@@ -212,6 +216,7 @@ This is not a recommendation to formally reorder `gaps_and_priorities.md`. It's 
 
 To preempt obvious pushback:
 
+- **`gt_models` delivers the revenue arm only.** Event-loss (EL) hazards — weather, fuel, grid, catastrophic mechanical events — are scoped to InfraSure's hazard team, who produces them through a separate IDF + fragility pipeline. The framework's "two-output view" (revenue + risk) is realized at the *organizational* level. `gt_models` is the generation-revenue probabilistic-paths arm; the asset-level deliverable composes that with the hazard team's risk artifact. See [`gas_plant_workflow.md`](gas_plant_workflow.md) §1.1 for the institutional-split diagram.
 - **The model does not predict operator behavior.** It brackets it. The realized operator path lives between A and C; the framework does not claim to know where.
 - **Modes A and C are not the only dimensions of operator-policy uncertainty.** Real operators also choose which plant in a portfolio to dispatch, when to schedule voluntary outages, how to bid into capacity markets, whether to enter long-term hedges. These are not bracketed by A/B/C. The framework brackets *one specific axis* — the start-wear vs revenue trade-off — which happens to be the most directly impactful for an LTSA-bound CCGT but is not exhaustive of operator discretion.
 - **The bracketing does not claim equal probability over A vs C.** The distribution over operator policies is itself unknown — and modeling it explicitly would re-introduce the assumption-creation problem this framework was designed to avoid. The framework's posture: present the envelope, let the investor weight it according to their view of the operator.

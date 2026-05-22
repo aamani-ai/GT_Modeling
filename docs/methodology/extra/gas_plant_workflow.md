@@ -88,6 +88,54 @@
 
 ---
 
+## §1.1. Institutional scope — gt_models is the revenue arm only
+
+Within InfraSure, the framework's two output arms are owned by different teams. This affects how to read the rest of this doc:
+
+```
+                ┌───────────────────────────────────────────────┐
+                │       ASSET-LEVEL DELIVERABLE                  │
+                └─────────────────────┬─────────────────────────┘
+                                      │
+                ┌─────────────────────┴─────────────────────┐
+                ▼                                           ▼
+   ┌──────────────────────────┐         ┌────────────────────────────┐
+   │  gt_models (THIS repo)   │         │  Hazard team (separate)    │
+   │                          │         │                            │
+   │  Scope: generation       │         │  Scope: event loss from    │
+   │  revenue probabilistic   │         │  hazards (EL)              │
+   │  paths                   │         │                            │
+   │                          │         │  Two-phase pipeline:       │
+   │  Covers:                 │         │   1. Hazard IDF (intensity │
+   │   ▸ Max                  │         │      / duration / freq)    │
+   │   ▸ CL deterministic     │         │   2. Fragility / damage    │
+   │   ▸ CL stochastic        │         │      curve per asset       │
+   │   ▸ CL step              │         │                            │
+   │                          │         │  Output: EP curve, EAL,    │
+   │  Output: P10/P50/P90     │         │  PML — feeds to portfolio  │
+   │  of spark margin −       │         │  risk artifact             │
+   │  LTSA cost (revenue arm) │         │                            │
+   └──────────┬───────────────┘         └──────────────┬─────────────┘
+              │                                        │
+              └────────────────┬───────────────────────┘
+                               ▼
+                  Portfolio / asset-evaluation
+                  combination (revenue +
+                  hazard-adjusted risk)
+```
+
+**Key implication for this doc**:
+
+EL events are NOT "missing" from gt_models. They are deliberately scoped to the hazard team's separate two-phase pipeline (IDF + fragility / damage curves). The two arms compose at the portfolio level, not within either codebase.
+
+This scope statement shapes how to read what follows:
+
+- **§4 (EL)** lists what the hazard team covers, for completeness of the decomposition picture. It is NOT a roadmap of work for gt_models.
+- **§8 (implementation status)** marks EL components as `⚙` (hazard-team scope), not `❌` (missing).
+- The framework's "two-output view" (revenue + risk) is realized at the **organizational level**, not within a single codebase.
+
+---
+
 ## §2. Max(t | π) — the ceiling on what the plant can produce
 
 This is the *most-confused* part of gas modeling. Economic non-dispatch is NOT a loss — it lives here.
@@ -189,7 +237,7 @@ Three sub-flavors, all in CL, but each with a different modeling treatment.
 
 ## §4. EL(t | π) — event losses (discrete shocks)
 
-This is where `gt_models` is currently silent. Worth being explicit about what *should* be modeled even before any of it is implemented — naming the hazards is a prerequisite for cataloging them.
+**These are hazard-team scope, not gt_models scope** (per §1.1). The hazard team handles EL through a separate two-phase pipeline (IDF + fragility / damage curves). The list below documents what their catalog covers for a NYISO Zone A gas asset — included here so the revenue/risk decomposition stays complete *in this doc*, not because gt_models needs to implement any of it.
 
 ```
 EL for a gas plant in NYISO Zone A (Lockport region):
@@ -235,8 +283,9 @@ EL for a gas plant in NYISO Zone A (Lockport region):
    │  ▸ Foreign object damage in turbine                        │
    └────────────────────────────────────────────────────────────┘
 
-   These need a HAZARD CATALOG (frequency × severity per peril)
-   to feed the risk-metrics layer. Currently absent from gt_models.
+   These compose into the hazard team's HAZARD CATALOG (frequency
+   × severity per peril) which feeds the risk-metrics layer of the
+   asset-level deliverable. Out of gt_models scope per §1.1.
 ```
 
 ---
@@ -422,40 +471,43 @@ The practical bridge: which framework concepts are implemented today, which are 
 │                         │   (never fires) │   findings #1       │
 │ CL step — MI            │ ✓ implemented   │ N4 build_maint_sch. │
 ├─────────────────────────┼─────────────────┼─────────────────────┤
-│ EL — polar vortex       │ ❌ unmodeled    │ —                   │
-│ EL — ice storm          │ ❌ unmodeled    │ —                   │
-│ EL — gas supply intr.   │ ❌ unmodeled    │ —                   │
-│ EL — lightning / fire   │ ❌ unmodeled    │ —                   │
-│ EL — flood              │ ❌ unmodeled    │ —                   │
-│ EL — grid emergency     │ ❌ unmodeled    │ —                   │
-│ EL — large mech outage  │ ⚠ partial       │ N4 forced_outage_   │
-│                         │   (in EFOR)     │   events            │
+│ EL — polar vortex       │ ⚙ hazard team   │ separate IDF +      │
+│                         │                 │   fragility pipeline│
+│ EL — ice storm          │ ⚙ hazard team   │ separate pipeline   │
+│ EL — gas supply intr.   │ ⚙ hazard team   │ separate pipeline   │
+│ EL — lightning / fire   │ ⚙ hazard team   │ separate pipeline   │
+│ EL — flood              │ ⚙ hazard team   │ separate pipeline   │
+│ EL — grid emergency     │ ⚙ hazard team   │ separate pipeline   │
+│ EL — catastrophic mech  │ ⚙ hazard team   │ separate pipeline   │
+│   outage (tail)         │                 │   (small/med mech   │
+│                         │                 │   in CL stoch EFOR) │
 ├─────────────────────────┼─────────────────┼─────────────────────┤
 │ Policy mode bracketing  │ ✓ A/B/C         │ N4 wear_penalty_..  │
 │ Policy mode inference   │ ❌ not done     │ —                   │
 ├─────────────────────────┼─────────────────┼─────────────────────┤
 │ Conviction test routing │ ❌ no discipline│ —                   │
 │ Revenue projection      │ ✓ produced      │ model_card.md       │
-│ Risk metrics suite      │ ❌ none         │ —                   │
-│   (EP, EAL, PML,        │                 │                     │
-│    VaR, CVaR)           │                 │                     │
+│ Risk metrics suite      │ ⚙ hazard team   │ separate pipeline   │
+│   (EP, EAL, PML,        │                 │   (out of gt_models │
+│    VaR, CVaR)           │                 │   scope per §1.1)   │
 │ Horizon-conditional     │ ❌ single horiz │ —                   │
 │   reporting             │                 │                     │
 └─────────────────────────┴─────────────────┴─────────────────────┘
 
 Legend:
-  ✓ = implemented and working
-  ⚠ = partial / has known issue
-  ❌ = not done
+  ✓ = implemented in gt_models, working
+  ⚠ = partial / has known issue in gt_models
+  ❌ = in gt_models scope, not done
+  ⚙ = out of gt_models scope; owned by hazard team (per §1.1)
 ```
 
 ### What §8 tells you at a glance
 
 - **Max layer**: mostly solid; small gaps around contract types (PPA cap, tolling) and a known weak link in the synthetic must-run proxy.
 - **CL layer**: solid in concept; one real bug (CI scheduler) and one known proxy bias (HR guarantee).
-- **EL layer**: essentially absent. Hazard catalog is the largest single gap in the model.
+- **EL layer**: scoped to the hazard team's separate IDF + fragility pipeline (per §1.1). Not a gap; not in gt_models scope.
 - **Policy mode**: implemented as bracketing (A/B/C); not yet implemented as inference.
-- **Risk-metrics layer**: completely absent. Revenue projection only.
+- **Risk-metrics arm**: produced by the hazard team's pipeline, not gt_models. gt_models is the revenue arm.
 
 ---
 
