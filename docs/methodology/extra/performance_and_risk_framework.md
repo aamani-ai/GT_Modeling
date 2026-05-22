@@ -22,6 +22,20 @@ The framework is about *both* identities — how output is decomposed, and
 how the decomposition's components are routed into either a central
 projection, a risk overlay, or both.
 
+**Posture note.** This framework is *scaffolding* for thinking about risk
+— not a specification to implement faithfully. The decomposition, the
+conviction test, the causal-vs-consequential split, the contractual
+transition layer, and the qualitative-before-quantitative workflow
+ordering are tools that catch common pro forma and risk-modeling errors.
+They are not a complete description of any specific asset. In
+implementation, expect to bend the buckets, adapt the routing, expand
+the transition layer, and iterate the workflow. **Document deviations
+explicitly — they are often more valuable than framework adherence.**
+Treat the framework as a starting position, the modeling work as the
+destination, and the two as in dialogue throughout. See
+`the_risk_spine.md` §11 ("Architecture as Scaffolding, Not Constraint")
+for the canonical statement of this principle.
+
 ---
 
 ## 1. The Two-Output View

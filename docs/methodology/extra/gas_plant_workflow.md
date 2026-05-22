@@ -7,6 +7,8 @@
 > **Companion to**: [`forward_looking_framing.md`](forward_looking_framing.md) (the *why*) and the framework reference doc (the generic version that covers all asset types).
 >
 > **Not a code structure.** This is a way of thinking. The code in `gt_models` does not have a literal `Max − CL − EL` line of arithmetic; the decomposition is implicit in its architecture. Use this doc to *think clearly* about what's where, not to refactor the code.
+>
+> **Architecture as scaffolding, not constraint.** The buckets, routing rules, and workflow ordering below are tools that catch common errors. They are not a specification to implement faithfully. In practice you will find components that fit imperfectly, routing decisions that aren't crisp, and transition layers that have gaps — these are normal. Document deviations as you encounter them; the deviation log is often more valuable than framework adherence. The decomposition is a starting position, the modeling work is the destination, and the two are in dialogue throughout. See [`performance_and_risk_framework.md`](performance_and_risk_framework.md) (posture note at top) and `the_risk_spine.md` §11 for the canonical version of this principle.
 
 ---
 
