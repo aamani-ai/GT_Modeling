@@ -147,12 +147,43 @@ whether to deploy. The output of the framework is the **joint view**, with
 revenue and risk as parallel artifacts produced from the same underlying
 stochastic model.
 
-### Causal decomposition vs. consequential measurement
+### Loss → revenue impact: two distinctions worth naming
 
-The decomposition `Output = Max - CL - EL` is *causal* — it separates loss
-sources by mechanism. **Consequential measurements are different**: they
-aggregate the dollar impact of those losses on a specific KPI (revenue,
-EBITDA, debt service coverage), regardless of cause.
+Physical loss and owner revenue impact are not the same thing. The
+framework names **two distinct moves** that sit between them. Both are
+already implicit in §6.6 and Appendix A; this subsection makes them
+explicit so they are unambiguous in deliverables.
+
+#### Move 1: The contractual transition layer (gross vs. net)
+
+Physical loss does not directly equal owner revenue impact. There is a
+**contract layer** between them — LTSA performance guarantees, FSA
+availability LDs, OEM heat-rate makegood, BI / PD insurance payouts,
+PPA force majeure clauses, tolling counterparty terms. Each partially
+papers over the physical loss before it lands on the owner's bottom line.
+
+```
+   Physical loss (gross)
+          │
+          │  ← apply contracts:
+          │     LTSA LDs / OEM makegood / BI & PD payouts /
+          │     FM clauses / tolling counterparty terms
+          ▼
+   Owner's NET revenue impact
+```
+
+**Routing implication**: physical CL and EL components have their
+*gross* distribution feed the risk layer (the risk exists whether or not
+the contract papers it over), but the *net* expected value (after
+recovery) feeds the revenue line. The two outputs use different numbers
+from the same underlying loss distribution. §6.6 has the full treatment.
+
+#### Move 2: Causal vs. consequential lenses on the same loss
+
+The decomposition `Output = Max - CL - EL` is a *causal* lens — it
+separates losses by mechanism (which bucket produced this loss).
+**Consequential measurements are different**: they aggregate the dollar
+impact across causes on a specific KPI (revenue, EBITDA, DSCR).
 
 The most common consequential measurement is **Business Interruption (BI)**:
 
@@ -160,22 +191,29 @@ The most common consequential measurement is **Business Interruption (BI)**:
           = contributions from CL_det + CL_stoch + CL_step + EL + contractual
 
 BI is **not a fourth bucket** in the causal decomposition. It is an
-**attribution view on top of the decomposition** — useful for insurance
-design, hedge structuring, and the "decision-ready view" at the bottom of
-the Section 1 flowchart.
+**attribution view on top of the decomposition** — used for insurance
+design, hedge structuring, and the "decision-ready view" at the bottom
+of the Section 1 flowchart.
 
-Insurance products (BI policy, PD policy) interact with BI in a specific way:
+#### How the two moves fit together
 
-- **Premium** is a continuous cost → lives in CL deterministic → revenue line.
-- **Payout** is an event-triggered recovery → contractual shock absorber on
-  EL (and sometimes on specific CL causes per policy terms) → modifies the
-  *net* loss feeding the revenue line, while *gross* loss still feeds the
-  risk layer.
+Move 1 is a *transformation* (gross loss → net loss, via contracts).
+Move 2 is a *lens choice* (causal mechanism vs. consequential dollar
+aggregate), applicable to either the gross or net side.
 
-The framework already covers both treatments structurally (via the routing
-logic below and §6.6's contractual shock absorber discussion). This
-subsection names them explicitly for the BI case so the attribution view is
-unambiguous when it appears in deliverables.
+Insurance products specifically interact with both moves:
+
+- **Premium** is a continuous cost → CL deterministic → revenue line.
+  *(Move 2 routing only; no Move 1 transition — premiums are paid
+  regardless of events.)*
+- **Payout** is an event-triggered recovery on covered EL events →
+  contractual shock absorber → modifies *net* loss feeding revenue,
+  while *gross* loss still feeds risk. *(Move 1 transition + Move 2
+  routing.)*
+
+Neither move changes the framework's decomposition structure. They
+clarify how the existing structure handles the gap between physical
+loss and owner revenue impact, and where BI sits in that picture.
 
 ### What "routing" really means
 
