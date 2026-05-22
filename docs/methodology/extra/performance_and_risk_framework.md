@@ -1019,7 +1019,94 @@ because the horizon is long.
 
 ---
 
-## 8. Checklist When Modeling a New Asset
+## 8. Workflow: Qualitative before Quantitative
+
+The framework's value as a discipline lies in **doing the qualitative
+work before the quantitative work**. Decomposition, routing, and the
+transition-layer treatment are structurally primary; consequential
+aggregates (BI, EP, EAL, PML, VaR, CVaR) are downstream and
+computationally lighter.
+
+```
+   QUALITATIVE WORK (the foundation)
+       ↓
+   1. Decomposition right
+      (Max / CL_det / CL_stoch / CL_step / EL / contractual)
+       ↓
+   2. Routing right (per the §2 conviction test)
+      (R / K / B per component)
+       ↓
+   3. Move 1 transition layer right
+      (gross vs. net, contract treatment per §6.6)
+       ↓
+   QUANTITATIVE WORK (falls out of the qualitative work)
+       ↓
+   4. Consequential aggregates
+      (BI as the join across arms; EP curve; EAL; PML; VaR; CVaR)
+       ↓
+   5. Insurance design + decision-ready view
+```
+
+### Why qualitative is structurally primary
+
+The qualitative work is where pro forma mistakes get made:
+
+- Booking economic non-dispatch as a curtailment loss
+  (Max miscategorization)
+- Treating sparse-data hazards with the same conviction as well-fit
+  CL (conviction test failure)
+- Reporting gross loss as if it were owner revenue impact
+  (Move 1 miss)
+- Adding BI as a fourth bucket instead of as a consequential view
+  (Move 2 miss)
+
+A BI number computed on top of a wrong decomposition is just a wrong
+number with more decimal places. The qualitative discipline is what
+makes the quantitative output meaningful.
+
+### Three nuances
+
+**(a) Design decomposition with quantitative requirements in mind.**
+The decomposition's granularity has to support the quantitative layer
+downstream. If BI policy has a per-event deductible, you need
+per-event resolution on EL events. If LTSA performance guarantees are
+evaluated annually, CL aggregation needs annual periods. Qualitative
+first, but think one step ahead.
+
+**(b) The conviction test (§2) is sub-prioritization within the
+qualitative phase.** Use the four criteria (horizon vs. recurrence,
+stationarity, data quality, correlation) to triage which components
+are confidently routed where.
+
+**(c) It's iterative, not strictly waterfall.** The quantitative layer
+often surfaces decomposition gaps — "why is freeze risk such a big
+share of EAL?" may mean revisiting how freeze was bucketed.
+Qualitative-first is the *primary ordering* and the *leading work*
+— not one-pass-and-done.
+
+### For pitching the framework's posture
+
+This sequencing is also a defensible answer to common reviewer
+questions:
+
+- *"Do you have BI yet?"* — *"We have the upstream work BI requires:
+  decomposition, conviction-routing, transition-layer treatment. BI as
+  a number falls out of that and is the appropriate next step.
+  Computing BI before the qualitative work is solid would produce a
+  worse number, not a better one."*
+- *"How do I know your decomposition is right?"* — *"By construction
+  it passes the conviction test (§2), names policy mode explicitly
+  (§3), separates economic from physical curtailment (§4), and
+  decomposes loss sub-types correctly (§5). The checklist in §9 is
+  the operational application."*
+
+The framework's value as a deliverable is not the BI number — it is
+the **discipline of getting the upstream work right** so that whatever
+quantitative output follows is meaningful.
+
+---
+
+## 9. Checklist When Modeling a New Asset
 
 1. What's the dominant determinant of Max — physics, economics, or
    contract? (Solar/wind: physics. Gas/BESS: economics. PPA-capped: contract.)
