@@ -50,12 +50,15 @@ These are normal. Document deviations explicitly; the deviation log is more valu
                                           │
                                           ▼
    ┌──────────────────────────────────────────────────────────────────┐
-   │  STEP 2: IDENTIFY OPERATING REGIME(S)                            │
-   │  ▸ From history + contract structure                             │
-   │  ▸ Baseload / peaker / cogen / freq-reg / must-run / hybrid      │
-   │  Status: planned (regime concept currently in discussion;        │
-   │          see docs/discussion/01_regime_concept.md)               │
-   │  Output (when built): regime tags per time window                │
+   │  STEP 2: CHARACTERIZE THE PLANT'S POSTURE + TACTICAL AXES         │
+   │  ▸ Posture (slow / strategic):                                   │
+   │      - Regime — business positioning [DISCUSSION]                │
+   │      - Policy mode (A/B/C) — wear management [COMMITTED]         │
+   │  ▸ Tactical (fast / hour-by-hour):                               │
+   │      - Operating mode (3×CC / 2×CC / 1×CC) [COMMITTED]           │
+   │      - Load level — intensity within mode [DISCUSSION]           │
+   │  See docs/discussion/03_four_concepts_vocabulary.md              │
+   │  Output: four-concept characterization of the asset              │
    └─────────────────────────────────────┬────────────────────────────┘
                                           │
                                           ▼
@@ -213,41 +216,83 @@ If `ltsa_terms.yaml` is fully placeholder, that's a Step 1 gap to close. If sche
 
 ---
 
-## §3. Step 2 — Identify the plant's operating regime(s)
+## §3. Step 2 — Characterize the plant's posture (regime + policy mode) and identify the tactical decision axes (operating mode + load)
 
-### §3.1 What this step would do
+### §3.1 The four concepts this step addresses
 
-A plant's **operating regime** is the *strategic operating posture* it is in — what it is trying to do under its market and contract context. Examples: baseload, peaker / load-follower, cogeneration, frequency regulation, must-run, hybrid.
+This step is *not just* about regime. Subsequent discussion (see [`docs/discussion/03_four_concepts_vocabulary.md`](../discussion/03_four_concepts_vocabulary.md)) made explicit that the plant's operating identity is described by **four distinct concepts on two orthogonal axes**:
 
-Regime is **distinct from** the codebase's existing "mode" concepts (see `docs/discussion/01_regime_concept.md` §3 for the full distinction):
+```
+                       SLOW-CHANGING (posture / strategic)
+                                  │
+       ┌──────────────────────────┼──────────────────────────┐
+       │                                                      │
+   REGIME                                                POLICY MODE
+   (business positioning)                                (wear management)
+       │                                                      │
+       └──────────────────────────┬───────────────────────────┘
+                                  │
+                                  │  jointly condition the parameters of
+                                  ▼
+                       FAST-CHANGING (tactical / hour-by-hour)
+                                  │
+       ┌──────────────────────────┼──────────────────────────┐
+       │                                                      │
+   OPERATING MODE                                         LOAD LEVEL
+   (physical configuration)                               (intensity within mode)
+       │                                                      │
+       └──────────────────────────┬───────────────────────────┘
+                                  │
+                                  ▼
+                          OPERATING POINT
+                       = (mode, load) tuple per hour
+```
 
-| Term | What it means | Decision cadence |
-| :--- | :--- | :--- |
-| **Operating mode** (3×CC / 2×CC / 1×CC) | A physical configuration | Hour-by-hour |
-| **Policy mode** (A / B / C) | A modeling abstraction over operator behavior | Static per simulation |
-| **Regime** | The strategic operating posture | Slow-changing (weeks to seasons) |
+Characterizing a plant means working out *all four*, not just one. See [`docs/discussion/03_four_concepts_vocabulary.md`](../discussion/03_four_concepts_vocabulary.md) for the full vocabulary map.
 
-### §3.2 Current status — planned, not committed
+### §3.2 What each concept covers
 
-**The regime concept is currently under discussion** and not yet a first-class part of the methodology. See [`docs/discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) for the full exploration of what regime should mean, why it matters, and what would need to be true to commit to it.
+| Concept | What it characterizes | Type | Cadence | Status in gt_models today |
+| :--- | :--- | :--- | :--- | :--- |
+| **Regime** | What the plant *does* in the market (business positioning) | Categorical (or vector) | Slow (weeks–seasons) | Discussion (`01_regime_concept.md`) |
+| **Policy mode** (A / B / C) | How the operator manages wear vs revenue | Categorical | Static per simulation | Committed (`architecture.md` §5.5) |
+| **Operating mode** (3×CC / 2×CC / 1×CC) | Which physical configuration is firing | Categorical | Hour-by-hour | Committed (`architecture.md` §5.3) |
+| **Load level** | What fraction of mode max is being produced | Continuous (% of max) | Hour-by-hour | Discussion (`02_load_as_a_dimension.md`) |
 
-In the flow as it stands today, Step 2 is **placeholder** — analyst-judged informal characterization until the regime concept graduates to methodology (via an ADR).
+Two are committed (policy mode, operating mode) and live in methodology. **Two are in discussion** (regime, load level) and currently live in `docs/discussion/`.
 
-**Worked example — Lockport (informal characterization)**:
+### §3.3 Current status — half committed, half planned
 
-- Likely a **cogen + mid-merit hybrid** regime — DHTS-driven obligations bias toward 1×CC during low-LMP hours; the rest of dispatch follows merit-order economics.
-- **Contested classification** — different analysts could reasonably argue cogen vs mid-merit vs seasonal-hybrid. See `docs/discussion/01_regime_concept.md` §5.5.
-- **Implication for the model today**: regime-conditional calibration is not yet possible. The model uses a single global parameter set; per-regime parameters await regime concept commitment.
+The committed half:
 
-### §3.3 Why this step still belongs in the workflow even as a placeholder
+- **Policy mode**: A/B/C are first-class in the engine. The wear-penalty hurdle in `wear_penalty_mult()` is the mechanism by which policy mode conditions operating-mode picks.
+- **Operating mode**: 3×CC / 2×CC / 1×CC are first-class. `dispatch_day_mode_aware()` picks the operating mode hour-by-hour.
 
-It would be cleaner to leave Step 2 out of the workflow until regimes are committed. But that would hide a missing capability rather than name it. Naming it explicitly — even as "planned" — does three things:
+The planned half (currently under discussion):
 
-1. Makes visible that the current model is *unconditional* on regime (and what that means for outputs)
-2. Tells future readers where regime classification will eventually plug in
-3. Prevents premature crystallization of regime as a first-class concept before the methodology is ready
+- **Regime**: not yet built. See [`docs/discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) for the full exploration. When committed (via an ADR), regime would condition parameters across the engine.
+- **Load level**: not yet built. The current model **implicitly assumes 100% of mode capacity when on** — this is a silent simplification that has been called out but not yet addressed. See [`docs/discussion/02_load_as_a_dimension.md`](../discussion/02_load_as_a_dimension.md) for the full exploration.
 
-When the discussion in `01_regime_concept.md` matures into an ADR, this section gets updated to reflect committed methodology.
+In the flow as it stands today, Step 2 is **partially placeholder** — analyst-judged informal characterization for regime, "load = 100% when on" assumption baked in, while policy mode and operating mode work as the engine intends.
+
+**Worked example — Lockport (informal characterization across all four)**:
+
+- **Regime**: likely a *cogen + mid-merit hybrid*. DHTS-driven obligations bias toward 1×CC during low-LMP hours; the rest of dispatch follows merit-order economics. Contested classification — different analysts could reasonably argue cogen vs mid-merit vs seasonal-hybrid. See `01_regime_concept.md` §5.5.
+- **Policy mode**: the model runs all three (A, B, C) as bracketing bookends and reports the spread.
+- **Operating mode**: dispatched hour-by-hour from {3×CC, 2×CC, 1×CC, offline} based on the spark-spread heuristic.
+- **Load level**: silently 100% of operating-mode capacity whenever the plant is on. The Friday 2026-05-22 meeting flagged this as a gap (load-and-temperature-dependent degradation is the canonical missing chain).
+
+**Implication for the model today**: regime-conditional and load-conditional calibration are both unavailable. The model uses a single global parameter set for everything regime would otherwise condition, and assumes 100% load. Per-regime and per-load-level parameters await the two ADRs that would commit those concepts to methodology.
+
+### §3.4 Why this step still belongs in the workflow even as partial placeholder
+
+It would be cleaner to leave Step 2 out of the workflow until regime and load are both committed. But that would hide missing capabilities rather than name them. Naming them explicitly — even as "planned" — does three things:
+
+1. Makes visible what the current model is *unconditional* on (and what that means for outputs)
+2. Tells future readers where regime classification and load-level dispatch will eventually plug in
+3. Prevents premature crystallization of either concept as first-class before the methodology is ready
+
+When the discussions in `01_regime_concept.md` and `02_load_as_a_dimension.md` mature into ADRs, this section gets updated to reflect committed methodology. Because the two concepts are coupled (regime-conditional load patterns are real), the two ADRs may need to be written together.
 
 ---
 

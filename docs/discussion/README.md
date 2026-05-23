@@ -70,7 +70,9 @@ Numbering is sequential by creation order, not by priority. This keeps the folde
 
 | # | Concept | Status |
 | --: | :--- | :--- |
-| 01 | Regime as a higher-level concept (distinct from *operating mode* and *policy mode*) | Open |
+| 01 | Regime as a higher-level concept (business positioning) — distinct from operating mode, policy mode, *and* load level | Open |
+| 02 | Load level as a missing dimension (continuous intensity within operating mode) | Open |
+| 03 | The four concepts vocabulary cheatsheet (regime + policy mode + operating mode + load level on a 2×2 axis layout) | Reference (low-stakes, supports 01 and 02) |
 
 ---
 

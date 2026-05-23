@@ -18,7 +18,9 @@ The immediate trigger: when reviewing the gt_models structure, it became visible
 
 ## §2. What we mean by regime (preliminary)
 
-A **regime** is the **strategic operating posture** the plant is in over a *window of time* — what it is *trying to do*, given its market context, contract structure, scheduling obligations, and the operator's intent.
+A **regime** is the **strategic business positioning** of the plant — what role it is playing in the market, given its contract structure, market context, and the operator's intent. It is one of *four* concepts the model needs to distinguish (see [`03_four_concepts_vocabulary.md`](03_four_concepts_vocabulary.md) for the full map): alongside policy mode, operating mode, and load level.
+
+Importantly, regime is **specifically about business positioning** — *what the plant is trying to do in this market context*. It is **not** about how the operator manages wear (that is policy mode), and it is **not** about the realized load level at each hour (that is its own dimension). Regime sets *typical patterns* of load and start behavior over a long horizon, but it doesn't *determine* those values directly.
 
 Examples of regimes for a gas plant:
 
@@ -28,25 +30,62 @@ Examples of regimes for a gas plant:
 - **Cogeneration (DHTS-driven)** — must-run obligations driven by host steam demand, often 1×CC at off-peak prices
 - **Must-run contractual** — capacity-firm obligation forcing dispatch regardless of economic signal
 - **Curtailment regime** — extended offline periods driven by grid constraints, regulatory action, or own choice
-- **Maintenance-deferral regime** — operator deliberately stretches between inspections (the Mode C "policy" cousin)
+- **Maintenance-deferral regime** — operator deliberately stretches between inspections (note: this overlaps with policy mode and may not be a distinct regime — see §3 below)
 
 A regime is *not* an hour-by-hour decision. It is the *envelope* within which hour-by-hour decisions get made. A plant can switch regimes (e.g., shift from baseload to peaker as the merit order changes around it) but not several times a day.
 
 ---
 
-## §3. Why regime is distinct from what we already have
+## §3. Why regime is distinct from what we already have (and from load level)
 
-The terminology confusion this concept would resolve is real. Our codebase already has two "mode"-like concepts:
+The terminology in this codebase is crowded. Regime needs to be cleanly distinguished from **three** other concepts, not just two. Subsequent discussion (see [`02_load_as_a_dimension.md`](02_load_as_a_dimension.md)) surfaced that *load level* is also a missing axis — distinct from regime, operating mode, and policy mode. The full picture is four concepts on two orthogonal dimensions:
 
-| Term | What it actually means | Decision cadence |
-| :--- | :--- | :--- |
-| **Operating mode** (3×CC, 2×CC, 1×CC) | A *physical configuration* — how many CTs are firing into the HRSG. An engineering reality. | Hour-by-hour |
-| **Policy mode** (A, B, C) | A *modeling abstraction* — the wear-aggressive vs wear-conservative dispatch policy bookend. Used in the simulation to bracket operator behavior. | Static per simulation run |
-| **Regime** (proposed) | A *strategic operating posture* — what the plant is trying to do under a given market + contract context. | Slow-changing (weeks to seasons) |
+| Concept | What it is | Type | Decision cadence | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Regime** (this doc) | Strategic business positioning | Categorical (or vector) | Slow (weeks–seasons) | Discussion |
+| **Policy mode** (A, B, C) | Operator's wear–revenue trade-off preference (modeling abstraction) | Categorical | Static per simulation | Committed |
+| **Operating mode** (3×CC, 2×CC, 1×CC) | Physical configuration — how many CTs are firing | Categorical | Hour-by-hour | Committed |
+| **Load level** | Continuous intensity within the chosen mode | **Continuous** (% of mode max) | Hour-by-hour | Discussion (see `02_load_as_a_dimension.md`) |
 
-These are three different axes. Regime sits *above* operating mode (a plant in cogen regime makes different operating-mode choices than the same plant in peaker regime, even at identical prices). It sits *adjacent to* policy mode (both are modeling abstractions, but policy mode is about how aggressively to manage wear; regime is about what business posture the plant is in).
+### What regime is NOT
 
-The risk in the current codebase: a reader who encounters "mode" without qualification has to figure out which kind. The word is over-loaded. Introducing "regime" as a clearly distinct, slow-changing posture concept gives us a way to talk about the plant's *operating identity* without conflating it with hour-by-hour engineering decisions or with the modeling-side policy bracket.
+These four concepts each answer a *different* question. Confusing them is what produced the original "mode" overload problem in our docs. Concretely:
+
+- **Regime ≠ operating mode.** Operating mode is the hour-by-hour *physical configuration* decision (which CTs are firing). Regime is the slow-changing *business position*. A plant in cogen regime might use 1×CC most of the time, but the regime is "cogen," not "1×CC." Same operating mode in different regimes means different things (1×CC in cogen serving DHTS ≠ 1×CC in peaker waiting for prices).
+- **Regime ≠ load level.** Regime defines *typical load patterns* (peaker → max-when-running; baseload → steady high; frequency-reg → swinging). It does not define the load value at hour 14 of day 234. Load level is the realized value; regime is the pattern.
+- **Regime ≠ policy mode.** Both are "posture" concepts at a slow cadence, but they are on *different axes*. Regime is about **business positioning** (what the plant does in the market). Policy mode is about **wear management** (how the operator trades near-term revenue against long-term wear). A plant in *peaker regime* can be operated under *policy A* (run hard) or *policy C* (skip marginal cycle-intensive starts). The combinations are real and distinct.
+
+### The 2×2 orthogonal layout
+
+```
+                  SLOW-CHANGING (posture / strategic)
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       │                                              │
+   REGIME                                       POLICY MODE
+   (business positioning)                       (wear management)
+       │                                              │
+       └──────────────────────┬───────────────────────┘
+                              │
+                              │  jointly condition the parameters of
+                              ▼
+                  FAST-CHANGING (tactical / hour-by-hour)
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       │                                              │
+   OPERATING MODE                                LOAD LEVEL
+   (physical config)                             (intensity)
+       │                                              │
+       └──────────────────────┬───────────────────────┘
+                              │
+                              ▼
+                      OPERATING POINT
+                   = (mode, load) tuple per hour
+```
+
+The risk in the current codebase: a reader who encounters "mode" without qualification has to figure out which kind. The word is over-loaded. Introducing "regime" as a clearly distinct, slow-changing *business positioning* concept — alongside policy mode as its wear-management sibling — gives us a way to talk about the plant's *operating identity* without conflating it with the hour-by-hour engineering decisions (operating mode and load level).
+
+For the full vocabulary map, see [`03_four_concepts_vocabulary.md`](03_four_concepts_vocabulary.md).
 
 ---
 
@@ -198,7 +237,19 @@ In rough order:
 
 1. Run a Lockport-specific *informal regime tagging* exercise (analyst-judged, weekly or monthly) using the MOR data. See how it looks.
 2. Survey the literature for prior art on operating-regime classification in power systems. NERC reliability standards, NREL ATB plant archetypes, ENTSO-E grid codes, academic literature on dispatch regimes — see if there's a standard taxonomy we should adopt.
-3. Draft an ADR proposing a specific regime representation + classification methodology. The ADR is the artifact that promotes this from discussion to methodology.
-4. If the ADR is accepted, update the methodology docs per §8.
+3. **Coordinate with the load-as-a-dimension discussion** ([`02_load_as_a_dimension.md`](02_load_as_a_dimension.md)) — these concepts are coupled. Regime-conditional load distributions are a real thing; any ADR for regime should be aware of where the load ADR is heading, and vice versa.
+4. Draft an ADR proposing a specific regime representation + classification methodology. The ADR is the artifact that promotes this from discussion to methodology.
+5. If the ADR is accepted, update the methodology docs per §8.
 
 None of this is blocked; none of it is in this week's scope. The point of writing this doc is to preserve the thinking so the eventual ADR has a record of what was considered.
+
+---
+
+## §12. Cross-references
+
+- [`02_load_as_a_dimension.md`](02_load_as_a_dimension.md) — load level as its own axis, distinct from regime; the coupled discussion that motivated cleaning up the "what regime is not" section in §3
+- [`03_four_concepts_vocabulary.md`](03_four_concepts_vocabulary.md) — the cheatsheet mapping regime + policy mode + operating mode + load level on their two orthogonal dimensions
+- `docs/methodology/modeling_flow.md` §3 — where regime fits in the project workflow (currently marked "planned, not committed")
+- `docs/methodology/architecture.md` — engine internals that currently lack the regime layer
+- `docs/methodology/dispatch_mechanics.md` — where operating-mode × policy-mode mechanics are documented (regime would condition both)
+- `docs/methodology/extra/performance_and_risk_framework.md` §3 — the policy mode latent-variable discussion at the generic-framework level; regime is the asset-specific counterpart at a coarser time scale
