@@ -87,6 +87,62 @@ The risk in the current codebase: a reader who encounters "mode" without qualifi
 
 For the full vocabulary map, see [`03_four_concepts_vocabulary.md`](03_four_concepts_vocabulary.md).
 
+### Two layers within regime: capability vs. realization
+
+Even after distinguishing regime from operating mode, load level, and policy mode, there is one more layer that the single word "regime" actually contains. **"Regime"** is ambiguous between two questions, and they have different answers, different drivers, and different cadences of change.
+
+| Layer | Question it answers | What constrains it | Cadence of change |
+| :--- | :--- | :--- | :--- |
+| **Regime capability / envelope** | What regimes is this plant *capable of being in*? | Physical design + contracts + certifications + crew & infrastructure | Very slow — years; only changes with major investment, contract renewal, recertification, infrastructure changes |
+| **Realized regime** | What regime is the plant *actually in* right now? | Operator choice + market conditions, *within the capability envelope* | Slow — weeks to seasons |
+
+The realized regime is always a *subset* of the capability envelope. You cannot realize a regime that isn't in the envelope. This makes them genuinely different objects: the first is a *feasibility set*; the second is a *point within that set*.
+
+#### Examples that show why this distinction matters
+
+- A plant with **DHTS infrastructure + a steam offtake contract** → its capability envelope *includes* cogen regime. This *cannot* be removed by operator choice. The plant might still be in mid-merit *realized* regime during shoulder months, but the capability is structurally there.
+- A plant with **no fast-start certification + slow ramp rate** → its capability envelope *excludes* fast peaker regime and frequency regulation, no matter how aggressively the operator wants to use it.
+- A plant in **NYISO Zone A with AGC qualification** → its capability envelope *includes* frequency regulation. Whether it *realizes* that regime depends on whether AS clearing prices justify the cycling stress.
+- An **OCGT peaker with no steam side** → its capability envelope *excludes* cogen entirely.
+
+The realized regime is always *constrained by* the capability envelope. A plant cannot suddenly "become" a cogen plant; it either has the capability or it doesn't.
+
+#### Why this matters for the project
+
+This isn't just a vocabulary refinement — it changes how Step 1 and Step 2 of the modeling flow connect:
+
+- **Step 1 (configure the asset) outputs include the regime capability envelope** — this is what the engineering + contractual + scheduling configuration *implies* about what regimes are possible
+- **Step 2 (characterize regime) operates within that envelope** — you cannot classify the plant into a realized regime that isn't in its capability envelope
+- **Calibration** of regime-conditional parameters needs to know which regimes are even *possible* before trying to classify history into them
+- **Counterfactual analysis** ("what if this plant operated as a peaker instead of cogen?") requires distinguishing capability (it *cannot* be a fast peaker — capability gap) from realization (it *is currently* mid-merit but *could be* baseload — realization variation)
+
+#### Industry terminology — both sides are well-established
+
+The capability-side and realization-side concepts have *distinct* industry vocabulary, even though "regime" itself isn't a standard term:
+
+**Capability-side**: plant archetype, capability statement, service classification, resource qualification, capability curve, performance envelope, resource type. Found in OEM service contracts, ISO/RTO resource registries, NREL ATB, engineering specifications.
+
+**Realization-side**: duty cycle (sometimes — see ambiguity note), operating profile, current operations, realized capacity factor band. Found in NERC GADS, fleet trending, asset management reporting.
+
+**Note on industry ambiguity**: the term *"duty cycle"* gets used for both sides depending on context. OEM service contracts often use it on the capability side ("this unit is rated for peaking duty"). NERC GADS uses it on the realized side ("this unit has cycled at peaking-class frequency in the last year"). Be explicit which side you mean when you write or read the term.
+
+For the full industry vocabulary mapping and authoritative references, see [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) §3.1.
+
+#### Lockport's two layers — a worked example
+
+- **Capability envelope** (from configuration): cogen (DHTS infrastructure), mid-merit (3×1 CCGT, F-class, 1992 vintage), must-run (PURPA-era contract structure). Excludes fast-start peaker (slow ramp, no fast-start cert), pure baseload (low CF observed, not designed for it), and frequency regulation (status unknown — would need to check NYISO AGC qualification status).
+- **Realized regime** (from history): seasonal hybrid — cogen + mid-merit. Skews toward cogen in winter (DHTS demand high), toward mid-merit in summer (DHTS demand lower, dispatch follows merit order).
+
+The capability envelope is wider than what's realized today; some of the envelope (e.g., must-run availability) is unused but structurally present. This is the kind of nuance the "regime" concept cannot capture without the two-layer split.
+
+#### Implication for the rest of this doc
+
+This distinction means several other parts of this doc should be read carefully:
+
+- §2 (preliminary definition) uses "regime" loosely — it covers *both* layers. When the regime concept eventually graduates to methodology (via an ADR), both layers should be named explicitly.
+- §5 (nuances), §7 (open questions), and §8 (committed treatment) implicitly reference whichever layer is relevant in each case. Future versions of this doc should disambiguate.
+- The Friday meeting action item ("define regimes from historical data") is specifically about the *realized* side. The capability side comes from configuration, not history.
+
 ---
 
 ## §4. Why we think regime matters (the gap it fills)

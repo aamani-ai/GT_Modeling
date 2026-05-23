@@ -89,6 +89,15 @@ Two committed, two in discussion. The two in discussion are *coupled* — any AD
 
 For the *full* industry vocabulary mapping (with authoritative references, sub-domain usage, and external-communication guidance), see [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) §3.
 
+### Note: regime contains two layers (capability vs. realization)
+
+Within the **regime** concept, there is an additional internal split that this cheatsheet does *not* show on the diagram (to keep it readable), but is important:
+
+- **Regime capability / envelope** — what regimes the plant is *capable of being in* (driven by physical design + contracts + certifications; changes slowly, with infrastructure / contract changes only)
+- **Realized regime** — what regime the plant is *actually in* right now (operator's choice within the envelope; changes over weeks to seasons)
+
+The realized regime is always a subset of the capability envelope. This layer is critical for asset onboarding (Step 1 of the modeling flow establishes the envelope; Step 2 classifies the realized regime within it). For the full treatment, see [`01_regime_concept.md`](01_regime_concept.md) §3 ("Two layers within regime") and [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) §3.1.
+
 ---
 
 ## §4. Common confusions and how to resolve them

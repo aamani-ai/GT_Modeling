@@ -34,12 +34,14 @@ Quick verdict for each concept on how well our framing matches real-world / indu
 | **Operating mode** (3×CC / 2×CC / 1×CC) | ✓ exact match | High | None significant |
 | **Load level** (continuous % of mode max) | ✓ exact match | High | Industry adds ambient conditions as a co-dimension; we embed ambient in mode parameters |
 | **The slow/fast (posture/tactical) split** | ✓ matches industry mental model | High | Industry doesn't formalize the split into a 2×2 — they treat each concept independently. Our explicit 2×2 is a useful internal abstraction but not a "thing" externally |
-| **Regime as "business positioning"** | ✓ concept real; ⚠ *terminology* diverges | Medium | Industry calls this "duty cycle" / "operating profile" / "plant archetype." "Regime" is our internal term. See §3.1 |
+| **Regime — capability/envelope side** (what regimes the plant *can be* in) | ✓ concept real; industry has clean vocabulary | High | Industry uses "plant archetype" / "capability statement" / "service classification" / "resource qualification" — see §3.1. Different terms than the realized side. |
+| **Regime — realization side** (what regime the plant *is* in) | ✓ concept real; ⚠ *terminology* diverges from our internal label | Medium | Industry uses "operating profile" / "realized capacity factor band" / "current operations". "Regime" is our umbrella term covering both sides. "Duty cycle" gets used ambiguously for both — see §3.1 |
+| **Regime as a single concept covering both layers** | ⚠ our internal label collapses two industry-distinguished concepts | Medium | This was a real gap in earlier drafts; now made explicit via the two-layer structure in `01_regime_concept.md` §3 and §3.1 of this doc |
 | **Policy mode as "wear management posture"** | ✓ concept real; ⚠ *terminology* and *static-per-simulation* both diverge | Medium | Industry calls this "dispatch philosophy" / "asset preservation strategy." Industry treats it as continuous and dynamically shifting; we discretize and freeze. See §3.2 |
 | **(Operating mode + load) tuple as the hour-by-hour decision** | ✓ matches, slightly incomplete | Medium-high | Industry "operating point" often includes ambient conditions and ramp state. Our tuple captures the most important dimensions. See §3.5 |
 | **Operating point as a derived concept** | ⚠ industry treats this as a *primary* descriptor; we treat it as tuple notation | Low-medium | If we end up exposing operating-point trajectories as outputs, it deserves its own first-class treatment. See §3.5 |
 
-**Overall verdict**: The framing is substantially correct. The main risks are *terminology* (our two-axis labels for the posture concepts don't match industry) and a few small *completeness* gaps. None of these is a methodological error; all are documentation / external-communication concerns.
+**Overall verdict**: The framing is substantially correct. The main risks are *terminology* (our two-axis labels for the posture concepts don't match industry; "regime" collapses two layers that industry distinguishes) and a few small *completeness* gaps. None of these is a methodological error; all are documentation / external-communication concerns. The capability/realization split within regime is the most recent refinement — see §3.1 for the full vocabulary treatment.
 
 ---
 
@@ -52,40 +54,102 @@ For each concept, this section gives:
 - Where the term appears authoritatively
 - Caveats specific to that concept
 
-### §3.1 Regime ↔ duty cycle / operating profile / plant archetype
+### §3.1 Regime — two layers, with separate vocabulary for each
 
-Our **regime** maps to one of several industry terms, each used in a slightly different sub-domain:
+Our **regime** concept actually contains *two layers* (see `01_regime_concept.md` §3 "Two layers within regime"):
+
+- **Capability / envelope side** — what regimes the plant *is capable of being in*. Slow-changing; constrained by design, contracts, certifications, infrastructure.
+- **Realization side** — what regime the plant *is actually in* right now. Slow-changing but within the envelope; constrained by operator choice and market conditions.
+
+Industry vocabulary is *different* for these two sides — even though some terms (notably "duty cycle") get used ambiguously for both. The two sides need their own vocabulary tables.
+
+#### Capability-side vocabulary
+
+These terms refer to what the plant *can do* — its feasibility set, design intent, or contractual / regulatory qualification.
 
 | Industry term | Primary sub-domain | What it specifically denotes |
 | :--- | :--- | :--- |
-| **Duty cycle** | OEM service contracts; NERC GADS; insurance underwriting | The plant's *intended operating intensity* — used to set warranties, LTSA terms, and reliability expectations |
-| **Operating profile** | Asset management; fleet studies; EPRI documentation | The plant's *observed operating behavior* over a period — used for trending and benchmarking |
-| **Plant archetype** | NREL ATB; capacity expansion modeling; policy analysis | A *category* the plant belongs to for aggregation purposes (peaker / intermediate / baseload) |
-| **Service classification** | GE / Siemens documentation | OEM's classification of the unit's intended duty |
-| **Capacity factor regime** | Power systems trading | The plant's typical capacity factor band (used in trading strategy discussion) |
+| **Plant archetype** | NREL ATB; capacity expansion modeling; policy analysis | A *category* the plant belongs to (peaker / intermediate / baseload) based on design intent and intended duty. Capability-side. |
+| **Capability statement** | OEM / engineering / asset management | The official list of what the unit *can do* — fuel types, MW range, ramp rates, start times, services qualified for |
+| **Service classification** | OEM service contracts (GE, Siemens) | OEM's classification of what duty the unit was *designed for*; affects warranty terms |
+| **Resource qualification** | ISO/RTO market software (CAISO MMS, ERCOT MIS, PJM eRRT, NYISO MIS) | Formal registry entry: what products this resource is *qualified to provide* (energy / regulation up–down / spinning reserve / non-spinning reserve / black start / voltage support) |
+| **Capability curve** | Power systems engineering | The physical performance envelope (P–Q curve, MW vs ambient, etc.) |
+| **Performance envelope** | Engineering / asset management | The full feasible operating space, including capability boundaries |
+| **Resource type** | EIA-860; FERC filings | High-level categorization (CCGT / CT / steam / etc.). Mostly capability-side. |
 
-**Specific values** that an industry source would use, with rough equivalents to our regime list:
+#### Realization-side vocabulary
 
-| Our regime | Industry equivalents |
+These terms refer to what the plant *is doing* — its observed operating behavior over a period.
+
+| Industry term | Primary sub-domain | What it specifically denotes |
+| :--- | :--- | :--- |
+| **Operating profile** | Asset management; fleet studies; EPRI documentation | The plant's *observed operating behavior* over a period — used for trending and benchmarking. Realization-side. |
+| **Realized capacity factor band** | Performance / financial analysis | Where the plant's CF actually sits in a given period (e.g., "2024 CF was 12%, consistent with peaker behavior") |
+| **Current operations** | Real-time operations; control room | What the plant is doing in real time. Realization-side. |
+| **Operational duty cycle** | Some operational and trending contexts | The realized version of duty cycle (versus the design-intent version) |
+
+#### The "duty cycle" ambiguity
+
+The term **"duty cycle"** itself gets used ambiguously across industry — sometimes capability-side, sometimes realization-side. Key contexts:
+
+- **OEM service contracts** (GE, Siemens, MHI) typically use "duty cycle" on the **capability side** — *"this unit is rated for peaking duty"* refers to design intent.
+- **NERC GADS** and most fleet-statistics reporting use "duty cycle" on the **realization side** — *"this unit's duty cycle is mid-merit based on observed operating hours"*.
+- **EPRI technical reports** are split; some use it capability-side (design / service tier), some realization-side (fleet behavior).
+- **Insurance underwriting** is mostly capability-side (intended duty drives premium), but adjusts for realized patterns when data is available.
+
+**Practical implication**: when you encounter "duty cycle" in an industry source, check the context. When *you* write it, specify ("capability-side duty cycle" or "realized duty cycle") if ambiguous. Some industry communications avoid this trap by saying "service tier" (capability) and "operating profile" (realization) — both are unambiguous.
+
+#### Specific values — capability side (intended / design)
+
+What an OEM, NREL ATB classification, or service contract might say about a plant's *intended* duty:
+
+| Our regime (capability side) | Industry equivalents |
 | :--- | :--- |
-| Baseload | "Baseload duty"; "high-CF unit"; "Type 1 (continuous duty)" in some classifications |
-| Peaker | "Peaking duty"; "extreme peaker"; "Type 2 (peaking)"; "OCGT-style operation" (even for CCGTs) |
-| Mid-merit | "Intermediate duty"; "cycling duty"; "load-following" |
-| Cogen / industrial host | "Cogeneration"; "CHP" (combined heat and power); "industrial host" |
-| Frequency regulation | "AGC unit" (automatic generation control); "regulation up/down provider"; "ancillary services unit" |
-| Must-run contractual | "Capacity-firm unit"; "RMR" (reliability must-run); "must-take" |
+| "Capable of baseload" | "Baseload duty"; "high-CF service tier"; "Type 1 (continuous duty)" |
+| "Capable of peaking" | "Peaking duty"; "Type 2 (peaking)"; "fast-start qualified" |
+| "Capable of mid-merit / cycling" | "Intermediate duty"; "cycling duty"; "load-following capable" |
+| "Capable of cogen / industrial host" | "Cogeneration capable"; "CHP-equipped"; "industrial host configuration" |
+| "Capable of frequency regulation" | "AGC-qualified"; "regulation-up/down qualified"; "AS-providing capable" |
+| "Capable of must-run contractual" | "Capacity-firm qualified"; "RMR-eligible"; "must-take eligible" |
 
-**Authoritative sources for industry use of "duty cycle":**
+#### Specific values — realization side (observed / current)
 
-- **GE GER-3620 series** — "Heavy-Duty Gas Turbine Operating and Maintenance Considerations." Uses duty cycle as the primary categorization for setting maintenance intervals. The 2018 edition (GER-3620N) is current; older versions (K, L, M) remain widely cited.
-- **NERC GADS Data Reporting Instructions** — categorizes units by duty cycle for availability statistics. Available via NERC's public data products.
-- **NREL ATB (Annual Technology Baseline)** — uses "plant archetype" (peaker / intermediate / baseload) for capacity cost categorization. Current edition published annually at `atb.nrel.gov`.
-- **EPRI Technical Reports** — EPRI's CCGT fleet studies use "duty cycle" as the primary stratification dimension. Specific reports referenced in `extra/performance_and_risk_framework.md` (e.g., 1026609 on TBC life, 1025357 on combustion). Catalog at `epri.com`.
-- **NERC Reliability Standards** — operating-state and reliability-class definitions; some overlap with duty-cycle concepts.
+What asset management, trending, or fleet analysis might say about a plant's *current* operations:
 
-**Caveat 1 — terminology mismatch**: Our "regime" term is internal. External communication should *additionally* use "duty cycle" or "operating profile" when context is industry-facing. Suggested practice: when writing a client-facing deliverable, replace "regime" with the appropriate industry term; when writing internal docs, "regime" is fine but should be defined.
+| Our regime (realization side) | Industry equivalents |
+| :--- | :--- |
+| Realized as baseload | "Operating as baseload"; "high-CF realized"; "consistent baseload duty in [period]" |
+| Realized as peaker | "Operating as peaker"; "low-CF cycling"; "peaker-style operating profile" |
+| Realized as mid-merit | "Realized mid-merit operation"; "intermediate operating profile"; "load-following observed" |
+| Realized as cogen | "DHTS-active"; "cogen-active in [period]"; "host steam delivery driving dispatch" |
+| Realized as frequency reg provider | "Providing regulation services"; "active AGC in [period]" |
+| Realized as must-run | "Must-run obligation active"; "RMR designation active" |
 
-**Caveat 2 — vector vs categorical**: Some industry usage treats duty cycle as a *category* (baseload / intermediate / peaker). Some treats it as a *spectrum* (capacity factor as a continuous proxy). Our discussion (`01_regime_concept.md` §5.2) leans toward a *vector* representation. The vector approach is more sophisticated than typical industry usage but is supported by recent fleet-analytics work that recognizes regimes can be hybrid (a plant in cogen + mid-merit simultaneously).
+#### Authoritative sources
+
+**Capability-side sources:**
+
+- **GE GER-3620 series** — service tier and duty classification (capability-side). Multiple editions; 2018 GER-3620N current.
+- **GE GER-3567 series** — 7FA performance characteristics, including capability envelope under various ambient conditions.
+- **NREL ATB** — plant archetype categorization (capability-side; design intent and cost). Published annually at `atb.nrel.gov`.
+- **ISO/RTO resource registration systems** — CAISO MMS, ERCOT MIS, PJM eRRT, NYISO MIS — the official "what this resource is qualified to provide" registries. Capability-side.
+- **EIA-860** — plant configuration data including prime mover, capacity, vintage, ownership. Capability-side configuration data.
+- **NERC Reliability Standards** — define capability requirements for various reliability classes.
+
+**Realization-side sources:**
+
+- **NERC GADS Data Reporting Instructions** — categorizes units by *realized* duty cycle for availability statistics.
+- **EPRI Technical Reports on fleet experience** — EPRI 1026609 (TBC life), 1025357 (combustion), 1012586 (combustion turbine starts) — predominantly realization-side fleet observations.
+- **ISO/RTO operations data** — actual dispatch, ancillary services participation, capacity factor records (realization-side).
+- **Asset management trending data** — plant-internal records of operating behavior over time.
+
+#### Caveats
+
+**Caveat 1 — terminology mismatch**: Our "regime" term is internal. External communication should use industry terms, and should specify *which layer* — capability or realization — is being discussed. Vocabulary that disambiguates: "service tier" (capability) and "operating profile" (realization).
+
+**Caveat 2 — vector vs categorical**: Some industry usage treats both capability and realization as *categories* (baseload / intermediate / peaker). Some treats realization as a *spectrum* (capacity factor as a continuous proxy). Our discussion (`01_regime_concept.md` §5.2) leans toward a *vector* representation. The vector approach is more sophisticated than typical industry usage but is supported by recent fleet-analytics work that recognizes regimes can be hybrid (e.g., capability for cogen + mid-merit; realized as both simultaneously by season).
+
+**Caveat 3 — the two layers can have different cadences in the model**: Capability changes only with major investment or contract renewal (years). Realization changes over weeks to seasons. Any future regime ADR should treat these with separate update / refresh cadences, not as a single object with one cadence.
 
 ### §3.2 Policy mode ↔ dispatch philosophy / asset preservation strategy / wear-aware dispatch
 
@@ -240,6 +304,13 @@ The complete list of caveats raised by this reality check, consolidated for refe
 ## §5. Curated reference list — by topic
 
 Authoritative sources organized by the topic they best address. Cite freely; pull when needed.
+
+> **Note on capability-side vs realization-side sources** (per §3.1): some references describe what a plant *can do* (design intent, service classification, market-product qualification), others describe what a plant *is doing* (observed operating behavior, fleet experience). Key examples:
+>
+> - **Capability-side**: NREL ATB (plant archetypes / design-intent categorization), ISO/RTO resource registration systems (CAISO MMS, ERCOT MIS, PJM eRRT, NYISO MIS), EIA-860 configuration data, OEM service classifications in GE GER-3620, ANSI/ASME PTC 22 reference conditions.
+> - **Realization-side**: NERC GADS (realized duty-cycle statistics), EPRI fleet-experience reports (1026609, 1025357, 1012586), ISO/RTO operations/dispatch data, asset-management trending records.
+>
+> Some references span both (e.g., GE GER-3620 covers both service-tier capability and EOH realization). The sub-sections below don't reorganize by side — the topic groupings stay intact — but readers should keep the capability/realization distinction in mind when citing.
 
 ### §5.1 OEM service and maintenance documentation
 
