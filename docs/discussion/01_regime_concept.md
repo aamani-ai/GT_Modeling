@@ -4,6 +4,14 @@
 >
 > **Folder context**: This is a discussion doc (per `docs/discussion/README.md`). It exists to think out loud about what *regime* should mean for this project, what its drawbacks would be, and what would need to be true for it to graduate into methodology.
 
+> **Industry vocabulary anchor** — "regime" is *our* internal umbrella term; the body of this doc uses it throughout. Industry vocabulary covers the same territory with *two* distinct sets of words depending on which layer is meant (see §3 for why the two layers matter):
+>
+> - **Capability side** (what the plant *can* be) — *plant archetype* (NREL ATB), *capability statement* (OEM), *service classification* (OEM service contracts), *resource qualification* (CAISO MMS / ERCOT MIS / PJM eRRT / NYISO MIS), *capability curve*, *performance envelope*
+> - **Realization side** (what the plant *is*) — *operating profile* (asset management / EPRI fleet studies), *realized capacity factor band*, *current operations*
+> - **Ambiguous across both** — *duty cycle* (OEM service contracts use it capability-side; NERC GADS uses it realization-side — specify which side you mean)
+>
+> For the full mapping, sub-domain usage, authoritative sources (NREL ATB, NERC GADS, GE GER-3620, EPRI 1026609/1025357/1012586, etc.), and external-communication guidance, see [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) **§3.1**. Use the industry terms (and specify the layer) for external communication; "regime" is internal-only.
+
 ---
 
 ## §1. What prompted this discussion

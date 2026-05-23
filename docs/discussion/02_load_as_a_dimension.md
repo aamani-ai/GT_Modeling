@@ -4,6 +4,18 @@
 >
 > **Folder context**: This is a discussion doc (per `docs/discussion/README.md`). It explores what *load level* should mean as a first-class concept in the gas plant model, distinct from operating mode, regime, and policy mode.
 
+> **Industry vocabulary anchor** — "load level" is *our* term; the body of this doc uses it throughout. Industry uses several closely-related terms, each with a slightly different emphasis:
+>
+> - **Load point** — operating intensity expressed as MW (generic dispatch / operations)
+> - **Set point** — the target MW value being dispatched to (real-time operations / control room)
+> - **% load** / **% MCR** (maximum continuous rating) — intensity as fraction of nameplate or current max (engineering documentation)
+> - **Part-load operation** — operating below 100% (efficiency / wear literature; where the part-load HR penalty matters)
+> - **Peak fire** / **over-firing** — operating above design firing temperature, typically 3–5% above nameplate (OEM service terms; limited duration)
+> - **Minimum stable load** / **min-load** — lowest stable combustion point (~50% for CCGT typical, 30–40% for advanced models)
+> - **Turn-down ratio** — full-load ÷ min-load (OEM specifications / flexibility assessments)
+>
+> For the full mapping, typical numerical values, and authoritative sources (GE GER-3620, GE GER-3567, Kumar et al. 2012 NREL/TP-5500-55433, ANSI/ASME PTC 22, Kehlhofer et al. 2009, etc.), see [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) **§3.4**. **§3.5** covers the related "operating point" concept and how ambient conditions interact with load. The industry terms above are all standard — minimal translation friction externally.
+
 ---
 
 ## §1. What prompted this discussion
