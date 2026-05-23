@@ -3,6 +3,8 @@
 > **Status**: Cheatsheet / vocabulary anchor. Lower-stakes than 01 and 02 — its job is to give a single reference for *which concept is which* when conversations get confused. References the two open discussions but doesn't re-litigate them.
 >
 > **Folder context**: This is a discussion doc (per `docs/discussion/README.md`). It is *meta*-discussion in the sense that it organizes the vocabulary used in the other discussion docs and across the project.
+>
+> **See also**: [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) — the full mapping of our terms to standard industry vocabulary, with authoritative references. This cheatsheet is the *quick reference*; doc 04 is the *depth*.
 
 ---
 
@@ -76,14 +78,16 @@ Two axes, two concepts per axis, four concepts total.
 
 ## §3. Compact reference table
 
-| Concept | Question it answers | Type | Cadence | Status in gt_models |
-| :--- | :--- | :--- | :--- | :--- |
-| **Regime** | What is the plant *doing* in the market? | Categorical (or vector) | Slow (weeks–seasons) | Discussion (`01_regime_concept.md`) |
-| **Policy mode** (A/B/C) | How aggressively is the operator managing wear vs revenue? | Categorical | Static per simulation | Committed (`architecture.md` §5.5) |
-| **Operating mode** (3×CC / 2×CC / 1×CC) | Which physical configuration is firing? | Categorical | Hour-by-hour | Committed (`architecture.md` §5.3) |
-| **Load level** | What fraction of mode max is being produced? | **Continuous** | Hour-by-hour | Discussion (`02_load_as_a_dimension.md`) |
+| Concept | Question it answers | Type | Cadence | Status in gt_models | Industry equivalents (see `04` §3) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Regime** | What is the plant *doing* in the market? | Categorical (or vector) | Slow (weeks–seasons) | Discussion (`01_regime_concept.md`) | Duty cycle / operating profile / plant archetype |
+| **Policy mode** (A/B/C) | How aggressively is the operator managing wear vs revenue? | Categorical | Static per simulation | Committed (`architecture.md` §5.5) | Dispatch philosophy / asset preservation strategy / wear-aware dispatch |
+| **Operating mode** (3×CC / 2×CC / 1×CC) | Which physical configuration is firing? | Categorical | Hour-by-hour | Committed (`architecture.md` §5.3) | Block configuration / N×1 configuration / unit commitment state |
+| **Load level** | What fraction of mode max is being produced? | **Continuous** | Hour-by-hour | Discussion (`02_load_as_a_dimension.md`) | Load point / set point / % MCR / part-load / peak fire |
 
 Two committed, two in discussion. The two in discussion are *coupled* — any ADR for one should be aware of the other.
+
+For the *full* industry vocabulary mapping (with authoritative references, sub-domain usage, and external-communication guidance), see [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) §3.
 
 ---
 

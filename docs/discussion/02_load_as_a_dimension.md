@@ -308,6 +308,7 @@ None of this is blocked; none of it is in this week's scope. The point of writin
 
 - `docs/discussion/01_regime_concept.md` — regime as a distinct posture concept; the doc that motivated naming load as a separate axis
 - `docs/discussion/03_four_concepts_vocabulary.md` — the cheatsheet mapping all four concepts (regime, policy mode, operating mode, load) on their two orthogonal dimensions
+- [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) **§3.4 + §3.5** — *industry equivalents for load level* (load point, set point, % MCR, part-load operation, peak fire, minimum stable load, turn-down ratio) and authoritative references (GE GER-3620, GER-3567, ANSI/ASME PTC 22, Kumar 2012). Also §3.5 on how ambient conditions are embedded in our framing rather than first-class.
 - `docs/methodology/architecture.md` — the engine that currently lacks load as a dimension
 - `docs/methodology/dispatch_mechanics.md` — where the load mechanics would eventually be documented
 - `docs/methodology/extra/performance_and_risk_framework.md` §4.6 — the part-load HR polynomial that already exists in the framework reference

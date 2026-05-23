@@ -249,6 +249,7 @@ None of this is blocked; none of it is in this week's scope. The point of writin
 
 - [`02_load_as_a_dimension.md`](02_load_as_a_dimension.md) — load level as its own axis, distinct from regime; the coupled discussion that motivated cleaning up the "what regime is not" section in §3
 - [`03_four_concepts_vocabulary.md`](03_four_concepts_vocabulary.md) — the cheatsheet mapping regime + policy mode + operating mode + load level on their two orthogonal dimensions
+- [`04_industry_vocabulary_and_references.md`](04_industry_vocabulary_and_references.md) **§3.1** — *industry equivalents for "regime"* (duty cycle, operating profile, plant archetype, service classification) and authoritative references (NERC GADS, NREL ATB, GE GER-3620 series, EPRI fleet studies). Use industry vocabulary for external communication; keep "regime" internally with explicit definition.
 - `docs/methodology/modeling_flow.md` §3 — where regime fits in the project workflow (currently marked "planned, not committed")
 - `docs/methodology/architecture.md` — engine internals that currently lack the regime layer
 - `docs/methodology/dispatch_mechanics.md` — where operating-mode × policy-mode mechanics are documented (regime would condition both)
