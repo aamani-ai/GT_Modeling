@@ -66,3 +66,8 @@ docs/extra/gas-turbine-digital-twin/.git/
 .diligence-extractor
 .renewablesinfo
 .renewablesinfo_org
+
+# Local-only working folders (not shared to remote)
+docs/discussion/
+docs/decisions/
+docs/learning_logs/
