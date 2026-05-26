@@ -5,10 +5,13 @@
 > **Audience**: anyone (including future-self) walking into gt_models cold and needing to understand what this repo is, what it consumes, what it produces, and what the rest of the model build looks like.
 >
 > **Related docs**:
+> - [`docs/plans/00_strategic_spine.md`](./00_strategic_spine.md) — *the top-level forward path* (added 2026-05-25; read this first)
 > - [`docs/plans/step_1_climate_price_scenario_plan.md`](./step_1_climate_price_scenario_plan.md) — exogenous scenario package definition
 > - [`docs/plans/step_2_execution_blueprint_plan.md`](./step_2_execution_blueprint_plan.md) — dispatch execution blueprint
 > - [`docs/extra/understanding_of_gas_turbine_digital_twin.md`](../extra/understanding_of_gas_turbine_digital_twin.md) — reader's guide to the prototype that this plan treats as architectural reference (not as the source of code to copy)
 > - [`docs/InfraSure_ModelingFramework_V2.md`](../InfraSure_ModelingFramework_V2.md) — full framework V2
+
+> **Post-2026-05-25 note**: The framework refinements landing post-[ADR-003](../decisions/003-regime-decomposition.md) (five-concept framework: capability envelope, realized operating profile, policy mode, operating mode, load level) and the strategic-phase structure now live in [`00_strategic_spine.md`](./00_strategic_spine.md). This consolidation plan remains the authoritative source for the **4-repo system**, the **status taxonomy**, the **folder architecture**, and the **asset-onboarding pattern**. For *where the project is going next* and *what order*, read the strategic spine first; for the architectural foundation, read this doc.
 
 ---
 

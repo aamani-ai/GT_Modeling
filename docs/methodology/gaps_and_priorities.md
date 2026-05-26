@@ -9,6 +9,8 @@
 > - [`glossary.md`](./glossary.md) defines the terms used here
 > - The historical record of the v1 build is in [`../plans/consolidation_plan.md`](../plans/consolidation_plan.md)
 
+> **Post-2026-05-25 note**: The 9 bottom-up priorities in §6 are still the right *list*. Their *ordering* now flows from the strategic-phase structure in [`../plans/00_strategic_spine.md`](../plans/00_strategic_spine.md) §5.1, which maps each priority onto Phase 2 (data-fill), Phase 5 (fidelity), or Phase 6 (forward-looking). Read the strategic spine first to understand the phase context; this doc remains the authoritative source for *what each gap is, its dollar magnitude, and what closing it requires*.
+
 ---
 
 ## §1. The three-leg framing

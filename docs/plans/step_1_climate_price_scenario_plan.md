@@ -1,5 +1,7 @@
 # Step 1 Climate And Price Scenario Plan
 
+> **Post-2026-05-25 status**: This plan defines the **Stream A** (forward-looking) upstream scenario package. Activation of Stream A is **Phase 6** in [`00_strategic_spine.md`](./00_strategic_spine.md) — *after* the framework operationalization (Phases 1–4) and the fidelity work (Phase 5) so that forward simulations run against the full conditioning structure (capability envelope + realized operating profile + load + temperature). The contents of this plan remain valid for Phase 6 execution; read the strategic spine first to understand where this fits in the overall sequence.
+
 ## Purpose
 
 This plan defines the upstream scenario package that feeds the gas turbine Step 2 dispatch model.

@@ -1,5 +1,7 @@
 # Step 2 Execution Blueprint Plan
 
+> **Post-2026-05-25 status**: This plan defines how Step 2 (dispatch + engineering twin + LTSA layer) consumes the Step 1 scenario package. The execution shape it specifies is broadly still right, but the framework that was conceptually settled after this plan was written (five concepts: capability envelope, realized operating profile, policy mode, operating mode, load level — per [ADR-003](../decisions/003-regime-decomposition.md)) means several sections will benefit from refinement when this plan is reactivated for Phase 6 (forward-looking integration) in [`00_strategic_spine.md`](./00_strategic_spine.md). Particularly: the dispatch logic should reflect *conditioning by capability envelope and realized operating profile*, not just by policy mode + operating mode. Read the strategic spine first; this plan retains structural value as the depth doc for Phase 6.
+
 ## Purpose
 
 This plan defines how to turn the gas turbine framework and learning notes into the second-stage execution blueprint.
