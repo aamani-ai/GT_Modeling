@@ -69,17 +69,18 @@ Without all four, asset onboarding is artisanal. With them, it scales.
 
 ---
 
-## §2. The five current dimensions at a glance
+## §2. The six current dimensions at a glance
 
 ```
 data/assets/<asset>/
-├── identity.yaml          ← who, where, when                       (~30 leaves)
-├── engineering.yaml       ← physical specs                         (~120 leaves/asset)
-├── operating_profile.yaml ← empirical behavior (MOR-driven)        (~30+ leaves)
-├── market_context.yaml    ← market connections                     (~40 leaves)
-├── ltsa_terms.yaml        ← OEM contract (placeholder by default)  (~46 leaves)
-├── caveats.md             ← operational caveats baked into data    (prose)
-└── provenance.md          ← where each YAML value came from        (prose)
+├── identity.yaml             ← who, where, when                       (~30 leaves)
+├── engineering.yaml          ← physical specs                         (~120 leaves/asset)
+├── operating_profile.yaml    ← empirical behavior (MOR-driven)        (~30+ leaves)
+├── market_context.yaml       ← market connections                     (~40 leaves)
+├── ltsa_terms.yaml           ← OEM contract (placeholder by default)  (~46 leaves)
+├── capability_envelope.yaml  ← what duties the plant is *capable* of  (~50+ leaves)  ← added 2026-05-25 per ADR-003
+├── caveats.md                ← operational caveats baked into data    (prose)
+└── provenance.md             ← where each YAML value came from        (prose)
 ```
 
 | Dimension | Captures | Primary data source | Maturity |
@@ -89,6 +90,7 @@ data/assets/<asset>/
 | **operating_profile** | Observed operational behavior (mode mix, heat rates by mode, cold-start gas, steam-only) | MOR daily data → derived | Asset-specific; only high when MOR available |
 | **market_context** | ISO zone, eGRID region, RGGI applicability, gas hub | EIA Plant + ISO public data + asset-specific decision | High |
 | **ltsa_terms** | LTSA contract financial terms | Data-room trial balance + PURPA contract filings | **Low** — placeholder defaults until data-room extraction |
+| **capability_envelope** | What duties the plant is *capable* of (peaker / mid-merit / baseload / freq-reg / cogen / must-run) — capability-side per [ADR-003](../decisions/003-regime-decomposition.md) | Composite: engineering + identity + ltsa + regulatory + ISO/RTO records | Skeleton (2026-05-25); fill awaits Phase 2 of [strategic spine](../plans/00_strategic_spine.md) |
 
 ---
 
@@ -419,6 +421,8 @@ data/
 
 ## §13. Plant archetypes — the prior that makes dimensions interpretable
 
+> **Status note (2026-05-25)**: This section's *taxonomy* (§13.1, §13.2, §13.6) remains useful as the **conceptual prior** for what kinds of plants exist. But the *implementation proposal* in §13.3 (adding a flat `plant.archetype` block to `identity.yaml`) has been **superseded** by the dedicated [`capability_envelope.yaml`](../../data/assets/lockport/capability_envelope.yaml) introduced 2026-05-25 per [ADR-003](../decisions/003-regime-decomposition.md). The capability envelope is structurally richer than a single archetype tag: it carries per-duty qualification with full status metadata, separates capability (what the plant *can* be) from realization (what it *is* doing), and explicitly tracks multi-element envelopes (e.g., Lockport is simultaneously cogen-capable + mid-merit-capable + baseload-capable + must-run-eligible). The §13.3 archetype-block proposal is preserved below as a record of the pre-ADR-003 thinking but should not be implemented as written.
+
 **The single most useful prior in plant modeling**: knowing the archetype before reading any values. A 10% capacity factor means very different things for a peaker (over-running for an idle asset) vs a cogen (driven by steam-host needs). Without an archetype tag, every dimension needs context derived from scratch.
 
 ### §13.1 Why archetype matters
@@ -453,7 +457,9 @@ Eight common categories (proposed controlled vocabulary):
 
 ### §13.3 Where it should live in the profile
 
-**Proposal — not yet implemented for Lockport** (per consolidation plan §5 D4, v1 is single-asset; multi-asset abstraction comes after 2-3 deals end-to-end):
+> **SUPERSEDED 2026-05-25 by [`capability_envelope.yaml`](../../data/assets/lockport/capability_envelope.yaml) per [ADR-003](../decisions/003-regime-decomposition.md).** Do not implement the proposal below. It is preserved as a record of the pre-ADR-003 thinking that motivated the eventual capability envelope structure. The capability envelope is richer (per-duty qualification with full status metadata, multi-element envelopes, capability/realization split) and now lives in its own YAML file rather than as a block in identity.yaml.
+
+**Original proposal** (not implemented; preserved for reference):
 
 Add a `plant.archetype` block to `identity.yaml`:
 

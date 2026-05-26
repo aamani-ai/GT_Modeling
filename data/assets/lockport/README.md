@@ -18,17 +18,18 @@
 | eGRID subregion | NYUP (NPCC Upstate NY) |
 | EPA ORISPL | 54041 (same as EIA Plant ID) |
 
-## Files in this folder (planned)
+## Files in this folder
 
 | File | Phase | Source | Status |
 |---|---|---|---|
-| `identity.yaml` | C | renewablesinfo brief §"At a glance" + §1 | Empty |
-| `engineering.yaml` | C | renewablesinfo brief §3, §4, §5, §6 + thermal_enriched | Empty |
-| `market_context.yaml` | C | renewablesinfo brief §7 + node_crosswalk | Empty |
-| `operating_profile.yaml` | D | diligence-extractor MOR notebook final-summary table | Empty |
-| `ltsa_terms.yaml` | F | Data room (pending extraction) | Empty — placeholder values until then |
-| `caveats.md` | C/D | Composition of public + private caveats | Empty |
-| `provenance.md` | C/D/F | Where each artifact came from + dates | Empty |
+| `identity.yaml` | C | renewablesinfo brief §"At a glance" + §1 | Populated |
+| `engineering.yaml` | C | renewablesinfo brief §3, §4, §5, §6 + thermal_enriched | Populated |
+| `market_context.yaml` | C | renewablesinfo brief §7 + node_crosswalk | Populated |
+| `operating_profile.yaml` | D | diligence-extractor MOR notebook final-summary table | Populated |
+| `ltsa_terms.yaml` | F | Data room (pending extraction) | Placeholder values; pending D2 extraction |
+| `capability_envelope.yaml` | Phase 1 of [strategic spine](../../../docs/plans/00_strategic_spine.md) | engineering.yaml + identity.yaml + learning_logs/basics/10 + 11 | **Skeleton — added 2026-05-25**. Six duties populated (cogen, mid_merit, baseload, peaker, frequency_regulation, must_run_eligible). Five data gaps surfaced for Phase 2 data-fill. Per ADR-003. |
+| `caveats.md` | C/D | Composition of public + private caveats | Populated |
+| `provenance.md` | C/D/F | Where each artifact came from + dates | Populated |
 
 ## What makes Lockport modeling-interesting (and tricky)
 

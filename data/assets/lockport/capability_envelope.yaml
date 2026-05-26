@@ -1,0 +1,248 @@
+# Lockport Energy Associates LP — Capability Envelope
+#
+# What duties this plant is *capable of providing*, given its current hardware,
+# contracts, certifications, infrastructure, and crew at this point in time.
+# A feasibility set — typically multi-element.
+#
+# This is the *capability-side* concept from the regime decomposition: what the
+# plant *can be*. The realization side (what the plant *is currently doing*)
+# lives separately and is inferred from operating history.
+#
+# Per docs/discussion/01_regime_concept.md §3 and ADR-003 (regime decomposition).
+# Per docs/learning_logs/basics/10_plant_duty_classifications.md (duty vocabulary).
+# Per docs/learning_logs/basics/11_capability_vs_realization.md (framework).
+# Per docs/assumptions/status_taxonomy.md (every leaf carries {value, status, source}).
+#
+# Cadence: very slow (years). Major asset events trigger refresh:
+#   - Major investment (new equipment, retrofit, expansion, decommissioning)
+#   - Contract renewal or renegotiation
+#   - Recertification (fast-start, AGC, RMR, environmental permits)
+#   - Infrastructure changes (DHTS connection, fuel-supply, transmission)
+#   - Crew or operations-philosophy shifts (24/7 staffing tier)
+
+# ============================================================================
+# Metadata
+# ============================================================================
+
+envelope_as_of:
+  value: "2026-05-25"
+  status: real_reported
+  source: "Date this envelope skeleton was assembled (Phase 1 of strategic spine)"
+  caveat: "This is a skeleton — many fields are placeholder pending Phase 2 data-fill (D1 open data + D2 diligence-extractor outputs)."
+
+envelope_methodology_ref:
+  framework_anchor:
+    value: "docs/decisions/003-regime-decomposition.md"
+    status: real_reported
+    source: "ADR-003 committed the regime → (capability envelope + realized operating profile) split"
+  vocabulary_ref:
+    value: "docs/learning_logs/basics/10_plant_duty_classifications.md"
+    status: real_reported
+    source: "Defines each duty (peaker, mid-merit, baseload, frequency reg, cogen, must-run, curtailment)"
+  framework_ref:
+    value: "docs/learning_logs/basics/11_capability_vs_realization.md"
+    status: real_reported
+    source: "Two-layer framework: capability (this file) vs realization (separate, inferred from history)"
+
+# ============================================================================
+# Envelope summary — derived; for quick programmatic consumption
+# ============================================================================
+# Re-derive this from the per-duty blocks below; do not hand-edit independently.
+
+envelope_summary:
+  qualified_duties:
+    value: ["cogen", "mid_merit", "baseload", "must_run_eligible"]
+    status: real_computed
+    source: "Duties whose .qualified.value resolves to true per the per-duty blocks below"
+  unqualified_duties:
+    value: ["peaker"]
+    status: real_computed
+    source: "Duties whose .qualified.value resolves to false per the per-duty blocks below"
+  open_duties:
+    value: ["frequency_regulation"]
+    status: real_computed
+    source: "Duties whose .qualified.value is null with status=placeholder (awaiting data)"
+  partial_mechanisms_open:
+    value: ["must_run_eligible.purpa_qf", "must_run_eligible.capacity_firm"]
+    status: real_computed
+    source: "Sub-mechanisms within must_run_eligible that have placeholder status"
+
+# ============================================================================
+# Per-duty blocks
+# ============================================================================
+# Each duty has:
+#   - qualified: { value, status, source, [confidence], [caveat], [validation_path] }
+#   - evidence:  { value (free-text), status, source, [caveat] }
+#   - mechanism: (optional, only for must_run_eligible) — sub-blocks per mechanism
+# ============================================================================
+
+cogen:
+  qualified:
+    value: true
+    status: real_reported
+    source: "engineering.yaml plant.is_chp = true; EIA-860 schedule 3_1 'Associated with CHP System = Yes' for all 4 generators"
+    confidence: HIGH
+  evidence:
+    value: "DHTS (Daily Heat Tape Schedule) infrastructure present per renewablesinfo equipment profile; HRSGs configured with steam-export capability; PURPA-era 1992 plant designed for cogeneration as primary purpose; Entity Type Q (cogeneration entity) per EIA-860; MOR data shows winter steam-driven dispatch patterns"
+    status: real_reported
+    source: "Composite: engineering.yaml + identity.yaml + diligence-extractor MOR notebook Stage 1 (steam-only days identified)"
+    caveat: "Active steam-host status post-2024 is presumed but not verified in current YAMLs. The 'cogen-capable' qualification is structurally present (infrastructure + EIA-reported CHP flag); host-side contract activity awaits D2 confirmation."
+
+mid_merit:
+  qualified:
+    value: true
+    status: real_computed
+    source: "Derived from engineering.yaml: 3×1 CCGT configuration, F-class, 1992 vintage; ramp adequate; HR mix (8,901-10,424 Btu/kWh across modes per operating_profile.yaml) is competitive in mid-merit dispatch"
+    confidence: HIGH
+  evidence:
+    value: "Cycle-tolerant 3×1 CCGT supports daily on/off and intra-day ramping. Heat rate range from operating_profile.yaml is in mid-merit-economic range. MOR data shows historical mid-merit-realized behavior during summer months."
+    status: real_computed
+    source: "Composite: engineering.yaml + operating_profile.yaml"
+    caveat: "Ramp rate ~20 MW/min is industry-typical for F-class CCGT vintage <2000 but is not directly verified for Lockport specifically. EIA-923 monthly fuel/output data or OEM spec sheet would confirm."
+
+baseload:
+  qualified:
+    value: true
+    status: real_computed
+    source: "Derived from engineering.yaml: F-class CCGT, continuous-duty design; HR efficient enough for sustained operation; no structural barrier to high-CF operation"
+    confidence: MEDIUM
+  evidence:
+    value: "Hardware supports continuous duty. Baseload capability is structurally present in the envelope even though current realization is well below baseload CF (~12-15% observed vs >70% baseload threshold)."
+    status: real_computed
+    source: "engineering.yaml + interpretation per learning_logs/basics/11 §4 (capability does not depend on current realization)"
+    caveat: "Baseload-capable does not mean baseload-realized. Current Lockport CF (~12-15%) is far below baseload threshold (>70%). The capability is latent — could be exercised if market shifted favorably (e.g., if peer baseload retirements shifted the merit order). Worth noting because it represents unrealized optionality."
+
+peaker:
+  qualified:
+    value: false
+    status: real_computed
+    source: "Derived from engineering.yaml: 1992-vintage frame GT (not aeroderivative); cold-start time exceeds peaker requirements"
+    confidence: MEDIUM
+    validation_path: "Confirm via NYISO MIS resource registration: is Lockport NYISO fast-start certified? Absence of fast-start cert is sufficient (though not necessary) for peaker-unqualified."
+  evidence:
+    value: "Frame-class GT (not aero), 1992 vintage; estimated cold-start time ~60+ minutes (CCGT with HRSG/ST warmup); ramp adequate but not peaker-grade. Even with adequate ramp, the cold-start time alone disqualifies for fast-response peaker duty in NYISO markets that require fast-start certification."
+    status: real_computed
+    source: "Composite: engineering.yaml plant.combined_cycle_unit_code (3×1 CCGT with HRSG) + identity.yaml operating_dates (1992 commissioning) + technology-class knowledge per learning_logs/basics/10 §5.1"
+    caveat: "Status would benefit from explicit NYISO fast-start cert check. The 'peaker not in envelope' claim is high-confidence because the hardware is wrong for peaker duty, but the formal certification status hasn't been verified."
+
+frequency_regulation:
+  qualified:
+    value: null
+    status: placeholder
+    source: "NYISO AGC qualification status not yet verified from NYISO MIS resource registration"
+    validation_path: "Check NYISO MIS (Member Information System) resource registration records for plant 54041 or Lockport's specific generator IDs. AGC qualification is binary; either the plant is registered or it isn't."
+  evidence:
+    value: "Hardware *may* be sufficient — 3×1 CCGT can ramp, and AS market participation isn't inherently restricted. But AGC qualification is a formal certification, not a hardware property. Without checking the NYISO MIS record, this duty's envelope status is genuinely unknown."
+    status: placeholder
+    source: "Hardware-side reasoning per engineering.yaml; AGC qualification side is the binary gate that's unverified"
+
+must_run_eligible:
+  qualified:
+    value: true
+    status: real_reported
+    source: "Composite: at least one mechanism (steam_host_obligation) is structurally present and active per MOR data. See mechanism sub-blocks for the breakdown."
+    confidence: MEDIUM
+  evidence:
+    value: "Multiple must-run mechanisms may apply to Lockport. Most-confidently active: steam-host obligation during DHTS-driven periods. Likely also: PURPA QF status (1992 PURPA-era + Entity Type Q + IPP CHP sector all consistent with QF). Not active: RMR (Lockport not on NYISO RMR list). Open: NYISO ICAP capacity-firm participation."
+    status: real_reported
+    source: "Composite of mechanism sub-blocks below"
+    caveat: "must_run_eligible.qualified = true because at least one mechanism (steam-host obligation) is active. The full picture of which mechanisms apply and their interaction requires Phase 2 data-fill."
+  mechanism:
+    purpa_qf:
+      qualified:
+        value: true
+        status: placeholder
+        source: "Strongly suggested by 1992 PURPA-era construction + EIA Entity Type Q (cogeneration entity) + IPP CHP sector classification — but QF status itself has not been verified in FERC's PURPA QF database"
+        validation_path: "FERC PURPA QF database (https://ferconline.ferc.gov) — search for plant 54041 / Lockport Energy Associates LP. Also data-room regulatory filings."
+      evidence:
+        value: "Indirect evidence (vintage, entity type, sector) is consistent with QF status. Direct evidence (FERC database entry, active QF status, current efficiency-threshold compliance) is not yet collected."
+        status: placeholder
+        source: "Indirect inference; direct verification pending"
+        caveat: "PURPA QF status can lapse if the plant fails to meet the efficiency threshold (per 18 CFR Part 292). Verify current status, not just historical."
+    steam_host_obligation:
+      qualified:
+        value: true
+        status: real_reported
+        source: "MOR data (per diligence-extractor heat-rate notebook) shows DHTS deliveries on cold days, indicating active steam-host contract through 2024"
+        confidence: MEDIUM
+      evidence:
+        value: "Active steam-host obligation drives must-run dispatch during DHTS-required hours. In v1, modeled as coldest 20% of days proxy. Contract terms (hours, quantities, force majeure) are pending data-room extraction."
+        status: real_reported
+        source: "diligence-extractor MOR notebook Stage 1 (steam-only days identified)"
+        caveat: "Host-side contract continuity post-2024 is presumed but not verified. Data-room extraction will confirm contract terms and current status."
+    rmr:
+      qualified:
+        value: false
+        status: real_computed
+        source: "Lockport is not on NYISO's published Reliability Must-Run designation list as of last known check"
+        confidence: LOW
+        validation_path: "Quick annual check against NYISO operations website / RMR designations list. Status is currently asserted as false based on absence from public RMR list; should be re-verified annually."
+      evidence:
+        value: "RMR designations are public ISO actions. Lockport does not appear on the NYISO RMR list. Status is high-confidence-not-active but the annual re-verification step is wise."
+        status: real_computed
+        source: "Negative-evidence assertion (absence from public list)"
+    capacity_firm:
+      qualified:
+        value: null
+        status: placeholder
+        source: "NYISO ICAP capacity market participation for Lockport is not yet integrated into YAMLs"
+        validation_path: "NYISO public ICAP auction clearing records for plant 54041 across recent years; data-room ICAP commitment letters if available"
+      evidence:
+        value: "Lockport may or may not participate in NYISO ICAP capacity market. This is gap #2 in gaps_and_priorities.md (NYISO ICAP revenue, +$5-9M/yr if active). Open question; same data source resolves both the capacity revenue question and the capacity-firm must-run question."
+        status: placeholder
+        source: "Open; same Phase 2 D1 audit will address"
+
+# ============================================================================
+# Gaps surfaced by this skeleton (Phase 2 inputs)
+# ============================================================================
+# These are the open data items that the data-fill phase needs to close
+# in order to graduate this envelope from skeleton to populated.
+
+phase_2_data_gaps:
+  d1_open_data:
+    value:
+      - "NYISO MIS — AGC qualification record for plant 54041 (for frequency_regulation)"
+      - "FERC PURPA QF database — plant 54041 / Lockport Energy Associates LP entry (for must_run.purpa_qf)"
+      - "NYISO MIS — fast-start certification record (for peaker verification)"
+      - "NYISO operations — RMR designation list (for must_run.rmr re-verification)"
+      - "NYISO public — ICAP auction clearing records for Lockport (for must_run.capacity_firm + gap #2 in gaps_and_priorities.md)"
+      - "OEM spec sheet or EIA-923 — ramp rate verification (~20 MW/min asserted)"
+    status: real_reported
+    source: "Inventory of D1 gaps surfaced by skeleton; for Phase 2 audit closure"
+  d2_diligence_extractor:
+    value:
+      - "Steam-host status post-2024 (commercial agreements + host correspondence)"
+      - "PURPA QF documentation (regulatory filings)"
+      - "Active steam-offtake contract terms (hours, quantities, force majeure)"
+      - "ICAP commitment letters (if Lockport participates in NYISO ICAP)"
+      - "LTSA-related capability constraints (cycle-count limits, EOH allowances) — also feeds gap #1 in gaps_and_priorities.md"
+    status: real_reported
+    source: "Inventory of D2 gaps surfaced by skeleton; user-led extraction workstream"
+
+# ============================================================================
+# Graduation criteria (notes for ADR-004, the future capability envelope ADR)
+# ============================================================================
+# This skeleton is the input to the graduation ADR.
+# Decisions deferred to ADR-004:
+
+graduation_deferrals:
+  representation:
+    value: "Skeleton uses per-duty richer-object representation. ADR-004 should formally commit this vs alternatives (categorical set; vector of (duty, qualified); richer object with multi-determinant breakdown for hardware/cert/contract/infra/crew)."
+    status: real_reported
+    source: "Per ADR-003 §5 open question #1"
+  storage_location:
+    value: "Skeleton lives in this file. ADR-004 should commit final location (this file vs extension of engineering.yaml vs combined with future identity.yaml archetype block)."
+    status: real_reported
+    source: "Per ADR-003 §5 open question #3"
+  refresh_cadence:
+    value: "Skeleton has no formal refresh cadence enforcement. ADR-004 should commit annual asset-profile refresh OR event-driven refresh (only on major asset events) OR hybrid."
+    status: real_reported
+    source: "Per ADR-003 §5 open question #2"
+  multi_element_semantics:
+    value: "Skeleton lists qualified duties simultaneously (e.g., cogen + mid_merit + baseload + must_run_eligible all true). ADR-004 should formally commit whether 'multi-element envelope' means vector of binary qualifications (current skeleton) or weighted/typed qualifications."
+    status: real_reported
+    source: "Per ADR-003 §5 open question #11"
+  validity_window:
+    value: "Each qualification may have its own validity window (e.g., RMR designation is time-bounded; PURPA QF can lapse on efficiency threshold). Skeleton does not yet track validity windows per-mechanism. ADR-004 should commit whether to add."
+    status: real_reported
+    source: "Identified during skeleton drafting; not in ADR-003"
