@@ -66,7 +66,7 @@ These are normal. Document deviations explicitly; the deviation log is more valu
    │  STEP 3: CALIBRATE AGAINST HISTORY                               │
    │  ▸ Engineering params (HR degradation, fouling, EFOR baselines)  │
    │  ▸ LTSA params (contract values, once extracted)                 │
-   │  ▸ Dispatch params (per regime, once regime is committed)        │
+   │  ▸ Dispatch params (per realized profile, once committed)        │
    │  ▸ Backtest against observed MOR data                            │
    │  Output: parameter set tuned to the specific asset               │
    └─────────────────────────────────────┬────────────────────────────┘
@@ -216,83 +216,93 @@ If `ltsa_terms.yaml` is fully placeholder, that's a Step 1 gap to close. If sche
 
 ---
 
-## §3. Step 2 — Characterize the plant's posture (regime + policy mode) and identify the tactical decision axes (operating mode + load)
+## §3. Step 2 — Establish the capability envelope, characterize the realized operating profile + policy mode, and identify the tactical decision axes (operating mode + load)
 
-### §3.1 The four concepts this step addresses
+### §3.1 The five concepts this step addresses
 
-This step is *not just* about regime. Subsequent discussion (see [`docs/discussion/03_four_concepts_vocabulary.md`](../discussion/03_four_concepts_vocabulary.md)) made explicit that the plant's operating identity is described by **four distinct concepts on two orthogonal axes**:
+This step is *not just* about a single "regime" idea. Per [ADR-003](../decisions/003-regime-decomposition.md), what was previously called "regime" has been decomposed into two first-class concepts (capability envelope + realized operating profile), so the plant's operating identity is now described by **five distinct concepts on three cadence bands** (see [`docs/discussion/03_four_concepts_vocabulary.md`](../discussion/03_four_concepts_vocabulary.md) for the full vocabulary map):
 
 ```
-                       SLOW-CHANGING (posture / strategic)
-                                  │
-       ┌──────────────────────────┼──────────────────────────┐
-       │                                                      │
-   REGIME                                                POLICY MODE
-   (business positioning)                                (wear management)
-       │                                                      │
-       └──────────────────────────┬───────────────────────────┘
-                                  │
-                                  │  jointly condition the parameters of
-                                  ▼
-                       FAST-CHANGING (tactical / hour-by-hour)
-                                  │
-       ┌──────────────────────────┼──────────────────────────┐
-       │                                                      │
-   OPERATING MODE                                         LOAD LEVEL
-   (physical configuration)                               (intensity within mode)
-       │                                                      │
-       └──────────────────────────┬───────────────────────────┘
-                                  │
-                                  ▼
-                          OPERATING POINT
-                       = (mode, load) tuple per hour
+                       VERY SLOW (years; structural / contractual)
+                                       │
+                             CAPABILITY ENVELOPE
+                          (what the plant *can* be)
+                                       │
+                                       │  constrains
+                                       ▼
+                       SLOW (weeks–seasons; behavioral / posture)
+                                       │
+                  ┌────────────────────┴────────────────────┐
+                  │                                          │
+   REALIZED OPERATING PROFILE                          POLICY MODE
+   (what the plant *is* doing)                         (wear management)
+                  │                                          │
+                  └────────────────────┬─────────────────────┘
+                                       │
+                                       │  jointly condition the parameters of
+                                       ▼
+                       FAST (hour-by-hour; tactical / physical)
+                                       │
+                  ┌────────────────────┴────────────────────┐
+                  │                                          │
+            OPERATING MODE                              LOAD LEVEL
+       (physical configuration)                  (intensity within mode)
+                  │                                          │
+                  └────────────────────┬─────────────────────┘
+                                       │
+                                       ▼
+                               OPERATING POINT
+                            = (mode, load) tuple per hour
 ```
 
-Characterizing a plant means working out *all four*, not just one. See [`docs/discussion/03_four_concepts_vocabulary.md`](../discussion/03_four_concepts_vocabulary.md) for the full vocabulary map.
+Characterizing a plant means working out *all five*, not just one. The capability envelope is established first (it's derivable from configuration); realized operating profile classification works *within* the envelope.
 
 ### §3.2 What each concept covers
 
 | Concept | What it characterizes | Type | Cadence | Status in gt_models today |
 | :--- | :--- | :--- | :--- | :--- |
-| **Regime** | What the plant *does* in the market (business positioning) | Categorical (or vector) | Slow (weeks–seasons) | Discussion (`01_regime_concept.md`) |
-| **Policy mode** (A / B / C) | How the operator manages wear vs revenue | Categorical | Static per simulation | Committed (`architecture.md` §5.5) |
+| **Capability envelope** | What the plant *can be* (structural feasibility set; derivable from configuration) | Set (categorical-multi / vector — TBD) | Very slow (years; major asset events) | Discussion (`01_regime_concept.md` §3); structural split committed via [ADR-003](../decisions/003-regime-decomposition.md); graduation ADR pending |
+| **Realized operating profile** | What the plant *is doing* (observed posture; inferred from history) | Categorical (or vector) | Slow (weeks–seasons) | Discussion (`01_regime_concept.md` §4); graduation ADR pending |
+| **Policy mode** (A / B / C) | How the operator manages wear vs revenue | Categorical (modeling abstraction) | Static per simulation | Committed (`architecture.md` §5.5) |
 | **Operating mode** (3×CC / 2×CC / 1×CC) | Which physical configuration is firing | Categorical | Hour-by-hour | Committed (`architecture.md` §5.3) |
 | **Load level** | What fraction of mode max is being produced | Continuous (% of max) | Hour-by-hour | Discussion (`02_load_as_a_dimension.md`) |
 
-Two are committed (policy mode, operating mode) and live in methodology. **Two are in discussion** (regime, load level) and currently live in `docs/discussion/`.
+Two are committed (policy mode, operating mode) and live in methodology. **Three are in discussion** (capability envelope, realized operating profile, load level) and currently live in `docs/discussion/`.
 
-### §3.3 Current status — half committed, half planned
+### §3.3 Current status — partly committed, partly planned
 
-The committed half:
+The committed parts:
 
 - **Policy mode**: A/B/C are first-class in the engine. The wear-penalty hurdle in `wear_penalty_mult()` is the mechanism by which policy mode conditions operating-mode picks.
 - **Operating mode**: 3×CC / 2×CC / 1×CC are first-class. `dispatch_day_mode_aware()` picks the operating mode hour-by-hour.
 
-The planned half (currently under discussion):
+The planned parts (currently under discussion):
 
-- **Regime**: not yet built. See [`docs/discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) for the full exploration. When committed (via an ADR), regime would condition parameters across the engine.
+- **Capability envelope**: not yet built. See [`docs/discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) §3 for the full exploration. Derivable from existing configuration (engineering + contracts + certifications); a future graduation ADR would commit the representation and storage location. Natural first to graduate per [ADR-003](../decisions/003-regime-decomposition.md) §4.2.
+- **Realized operating profile**: not yet built. See [`docs/discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) §4 for the full exploration. Requires a classification methodology (inferred from history). Graduation depends on the methodology + validation story.
 - **Load level**: not yet built. The current model **implicitly assumes 100% of mode capacity when on** — this is a silent simplification that has been called out but not yet addressed. See [`docs/discussion/02_load_as_a_dimension.md`](../discussion/02_load_as_a_dimension.md) for the full exploration.
 
-In the flow as it stands today, Step 2 is **partially placeholder** — analyst-judged informal characterization for regime, "load = 100% when on" assumption baked in, while policy mode and operating mode work as the engine intends.
+In the flow as it stands today, Step 2 is **partially placeholder** — analyst-judged informal characterization for capability envelope + realized operating profile, "load = 100% when on" assumption baked in, while policy mode and operating mode work as the engine intends.
 
-**Worked example — Lockport (informal characterization across all four)**:
+**Worked example — Lockport (informal characterization across all five)**:
 
-- **Regime**: likely a *cogen + mid-merit hybrid*. DHTS-driven obligations bias toward 1×CC during low-LMP hours; the rest of dispatch follows merit-order economics. Contested classification — different analysts could reasonably argue cogen vs mid-merit vs seasonal-hybrid. See `01_regime_concept.md` §5.5.
+- **Capability envelope**: cogen-capable (DHTS infrastructure + steam offtake), mid-merit-capable (3×1 CCGT, F-class), must-run-eligible (PURPA-era contract structure). Excludes fast-start peaker (slow ramp, no fast-start cert), pure baseload (low CF observed, not designed for it), and frequency regulation (status unknown; would need NYISO AGC qualification check).
+- **Realized operating profile**: seasonal hybrid — cogen-realized in winter (DHTS demand high), mid-merit-realized in summer (DHTS lower; merit-order economics). 12% annual CF. Contested classification — reasonable analysts could argue cogen vs mid-merit vs seasonal-hybrid as the "primary" realized profile; see `01_regime_concept.md` §8.5.
 - **Policy mode**: the model runs all three (A, B, C) as bracketing bookends and reports the spread.
 - **Operating mode**: dispatched hour-by-hour from {3×CC, 2×CC, 1×CC, offline} based on the spark-spread heuristic.
 - **Load level**: silently 100% of operating-mode capacity whenever the plant is on. The Friday 2026-05-22 meeting flagged this as a gap (load-and-temperature-dependent degradation is the canonical missing chain).
 
-**Implication for the model today**: regime-conditional and load-conditional calibration are both unavailable. The model uses a single global parameter set for everything regime would otherwise condition, and assumes 100% load. Per-regime and per-load-level parameters await the two ADRs that would commit those concepts to methodology.
+**Implication for the model today**: capability-envelope-conditional, realized-profile-conditional, and load-conditional calibration are all unavailable. The model uses a single global parameter set for everything these concepts would otherwise condition, and assumes 100% load. Per-envelope, per-profile, and per-load-level parameters await the graduation ADRs that would commit those concepts to methodology.
 
 ### §3.4 Why this step still belongs in the workflow even as partial placeholder
 
-It would be cleaner to leave Step 2 out of the workflow until regime and load are both committed. But that would hide missing capabilities rather than name them. Naming them explicitly — even as "planned" — does three things:
+It would be cleaner to leave Step 2 out of the workflow until capability envelope, realized operating profile, and load are all committed. But that would hide missing capabilities rather than name them. Naming them explicitly — even as "planned" — does three things:
 
 1. Makes visible what the current model is *unconditional* on (and what that means for outputs)
-2. Tells future readers where regime classification and load-level dispatch will eventually plug in
-3. Prevents premature crystallization of either concept as first-class before the methodology is ready
+2. Tells future readers where capability extraction, realized-profile classification, and load-level dispatch will eventually plug in
+3. Prevents premature crystallization of any of these concepts as first-class before the methodology is ready
 
-When the discussions in `01_regime_concept.md` and `02_load_as_a_dimension.md` mature into ADRs, this section gets updated to reflect committed methodology. Because the two concepts are coupled (regime-conditional load patterns are real), the two ADRs may need to be written together.
+When the discussions in `01_regime_concept.md` and `02_load_as_a_dimension.md` mature into graduation ADRs, this section gets updated to reflect committed methodology. Capability envelope is the natural first to graduate (no inference burden); realized profile and load level are coupled (realized-profile-conditional load patterns are real) and may benefit from being designed together.
 
 ---
 
@@ -306,7 +316,7 @@ Three categories of parameters need calibration to the specific asset:
 | :--- | :--- | :--- |
 | **Engineering parameters** | HR degradation rate, compressor fouling rate, EFOR baselines, EOH consumption rates | Historical operational data (MOR daily, SCADA where available); cross-reference with vendor / fleet defaults |
 | **LTSA parameters** | Fixed monthly fee, EOH reserve rate, CI / MI costs, overage charges | Contract document extraction (personal data room) |
-| **Dispatch parameters** | Spark-spread hurdle calibration, must-run flag thresholds, mode-pick logic | Historical dispatch patterns; per-regime once regime is committed |
+| **Dispatch parameters** | Spark-spread hurdle calibration, must-run flag thresholds, mode-pick logic | Historical dispatch patterns; per-realized-profile once realized operating profile is committed (per [ADR-003](../decisions/003-regime-decomposition.md)) |
 
 The calibration step takes the configuration from Step 1 and the historical operational data, and *tunes* the model to match observed behavior. This is the bridge between "what the plant is" (configuration) and "what the plant does" (operations).
 
@@ -539,7 +549,7 @@ A compact table mapping each loss type to its propagation path, terminal cost li
 The chains above are the *modeled* propagations. Three real propagations are not yet wired:
 
 - **Load + ambient temperature dependency on degradation** (Friday 2026-05-22 meeting action item; research paper referenced by Siddharth) — degradation today is mostly a function of fired hours; the chain "high-load operation + high ambient → accelerated stress → faster degradation" exists physically but isn't yet in the model
-- **Regime-conditional behavior** — per `discussion/01_regime_concept.md`, regime conditions almost every parameter; until regime is committed, the model uses a global parameter set
+- **Capability-envelope-conditional and realized-profile-conditional behavior** — per `discussion/01_regime_concept.md` (post-[ADR-003](../decisions/003-regime-decomposition.md)), both concepts would condition many parameters; until they graduate, the model uses a global parameter set
 - **Scheduled mitigations** — cleaning, water washes, planned inspections per the plant's actual schedule. The "5% recovery per monthly wash" pattern Siddharth suggested isn't yet wired because the schedule data isn't extracted (Step 1 scheduling gap)
 
 These are documented as gaps in [`gaps_and_priorities.md`](gaps_and_priorities.md) and the latest task-history handoff.
@@ -660,7 +670,7 @@ This doc connects to many others. Map for navigation:
 | [`extra/performance_and_risk_framework.md`](extra/performance_and_risk_framework.md) | Generic framework that underlies the gas-specific flow |
 | [`extra/backtest_findings.md`](extra/backtest_findings.md) | Step 3 calibration check for Lockport |
 | [`../decisions/`](../decisions/) | ADRs for choices made in the flow (gas hub, calibration buckets) |
-| [`../discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) | What Step 2 will eventually be — currently in discussion |
+| [`../discussion/01_regime_concept.md`](../discussion/01_regime_concept.md) | Capability envelope + realized operating profile discussion (post-[ADR-003](../decisions/003-regime-decomposition.md)) — what Step 2's posture-characterization side will eventually be |
 | [`../assumptions/status_taxonomy.md`](../assumptions/status_taxonomy.md) | The status codes underlying Step 1's audit trail |
 | [`../plans/consolidation_plan.md`](../plans/consolidation_plan.md) | The phased build plan (A–L) that produced this asset-level workflow |
 
@@ -673,7 +683,7 @@ For the upstream generic discipline of *what to scope before modeling any asset*
 To preempt scope confusion:
 
 - **Does not replace `architecture.md`** — the engine's mechanics live there. This doc orients; that doc explains.
-- **Does not define regime** — regime is still in discussion. This doc names Step 2 and points to the discussion doc.
+- **Does not define capability envelope or realized operating profile** — both are still in discussion (post-[ADR-003](../decisions/003-regime-decomposition.md), which committed only the *structural* split, not the graduation). This doc names Step 2 and points to the discussion doc.
 - **Does not include the risk arm** — the hazard team's IDF + fragility pipeline is out of gt_models scope. Step 5 mentions it only as the EL row.
 - **Does not validate the model** — validation (N5 + model_card backtest) is a downstream concern; this doc points to where it lives.
 - **Does not write the ADR for any of the open choices** — discussion comes first (in `discussion/`), then ADR (in `decisions/`), then methodology updates back here.
@@ -686,7 +696,7 @@ The doc is a navigational artifact, not a substantive one. Its value is making t
 
 Update this doc when:
 
-- A new step is introduced (e.g., when regime classification graduates from discussion to methodology, §3 gets rewritten)
+- A new step is introduced (e.g., when capability envelope or realized operating profile graduates from discussion to methodology, §3 gets rewritten)
 - A workflow step changes shape (e.g., when Phase L scenario engine wires in, §5.1 needs updating)
 - A new asset's onboarding reveals a gap in §8 (e.g., a tolling-contract asset reveals that `ltsa_terms.yaml` schema needs extension)
 - A propagation chain becomes obsolete or a new one is added (§6)
