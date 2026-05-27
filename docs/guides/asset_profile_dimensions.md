@@ -69,18 +69,19 @@ Without all four, asset onboarding is artisanal. With them, it scales.
 
 ---
 
-## §2. The six current dimensions at a glance
+## §2. The seven current dimensions at a glance
 
 ```
 data/assets/<asset>/
-├── identity.yaml             ← who, where, when                       (~30 leaves)
-├── engineering.yaml          ← physical specs                         (~120 leaves/asset)
-├── operating_profile.yaml    ← empirical behavior (MOR-driven)        (~30+ leaves)
-├── market_context.yaml       ← market connections                     (~40 leaves)
-├── ltsa_terms.yaml           ← OEM contract (placeholder by default)  (~46 leaves)
-├── capability_envelope.yaml  ← what duties the plant is *capable* of  (~50+ leaves)  ← added 2026-05-25 per ADR-003
-├── caveats.md                ← operational caveats baked into data    (prose)
-└── provenance.md             ← where each YAML value came from        (prose)
+├── identity.yaml                    ← who, where, when                       (~30 leaves)
+├── engineering.yaml                 ← physical specs                         (~120 leaves/asset)
+├── operating_profile.yaml           ← empirical behavior (MOR-driven)        (~30+ leaves)
+├── market_context.yaml              ← market connections                     (~40 leaves)
+├── ltsa_terms.yaml                  ← OEM contract (placeholder by default)  (~46 leaves)
+├── capability_envelope.yaml         ← what duties the plant *can* do         (~60 leaves)  ← added 2026-05-25 per ADR-003
+├── realized_operating_profile.yaml  ← what duties the plant *is* doing       (~60 leaves)  ← added 2026-05-26 per ADR-003
+├── caveats.md                       ← operational caveats baked into data    (prose)
+└── provenance.md                    ← where each YAML value came from        (prose)
 ```
 
 | Dimension | Captures | Primary data source | Maturity |
@@ -90,7 +91,10 @@ data/assets/<asset>/
 | **operating_profile** | Observed operational behavior (mode mix, heat rates by mode, cold-start gas, steam-only) | MOR daily data → derived | Asset-specific; only high when MOR available |
 | **market_context** | ISO zone, eGRID region, RGGI applicability, gas hub | EIA Plant + ISO public data + asset-specific decision | High |
 | **ltsa_terms** | LTSA contract financial terms | Data-room trial balance + PURPA contract filings | **Low** — placeholder defaults until data-room extraction |
-| **capability_envelope** | What duties the plant is *capable* of (peaker / mid-merit / baseload / freq-reg / cogen / must-run) — capability-side per [ADR-003](../decisions/003-regime-decomposition.md) | Composite: engineering + identity + ltsa + regulatory + ISO/RTO records | Skeleton (2026-05-25); fill awaits Phase 2 of [strategic spine](../plans/00_strategic_spine.md) |
+| **capability_envelope** | What duties the plant is *capable* of (peaker / mid-merit / baseload / freq-reg / cogen / must-run) — capability-side per [ADR-003](../decisions/003-regime-decomposition.md) | Composite: engineering + identity + ltsa + regulatory + ISO/RTO records | Populated (2026-05-26); Tier-1 + Tier-2-D1 done, Tier-2-D2 pending |
+| **realized_operating_profile** | What duties the plant is *actually doing* (seasonal classification) — realization-side per [ADR-003](../decisions/003-regime-decomposition.md) | MOR daily history → threshold classification (`notebooks/scratch/realized_profile_classify.py`) | Populated (2026-05-26); informal classifier, graduation → ADR-005 |
+
+**The two regime-decomposition dimensions are a pair**: `capability_envelope` (what the plant *can* be — structural, years cadence, from config) and `realized_operating_profile` (what it *is* doing — behavioral, weeks-seasons cadence, from MOR history). The realized profile is always a *subset* of the capability envelope. Both are local-discussion-graduated concepts pending their methodology ADRs (capability → future ADR; realization → ADR-005).
 
 ---
 

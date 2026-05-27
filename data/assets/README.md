@@ -21,13 +21,16 @@ Each `<asset>/` folder follows this convention:
 ├── engineering.yaml           (capacity, generators, derates, dual-fuel, prime movers)
 ├── operating_profile.yaml     (heat rate by mode, cold-start gas, run-streak patterns)
 ├── market_context.yaml        (NYISO node, hub, BA, eGRID subregion, RGGI exposure)
-├── ltsa_terms.yaml            (contract structure — placeholders until data room extraction)
-├── capability_envelope.yaml   (what duties the plant is *capable* of — peaker/mid-merit/baseload/cogen/freq-reg/must-run; per ADR-003)
-├── caveats.md                 (cogen, mothball question, fuel switching, multi-mode dispatch)
-└── provenance.md              (where each artifact came from + last refresh date)
+├── ltsa_terms.yaml                  (contract structure — placeholders until data room extraction)
+├── capability_envelope.yaml         (what duties the plant is *capable* of — peaker/mid-merit/baseload/cogen/freq-reg/must-run; per ADR-003)
+├── realized_operating_profile.yaml  (what duties the plant is *actually doing* — inferred from MOR history; per ADR-003)
+├── caveats.md                       (cogen, mothball question, fuel switching, multi-mode dispatch)
+└── provenance.md                    (where each artifact came from + last refresh date)
 ```
 
-**Note on `capability_envelope.yaml`** (added 2026-05-25): the capability-side concept from the regime decomposition ([ADR-003](../../docs/decisions/003-regime-decomposition.md), local-only). Describes what duties the plant *is capable of providing* — structural, very-slow cadence (years). The realization-side concept (what the plant *is currently doing*) is inferred from operating history and will live separately when committed (per ADR-003 §4.2).
+**Note on the two regime-decomposition dimensions** (per [ADR-003](../../docs/decisions/003-regime-decomposition.md), local-only):
+- `capability_envelope.yaml` (added 2026-05-25): the **capability** side — what the plant *is capable of providing*. Structural, very-slow cadence (years), derived from configuration.
+- `realized_operating_profile.yaml` (added 2026-05-26): the **realization** side — what the plant *is actually doing*. Behavioral, weeks-to-seasons cadence, inferred from MOR operating history. Always a subset of the capability envelope.
 
 ## v1 scope: Lockport only
 

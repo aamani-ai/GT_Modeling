@@ -1,0 +1,253 @@
+# Lockport Energy Associates LP — Realized Operating Profile
+#
+# What duties this plant is *actually doing*, inferred from operating history.
+# This is the realization-side concept from the regime decomposition (ADR-003):
+# the behavioral characterization, the complement of the capability envelope.
+#
+#   capability_envelope.yaml = what the plant CAN be (structural, from config)
+#   realized_operating_profile.yaml (this file) = what it IS doing (behavioral, from history)
+#   realized profile is ALWAYS a subset of the capability envelope.
+#
+# Per docs/discussion/01_regime_concept.md §4 (realized operating profile) + §8 (nuances).
+# Per docs/decisions/003-regime-decomposition.md (ADR-003).
+# Per docs/learning_logs/basics/11_capability_vs_realization.md (the framework).
+# Per docs/assumptions/status_taxonomy.md (every leaf carries {value, status, source}).
+#
+# Cadence: slow (weeks to seasons) — faster than capability (years), slower than
+# the hour-by-hour operating mode + load level.
+#
+# Source data: data/paths/lockport/mor_daily.parquet (1,826 daily MOR rows, 2021-2025).
+# Classification methodology candidate: notebooks/scratch/realized_profile_classify.py
+# This is an INFORMAL, analyst-judged, threshold-based classification — the proposal
+# for the eventual graduation ADR-005, NOT a committed classifier.
+
+# ============================================================================
+# Metadata
+# ============================================================================
+
+profile_as_of:
+  value: "2026-05-26"
+  status: real_observed
+  source: "Classified 2026-05-26 from mor_daily.parquet (Phase 4 of strategic spine) via notebooks/scratch/realized_profile_classify.py"
+  caveat: "Informal classification. Covers 2021-2025 (the MOR window). Thresholds are heuristic (see classification_method); the labels are a candidate for ADR-005, not committed methodology."
+
+methodology_ref:
+  framework_anchor:
+    value: "docs/decisions/003-regime-decomposition.md"
+    status: real_reported
+    source: "ADR-003 committed the regime -> (capability envelope + realized operating profile) split"
+  concept_ref:
+    value: "docs/discussion/01_regime_concept.md §4 + §8"
+    status: real_reported
+    source: "Realized operating profile concept + nuances (latent; multi-element; weeks-seasons cadence)"
+  classifier_script:
+    value: "notebooks/scratch/realized_profile_classify.py"
+    status: real_reported
+    source: "The reproducible classification methodology candidate that produced the numbers below"
+  capability_envelope_ref:
+    value: "data/assets/lockport/capability_envelope.yaml"
+    status: real_reported
+    source: "The capability side — realized profile must be a subset of it (see realization_vs_capability)"
+
+# ============================================================================
+# Headline summary
+# ============================================================================
+
+profile_summary:
+  overall:
+    value: "Seasonal hybrid: cogen + must-run realized in winter; mid-merit realized in summer; mostly idle in shoulder. NOT baseload (CF never near threshold). NOT peaker (not capable)."
+    status: real_computed
+    source: "Derived from per_season classification below"
+  overall_capacity_factor_pct:
+    value: 9.7
+    status: real_observed
+    source: "mor_daily 2021-2025: sum(net_output_mwh) / (221.3 MW x 24 h x 1826 days)"
+    caveat: "Low CF for a CCGT — consistent with a steam-host-driven cogen, not a merchant baseload. The plant's reason-to-run is steam + scarcity, not continuous energy."
+  realized_duties:
+    value: ["cogen", "mid_merit", "must_run"]
+    status: real_computed
+    source: "Duties actually exercised in 2021-2025 (per per_season + realization_vs_capability)"
+  not_realized_but_capable:
+    value: ["baseload"]
+    status: real_computed
+    source: "baseload is in the capability envelope but never realized (CF never >= 70%) — latent capability / unrealized optionality"
+  trend_flag:
+    value: "Generation trending UP: annual CF 2.9% (2021) -> 21.0% (2025), ~2x prior years. Possible realization shift (market / merit-order change) worth tracking — the kind of transition the realized-profile concept is meant to surface."
+    status: real_observed
+    source: "per_year_trend below"
+
+# ============================================================================
+# Per-season classification (pooled 2021-2025) — the headline structure
+# ============================================================================
+# Seasons: winter = Dec/Jan/Feb, summer = Jun/Jul/Aug, shoulder = rest.
+
+per_season:
+  winter:
+    days: {value: 451, status: real_observed, source: "mor_daily Dec/Jan/Feb 2021-2025"}
+    capacity_factor_pct: {value: 23.6, status: real_observed, source: "sum(net_output)/(221.3*24*451)"}
+    operating_days: {value: 177, status: real_observed, source: "net_output_mwh > 0"}
+    steam_only_days: {value: 267, status: real_observed, source: "0 MWh + gas>100 + dhts>100"}
+    offline_days: {value: 7, status: real_observed, source: "neither operating nor steam-only"}
+    dhts_per_day_mmbtu: {value: 628, status: real_observed, source: "mean dhts_net_thermal_mmbtu"}
+    mean_ambient_f: {value: 30, status: real_observed, source: "mean ambient_temp_f"}
+    realized_label:
+      value: "cogen + must-run"
+      status: real_computed
+      source: "Steam dominates (267/451 steam-only); almost never fully offline (7/451). Steam-host obligation drives operation regardless of LMP."
+      caveat: "This is the clearest realized-duty signal — winter Lockport is a steam machine."
+  shoulder:
+    days: {value: 915, status: real_observed, source: "mor_daily Mar-May + Sep-Nov 2021-2025"}
+    capacity_factor_pct: {value: 1.3, status: real_observed, source: "sum(net_output)/(221.3*24*915)"}
+    operating_days: {value: 39, status: real_observed, source: "net_output_mwh > 0"}
+    steam_only_days: {value: 193, status: real_observed, source: "0 MWh + gas>100 + dhts>100"}
+    offline_days: {value: 683, status: real_observed, source: "neither operating nor steam-only"}
+    dhts_per_day_mmbtu: {value: 123, status: real_observed, source: "mean dhts_net_thermal_mmbtu"}
+    mean_ambient_f: {value: 50, status: real_observed, source: "mean ambient_temp_f"}
+    realized_label:
+      value: "mostly-idle (+ light steam)"
+      status: real_computed
+      source: "683/915 offline; light steam (193 steam-only days). The classifier also tags borderline 'cogen+must-run' (steam-only share 21%, just over the 20% threshold) — threshold-sensitive; the dominant character is idle."
+      caveat: "Threshold sensitivity: shoulder steam-only share (0.21) sits right at the 0.20 cogen-trigger. Dominant read is mostly-idle. Flag for ADR-005 threshold tuning."
+  summer:
+    days: {value: 460, status: real_observed, source: "mor_daily Jun/Jul/Aug 2021-2025"}
+    capacity_factor_pct: {value: 12.6, status: real_observed, source: "sum(net_output)/(221.3*24*460)"}
+    operating_days: {value: 140, status: real_observed, source: "net_output_mwh > 0"}
+    steam_only_days: {value: 0, status: real_observed, source: "0 MWh + gas>100 + dhts>100 — ZERO in summer"}
+    offline_days: {value: 320, status: real_observed, source: "neither operating nor steam-only"}
+    dhts_per_day_mmbtu: {value: 0, status: real_observed, source: "mean dhts_net_thermal_mmbtu — host needs no steam in summer"}
+    mean_ambient_f: {value: 71, status: real_observed, source: "mean ambient_temp_f"}
+    realized_label:
+      value: "mid-merit"
+      status: real_computed
+      source: "ZERO steam delivery in summer (host has no heating need); dispatch is purely electricity/merit-order. 140 operating days, CF 12.6% — runs when economic, idle otherwise."
+      caveat: "Summer reveals the 'pure merchant' face of the plant — no steam obligation, so it dispatches on spark economics alone. This is the cleanest mid-merit-realized window."
+
+# ============================================================================
+# Per-year trend
+# ============================================================================
+
+per_year_trend:
+  capacity_factor_pct_by_year:
+    value: {2021: 2.9, 2022: 10.1, 2023: 4.5, 2024: 9.9, 2025: 21.0}
+    status: real_observed
+    source: "mor_daily annual CF"
+    caveat: "Strong upward trend; 2025 (21.0%) ~2x the prior-year average. Realization is shifting toward more electricity generation."
+  dhts_total_mmbtu_by_year:
+    value: {2021: 84358, 2022: 83611, 2023: 81999, 2024: 63983, 2025: 81926}
+    status: real_observed
+    source: "mor_daily annual sum(dhts_net_thermal_mmbtu)"
+    caveat: "Stable ~80-84k MMBtu/yr except 2024 (~64k) — matches operating_profile.yaml dhts.dip_year_2024. Host steam demand is stable; the CF trend is electricity-side, not steam-side."
+  interpretation:
+    value: "Steam delivery is stable year-over-year (cogen obligation steady); the rising CF is incremental electricity generation. So the realized-profile shift is 'more mid-merit on top of steady cogen', not a cogen change."
+    status: real_computed
+    source: "Cross-reading CF trend (rising) vs DHTS trend (flat)"
+
+# ============================================================================
+# Operating-mode mix (when generating electricity)
+# ============================================================================
+
+operating_mode_mix:
+  day_counts:
+    value: {3xCC: 212, 2xCC: 94, 1xCC: 50, steam_only: 460, offline: 1010}
+    status: real_observed
+    source: "mor_daily: per-CT generation (ctg1/2/3_mwh > 5 MWh/day) classified into mode"
+  note_2xcc:
+    value: "2xCC is used on 94 of 356 operating days (26%). The v1 model backtest never picks 2xCC (gaps_and_priorities.md #9, per-generator state). Real data shows it IS a real operating mode — reinforces that gap."
+    status: real_observed
+    source: "Cross-reference backtest_findings.md + gaps_and_priorities.md #9"
+
+# ============================================================================
+# Realization vs capability — the subset check
+# ============================================================================
+# Every realized duty MUST be in the capability envelope. This is the core
+# relationship (realized ⊆ capability). Cross-checked against capability_envelope.yaml.
+
+realization_vs_capability:
+  cogen:
+    capable: {value: true, status: real_reported, source: "capability_envelope.yaml cogen=true"}
+    realized: {value: true, status: real_computed, source: "winter steam-driven operation (per_season.winter)"}
+  mid_merit:
+    capable: {value: true, status: real_computed, source: "capability_envelope.yaml mid_merit=true"}
+    realized: {value: true, status: real_computed, source: "summer merit-order dispatch (per_season.summer)"}
+  must_run:
+    capable: {value: true, status: real_reported, source: "capability_envelope.yaml must_run_eligible=true (steam-host mechanism)"}
+    realized: {value: true, status: real_computed, source: "winter steam-only days = forced operation for steam delivery"}
+  baseload:
+    capable: {value: true, status: real_computed, source: "capability_envelope.yaml baseload=true (hardware supports)"}
+    realized: {value: false, status: real_computed, source: "CF never approaches 70% (peak 23.6% winter, 9.7% overall). LATENT capability — unexercised."}
+    note: "This is the headline capability!=realization case for Lockport: baseload-capable but never baseload-realized. Unrealized optionality for valuation."
+  peaker:
+    capable: {value: false, status: real_reported, source: "capability_envelope.yaml peaker=false (720-min start)"}
+    realized: {value: false, status: real_computed, source: "Cannot realize what isn't in the envelope"}
+  frequency_regulation:
+    capable: {value: null, status: placeholder, source: "capability_envelope.yaml frequency_regulation=placeholder (AGC unverified)"}
+    realized: {value: false, status: real_computed, source: "No AS/regulation signature in MOR daily (no evidence of regulation participation). Note: MOR daily lacks sub-hourly granularity to detect regulation directly."}
+
+# ============================================================================
+# Classification method (the candidate for ADR-005)
+# ============================================================================
+
+classification_method:
+  day_classification:
+    value: "Each day -> {operating | steam_only | offline}. operating = net_output_mwh>0. steam_only = net_output<=0 AND gas>100 MMBtu AND dhts_net_thermal>100 MMBtu. offline = neither. Operating-day mode via per-CT: count ctg{1,2,3}_mwh > 5 -> 3xCC/2xCC/1xCC."
+    status: assumed_industry
+    source: "notebooks/scratch/realized_profile_classify.py; thresholds mirror operating_profile.yaml mode_classifier"
+    confidence: MEDIUM
+    caveat: "Heuristic thresholds (5 MWh CT-on, 100 MMBtu gas/dhts floors). Sensitivity not exhaustively tested."
+  period_labeling:
+    value: "Aggregate days to season/year -> CF, steam-only share, offline share, dhts/day -> realized-duty label via rules: CF>=0.70 -> baseload; steam-only-share>0.20 or dhts/day>200 -> cogen+must-run; 0.30<=CF<0.70 or (CF>=0.05 and dhts/day<50) -> mid-merit; offline-share>0.50 and CF<0.05 -> mostly-idle."
+    status: assumed_industry
+    source: "realized_profile_classify.py::realized_label"
+    confidence: MEDIUM
+    caveat: "Multi-label (a period can be cogen+must-run AND mid-merit). Thresholds are the ADR-005 starting proposal, not committed. Shoulder-season borderline (see per_season.shoulder) shows threshold sensitivity."
+
+# ============================================================================
+# Validation
+# ============================================================================
+
+validation:
+  cross_check_steam_only_count:
+    value: "PASS — classifier counts 460 steam-only days; operating_profile.yaml steam_only_mode.days_observed = 460. Independent derivation reproduces the number exactly."
+    status: real_observed
+    source: "realized_profile_classify.py VALIDATION line vs operating_profile.yaml"
+  subset_check:
+    value: "PASS — every realized duty (cogen, mid_merit, must_run) is in the capability envelope. baseload is capable-but-not-realized (allowed). No realized duty falls outside the envelope."
+    status: real_computed
+    source: "realization_vs_capability cross-check"
+  face_validity:
+    value: "PASS — winter-cogen / summer-mid-merit / shoulder-idle matches the contract structure (GM/Harrison Radiator steam host needs winter heating, none in summer) confirmed in capability_envelope.yaml web audit. The zero-summer-steam fact independently corroborates a heating-driven host."
+    status: real_computed
+    source: "Cross-reference capability_envelope.yaml cogen.evidence (steam host = GM Harrison Radiator)"
+  open_flags:
+    value:
+      - "2025 CF jump (21% vs ~7% prior) — market shift, contract change, or data artifact? Worth a dedicated look before forward-projection (Stream A) trusts the recent trend."
+      - "Shoulder-season label is threshold-sensitive (steam-only share 0.21 ~ 0.20 trigger). Tune in ADR-005."
+      - "frequency_regulation realization can't be confirmed/denied from MOR daily (no sub-hourly data) — needs higher-resolution SCADA or AS settlement records."
+    status: real_observed
+    source: "Flags surfaced during classification"
+
+# ============================================================================
+# Graduation deferrals (for ADR-005, the realized-profile methodology ADR)
+# ============================================================================
+
+graduation_deferrals:
+  representation:
+    value: "This file uses a per-season + per-year vector with multi-label realized duties. ADR-005 should commit: categorical-per-period vs vector-of-weights vs continuous-intensity. Current: multi-label flags per period."
+    status: real_reported
+    source: "Per ADR-003 §5 / discussion 01 §8.2 (vector of postures)"
+  granularity:
+    value: "Seasonal headline + annual trend used here. ADR-005 should commit the canonical granularity (monthly? seasonal? rolling-window?). Monthly available via classifier --parquet."
+    status: real_reported
+    source: "Per discussion 01 §8.3 (weeks-seasons cadence)"
+  classifier_thresholds:
+    value: "The 5-MWh / 100-MMBtu / CF-band thresholds are heuristic. ADR-005 should commit (or learn) them, with sensitivity analysis."
+    status: real_reported
+    source: "classification_method caveats"
+  parameter_conditioning:
+    value: "The point of realized profile is to CONDITION model parameters (wear rates, dispatch heuristics, degradation) by active profile. Not yet wired — that's the graduation payoff, feeding Stream B (load/temperature) and Stream A (forward sims pick a profile)."
+    status: real_reported
+    source: "Per strategic_spine §3.3 / §4 Phase 4-6"
+  transition_detection:
+    value: "The 2025 CF jump suggests realized-profile transitions are real and detectable. ADR-005 / Stream A should decide whether to model transitions explicitly."
+    status: real_reported
+    source: "per_year_trend.trend_flag"

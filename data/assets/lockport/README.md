@@ -27,7 +27,8 @@
 | `market_context.yaml` | C | renewablesinfo brief §7 + node_crosswalk | Populated |
 | `operating_profile.yaml` | D | diligence-extractor MOR notebook final-summary table | Populated |
 | `ltsa_terms.yaml` | F | Data room (pending extraction) | Placeholder values; pending D2 extraction |
-| `capability_envelope.yaml` | Phase 1 of [strategic spine](../../../docs/plans/00_strategic_spine.md) | engineering.yaml + identity.yaml + learning_logs/basics/10 + 11 | **Skeleton — added 2026-05-25**. Six duties populated (cogen, mid_merit, baseload, peaker, frequency_regulation, must_run_eligible). Five data gaps surfaced for Phase 2 data-fill. Per ADR-003. |
+| `capability_envelope.yaml` | Phase 1-2a of [strategic spine](../../../docs/plans/00_strategic_spine.md) | engineering.yaml + identity.yaml + thermal_enriched + web audit | **Populated 2026-05-26**. Capability side. Six duties + capability_modifiers (fuel-switching, simple-cycle, duct burners, turndown). Tier-1 (EIA) closed; Tier-2 D1-web done (steam host = GM Harrison Radiator, PURPA QF structure, RMR negative); Tier-2 D2 (data room) pending. Per ADR-003. |
+| `realized_operating_profile.yaml` | Phase 4 of [strategic spine](../../../docs/plans/00_strategic_spine.md) | mor_daily.parquet (2021-2025) via notebooks/scratch/realized_profile_classify.py | **Populated 2026-05-26**. Realization side. Seasonal hybrid: cogen+must-run (winter) / mid-merit (summer) / mostly-idle (shoulder). Baseload capable-but-not-realized. Validation: steam-only count 460 matches operating_profile.yaml. Per ADR-003. |
 | `caveats.md` | C/D | Composition of public + private caveats | Populated |
 | `provenance.md` | C/D/F | Where each artifact came from + dates | Populated |
 
