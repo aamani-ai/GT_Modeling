@@ -27,8 +27,8 @@
 envelope_as_of:
   value: "2026-05-26"
   status: real_reported
-  source: "Skeleton assembled 2026-05-25 (Phase 1); Tier-1 enrichment 2026-05-26 from renewablesinfo_org thermal_enriched.parquet (EIA-860 3_1/3_5)"
-  caveat: "Tier-1 (physical/engineering capability from EIA) now populated. Tier-2 (regulatory/market qualification: AGC, PURPA QF, ICAP, RMR) remains placeholder pending NYISO/FERC web sourcing + D2 diligence-extractor (still processing). See extracting_capability_from_thermal_archive.md for the two-tier framing."
+  source: "Skeleton 2026-05-25 (Phase 1); Tier-1 enrichment 2026-05-26 (thermal_enriched.parquet); Tier-2 D1 web audit 2026-05-26"
+  caveat: "Tier-1 (EIA physical capability) populated. Tier-2 D1 web audit (2026-05-26) results: CONFIRMED steam host = GM Harrison Radiator + NYSEG electricity offtake -> PURPA QF structure (now assumed_industry HIGH, formal docket still pending); RMR negative confirmed. NOT web-retrievable (reclassified to D2/operator): per-plant AGC qualification, NYISO ICAP participation, formal QF Form-556 docket. Key meta-finding: most Tier-2 market-qualification data is NOT publicly retrievable at plant grain — it lives in the data room (D2) or NYISO market-participant data, not public web. See extracting_capability_from_thermal_archive.md §8."
 
 envelope_methodology_ref:
   framework_anchor:
@@ -91,10 +91,10 @@ cogen:
     source: "engineering.yaml plant.is_chp = true; EIA-860 schedule 3_1 'Associated with CHP System = Yes' for all 4 generators"
     confidence: HIGH
   evidence:
-    value: "DHTS (Daily Heat Tape Schedule) infrastructure present per renewablesinfo equipment profile; HRSGs configured with steam-export capability; PURPA-era 1992 plant designed for cogeneration as primary purpose; Entity Type Q (cogeneration entity) per EIA-860; MOR data shows winter steam-driven dispatch patterns"
+    value: "DHTS (Daily Heat Tape Schedule) infrastructure present per renewablesinfo equipment profile; HRSGs configured with steam-export capability; PURPA-era 1992 plant designed for cogeneration as primary purpose; Entity Type Q (cogeneration entity) per EIA-860; MOR data shows winter steam-driven dispatch patterns. STEAM HOST identified (2026-05-26 web audit): the original cogen host is the Harrison Radiator Division of General Motors (steam + electricity delivered to the GM Harrison Radiator plant in Lockport, NY); electricity also sold to NYSEG (New York State Electric & Gas) under a PURPA-era arrangement."
     status: real_reported
-    source: "Composite: engineering.yaml + identity.yaml + diligence-extractor MOR notebook Stage 1 (steam-only days identified)"
-    caveat: "Active steam-host status post-2024 is presumed but not verified in current YAMLs. The 'cogen-capable' qualification is structurally present (infrastructure + EIA-reported CHP flag); host-side contract activity awaits D2 confirmation."
+    source: "Composite: engineering.yaml + identity.yaml + diligence-extractor MOR notebook Stage 1; steam-host + offtaker identity from DOE FECM 1992 order (ord662) + public plant histories (gridinfo, FECM), web audit 2026-05-26"
+    caveat: "Steam host = Harrison Radiator (GM) as of 1992 commissioning. GM later divested Harrison Radiator (→ Delphi Thermal → subsequent owners); the host *facility* at Lockport likely continues but the host *entity* name/owner may have changed. Current host contract status + counterparty identity awaits D2 (data-room) confirmation. The cogen *capability* (infrastructure + EIA CHP flag) is firm regardless."
 
 mid_merit:
   qualified:
@@ -136,12 +136,12 @@ frequency_regulation:
   qualified:
     value: null
     status: placeholder
-    source: "NYISO AGC qualification status not yet verified from NYISO MIS resource registration"
-    validation_path: "Check NYISO MIS (Member Information System) resource registration records for plant 54041 or Lockport's specific generator IDs. AGC qualification is binary; either the plant is registered or it isn't."
+    source: "NYISO AGC qualification status unverified. Web audit 2026-05-26 finding: per-plant AGC/regulation participation is NOT publicly retrievable (NYISO does not publish a public AGC-qualified-resource list at plant grain). Does not yield to a D1 web check."
+    validation_path: "Reclassified to D2 (data-room: any AS/regulation participation records) OR direct NYISO market-participant data / operator inquiry. The 62% CT min-load floor (capability_modifiers.load_turndown) also argues the CTs are not naturally suited to fine regulation; the CA is more flexible. NOT closeable by public web search."
   evidence:
-    value: "Hardware *may* be sufficient — 3×1 CCGT can ramp, and AS market participation isn't inherently restricted. But AGC qualification is a formal certification, not a hardware property. Without checking the NYISO MIS record, this duty's envelope status is genuinely unknown."
+    value: "Hardware *may* partly suffice (the CA ramps; CTs have a high 62% floor), but AGC qualification is a binary formal certification, not a hardware property — and it's not publicly disclosed per-plant. Genuinely unknown; needs D2 or operator inquiry."
     status: placeholder
-    source: "Hardware-side reasoning per engineering.yaml; AGC qualification side is the binary gate that's unverified"
+    source: "Hardware reasoning per engineering.yaml + capability_modifiers.load_turndown; AGC gate unverified and not web-retrievable (audit 2026-05-26)"
 
 must_run_eligible:
   qualified:
@@ -158,14 +158,16 @@ must_run_eligible:
     purpa_qf:
       qualified:
         value: true
-        status: placeholder
-        source: "Strongly suggested by 1992 PURPA-era construction + EIA Entity Type Q (cogeneration entity) + IPP CHP sector classification — but QF status itself has not been verified in FERC's PURPA QF database"
-        validation_path: "FERC PURPA QF database (https://ferconline.ferc.gov) — search for plant 54041 / Lockport Energy Associates LP. Also data-room regulatory filings."
+        status: assumed_industry
+        source: "Strong circumstantial: 1992 PURPA-era cogen + Entity Type Q + IPP CHP sector + (web audit 2026-05-26) confirmed PURPA-structure operation — electricity sold to NYSEG (utility must-purchase) and steam+power to GM Harrison Radiator host. This is the textbook PURPA QF cogen structure."
+        confidence: HIGH
+        validation_path: "Formal current QF status still unverified: FERC QF database / eLibrary Form 556 search for Lockport Energy Associates LP (the public web search did not surface the docket; FERC's QF search is a JS form — needs direct query or data-room regulatory filings)."
       evidence:
-        value: "Indirect evidence (vintage, entity type, sector) is consistent with QF status. Direct evidence (FERC database entry, active QF status, current efficiency-threshold compliance) is not yet collected."
-        status: placeholder
-        source: "Indirect inference; direct verification pending"
-        caveat: "PURPA QF status can lapse if the plant fails to meet the efficiency threshold (per 18 CFR Part 292). Verify current status, not just historical."
+        value: "The QF *structure* is now confirmed by public sources (NYSEG electricity offtake + GM Harrison Radiator steam host + 1992 PURPA-era cogen). What remains unverified is the *formal current QF status* (active Form 556, current efficiency-threshold compliance per 18 CFR Part 292)."
+        status: assumed_industry
+        source: "Web audit 2026-05-26 (DOE FECM 1992 order + public plant histories) upgraded this from pure inference to confirmed-structure; formal docket confirmation still pending."
+        confidence: HIGH
+        caveat: "PURPA QF status can lapse if the plant fails the efficiency threshold (18 CFR Part 292). Strong evidence it WAS a QF; current formal status needs FERC eLibrary or data room."
     steam_host_obligation:
       qualified:
         value: true
@@ -173,31 +175,31 @@ must_run_eligible:
         source: "MOR data (per diligence-extractor heat-rate notebook) shows DHTS deliveries on cold days, indicating active steam-host contract through 2024"
         confidence: MEDIUM
       evidence:
-        value: "Active steam-host obligation drives must-run dispatch during DHTS-required hours. In v1, modeled as coldest 20% of days proxy. Contract terms (hours, quantities, force majeure) are pending data-room extraction."
+        value: "Active steam-host obligation drives must-run dispatch during DHTS-required hours. Host identified (2026-05-26 web audit): GM Harrison Radiator Division (Lockport, NY). In v1, modeled as coldest 20% of days proxy. Contract terms (hours, quantities, force majeure) pending data-room extraction."
         status: real_reported
-        source: "diligence-extractor MOR notebook Stage 1 (steam-only days identified)"
-        caveat: "Host-side contract continuity post-2024 is presumed but not verified. Data-room extraction will confirm contract terms and current status."
+        source: "diligence-extractor MOR notebook Stage 1 (steam-only days) + web audit 2026-05-26 (host identity)"
+        caveat: "Host = GM Harrison Radiator as of 1992; GM divested Harrison Radiator, so current host entity may differ (facility likely continues). Contract continuity post-2024 + current counterparty pending D2."
     rmr:
       qualified:
         value: false
         status: real_computed
-        source: "Lockport is not on NYISO's published Reliability Must-Run designation list as of last known check"
-        confidence: LOW
-        validation_path: "Quick annual check against NYISO operations website / RMR designations list. Status is currently asserted as false based on absence from public RMR list; should be re-verified annually."
+        source: "No public record ties Lockport to a NYISO Reliability-Must-Run designation. Web audit 2026-05-26 (NYISO RMR + Lockport) surfaced only the generic RMR framework, no Lockport-specific designation."
+        confidence: MEDIUM
+        validation_path: "Re-verify annually against NYISO RMR designations. Negative-evidence basis (absence from public RMR actions)."
       evidence:
-        value: "RMR designations are public ISO actions. Lockport does not appear on the NYISO RMR list. Status is high-confidence-not-active but the annual re-verification step is wise."
+        value: "RMR designations are public ISO actions; a Lockport RMR would surface in NYISO filings and news. None found. High-confidence not-active. (Lockport's must-run character comes from the steam-host obligation, not RMR.)"
         status: real_computed
-        source: "Negative-evidence assertion (absence from public list)"
+        source: "Negative-evidence assertion; web audit 2026-05-26 found no Lockport RMR record"
     capacity_firm:
       qualified:
         value: null
         status: placeholder
-        source: "NYISO ICAP capacity market participation for Lockport is not yet integrated into YAMLs"
-        validation_path: "NYISO public ICAP auction clearing records for plant 54041 across recent years; data-room ICAP commitment letters if available"
+        source: "NYISO ICAP capacity-market participation for Lockport not yet established. Web audit 2026-05-26 finding: NYISO ICAP clears at zone/aggregate level — per-plant participation is NOT publicly retrievable via web. This item does not yield to a D1 web check."
+        validation_path: "Reclassified to D2 (data-room ICAP commitment letters / supplier-side settlement) OR direct NYISO market-participant data / operator inquiry. NOT closeable by public web search."
       evidence:
-        value: "Lockport may or may not participate in NYISO ICAP capacity market. This is gap #2 in gaps_and_priorities.md (NYISO ICAP revenue, +$5-9M/yr if active). Open question; same data source resolves both the capacity revenue question and the capacity-firm must-run question."
+        value: "Per-plant ICAP participation isn't public. Also gap #2 in gaps_and_priorities.md (NYISO ICAP revenue, +$5-9M/yr if active). The capacity revenue question and the capacity-firm must-run question share this source — both need D2 or operator data."
         status: placeholder
-        source: "Open; same Phase 2 D1 audit will address"
+        source: "Web audit 2026-05-26 confirmed not publicly retrievable; reclassified D1-web -> D2/operator"
 
 # ============================================================================
 # Capability modifiers — not duties, but attributes that condition duties
@@ -296,25 +298,39 @@ phase_2_data_gaps:
       - "load-turndown floors (CT 62%, CA 19%) — CLOSED via EIA min_load_pct"
     status: real_reported
     source: "Tier-1 (physical/engineering) capability closed from renewablesinfo_org thermal_enriched.parquet, 2026-05-26. See extracting_capability_from_thermal_archive.md."
-  tier_2_open_d1_web:
-    value:
-      - "NYISO MIS — AGC qualification record for plant 54041 (for frequency_regulation; binary gate)"
-      - "FERC PURPA QF database — plant 54041 entry (for must_run.purpa_qf; can lapse on efficiency threshold)"
-      - "NYISO public — ICAP auction clearing records for Lockport (for must_run.capacity_firm + gap #2 in gaps_and_priorities.md, +$5-9M/yr)"
-      - "NYISO operations — RMR designation list (for must_run.rmr re-verification; negative-evidence check)"
-      - "NYISO MIS — fast-start certification (for peaker formal confirmation; LOW PRIORITY — physical proxy time_to_full_load already decides)"
-      - "OEM spec sheet or EIA-923 — ramp-rate verification (~20 MW/min asserted for mid_merit; time_to_full_load is cold-start not ramp)"
-    status: real_reported
-    source: "Tier-2 regulatory/market qualification — NOT in EIA archive; needs NYISO/FERC public web records. Per extracting_capability_from_thermal_archive.md §8."
+  tier_2_d1_web_audit_2026_05_26:
+    closed_or_advanced:
+      value:
+        - "Steam-host identity — CONFIRMED GM Harrison Radiator Division (cogen.evidence + steam_host_obligation); current-entity caveat (GM divested)"
+        - "Electricity offtaker — CONFIRMED NYSEG under PURPA-era arrangement"
+        - "PURPA QF structure — ADVANCED placeholder -> assumed_industry HIGH (NYSEG + GM host + 1992 cogen = textbook QF); formal docket still pending"
+        - "RMR — negative CONFIRMED (no public Lockport RMR record); real_computed, MEDIUM"
+        - "Ownership (side-finding, belongs in identity.yaml) — Fortistar LLC 76% / Osaka Gas Co 24% (GEM)"
+      status: real_reported
+      source: "Web audit 2026-05-26: DOE FECM 1992 order, GEM, gridinfo, public plant histories"
+    not_web_retrievable_reclassified_to_d2_or_operator:
+      value:
+        - "NYISO AGC qualification (frequency_regulation) — NOT public per-plant; -> D2 / operator inquiry"
+        - "NYISO ICAP participation (capacity_firm + gap #2) — clears at zone/aggregate; per-plant NOT public; -> D2 / NYISO market data"
+        - "Formal PURPA QF docket (Form 556) — FERC QF search is a JS form; not surfaced by web search; -> FERC eLibrary direct or data room"
+      status: real_reported
+      source: "Key meta-finding: most Tier-2 market-qualification data is NOT publicly retrievable at plant grain. The 'D1 web' lane for capability has limited yield; market-qualification mostly lives in D2."
+    still_low_priority:
+      value:
+        - "NYISO fast-start certification (peaker formal confirmation) — physical proxy (720-min start) already decides; skip unless needed"
+        - "OEM/EIA-923 ramp-rate verification (~20 MW/min for mid_merit) — nice-to-have"
+      status: real_reported
+      source: "Deprioritized — not decision-changing"
   tier_2_open_d2_dataroom:
     value:
-      - "Steam-host status post-2024 (commercial agreements + host correspondence) — confirms cogen *realization* (capability already confirmed via is_chp)"
-      - "PURPA QF documentation (regulatory filings)"
+      - "Steam-host CURRENT status + counterparty (host identity now known = GM Harrison Radiator originally; confirm current owner/contract)"
+      - "Formal PURPA QF documentation (Form 556 / regulatory filings)"
       - "Active steam-offtake contract terms (hours, quantities, force majeure)"
-      - "ICAP commitment letters (if Lockport participates in NYISO ICAP)"
+      - "NYISO ICAP commitment letters / participation (capacity_firm + revenue gap #2)"
+      - "Any AS / regulation participation records (frequency_regulation)"
       - "LTSA-related capability constraints (cycle-count limits, EOH allowances) — also feeds gap #1 in gaps_and_priorities.md"
     status: real_reported
-    source: "Tier-2 via diligence-extractor (D2); user-led workstream, still processing."
+    source: "Tier-2 via diligence-extractor (D2); user-led workstream, still processing. The web audit pushed MORE items here than originally expected — market-qualification is a D2 problem, not D1."
 
 # ============================================================================
 # Graduation criteria (notes for ADR-004, the future capability envelope ADR)

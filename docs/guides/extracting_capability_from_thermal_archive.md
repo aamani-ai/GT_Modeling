@@ -181,7 +181,23 @@ When you've maxed out Tier 1, these remain. Document them as `placeholder` with 
 | **ICAP / capacity-firm participation** | NYISO public ICAP auction records + data-room commitment letters | Also closes gap #2 in `gaps_and_priorities.md` (NYISO ICAP revenue). |
 | **Active steam-offtake contract** (cogen realization) | Data room — commercial agreements (D2) | Capability (is_chp) is confirmed; the *active host contract* is the realization-side question. |
 
-The first five are mostly D1-web (public NYISO/FERC records). The last two overlap D2 (data-room extraction, still under processing).
+### §8.1 What the web audit actually yields (learned from the Lockport 2026-05-26 pass)
+
+A real D1 web audit was run for Lockport. The honest result reshapes the Tier-2 expectation:
+
+| Item | Web-retrievable? | Verdict |
+| :--- | :---: | :--- |
+| **Steam-host identity** | ✅ Yes | Found via DOE/public plant histories (Lockport's host = GM Harrison Radiator; electricity to NYSEG). Strong yield. |
+| **PURPA QF *structure*** | ✅ Yes (circumstantial) | NYSEG offtake + named steam host + 1992 cogen = textbook QF. Upgrades a `placeholder` to `assumed_industry`/HIGH. |
+| **PURPA QF *formal docket*** | ❌ No | FERC's QF search is a JS form; the Form-556 docket didn't surface in general web search. Needs FERC eLibrary direct query or data room. |
+| **RMR designation** | ✅ Yes (negative) | No public Lockport RMR record → confirms not-active. Negative evidence is a real result. |
+| **Ownership** | ✅ Yes | GEM gives the chain (Fortistar 76% / Osaka Gas 24%) — a bonus for identity.yaml. |
+| **AGC qualification** (freq-reg) | ❌ No | NYISO doesn't publish an AGC-qualified-resource list at plant grain. |
+| **ICAP participation** (capacity-firm) | ❌ No | NYISO ICAP clears at zone/aggregate; per-plant participation isn't public. |
+
+**The meta-finding**: the "D1 web" lane has *limited* yield for capability. It's good for **identity-adjacent facts** (host, offtaker, ownership) and **negative checks** (no RMR). It is **poor** for **market-qualification status** (AGC, ICAP, formal QF) — that data is not published at plant grain and realistically comes from **D2 (the data room)** or direct NYISO market-participant / operator data.
+
+Practical takeaway for a new asset: run the web audit, but **expect it to confirm identity/host/ownership + rule out RMR, and expect it to *not* close AGC/ICAP/formal-QF.** Budget those for D2, not D1. Don't burn time hunting public records that don't exist at plant grain.
 
 ---
 
