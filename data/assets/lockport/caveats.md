@@ -185,6 +185,8 @@ Even with the operational status correction (§1), 2024 generation pattern from 
 - `market_context.yaml.gas_market.v1_modeling_choice.hub_used_for_delivered_gas` = "Henry Hub" with `status: assumed_industry`, `confidence: LOW`, and a `validation_path` pointing to the v2 follow-on ADR
 - Every v1 model_card must surface this — banner content drafted in ADR-001
 
+**Tested-and-reverted (2026-05-27)**: A 2014-2017 Algonquin-minus-Henry-Hub *seasonal basis overlay* (monthly median basis added to Henry Hub: winter ≈ +$2.60, summer ≈ −$0.56/MMBtu) was implemented in N4 and run end-to-end. Two findings reverted it: (1) **it overstates 2018-2025 winter gas** for exactly the reason above (the 2014-2017 basis reflects the pre-Atlantic-Sunrise constrained era) — confirming the original §11 judgment; and (2) **it did not reduce the over-commit** — 9-yr spark fell ~$36M → $27M (more honest *margin-per-MWh*) but generation/over-commit stayed ~2.2× MOR and 2×CC stayed 0%. This **empirically confirms the over-commit is the price-taker *self-commitment* paradigm** (the model runs full output whenever spark > 0), not the gas-price level. So flat Henry Hub stands for v1; the real over-commit lever is dispatch realism (commitment hurdle + price-responsive output), not gas basis. Don't re-attempt the overlay without a real post-2018 delivered-gas series. See `docs/methodology/extra/temperature_load_fidelity.md`.
+
 **Reference**: [`../../../docs/decisions/001-gas-hub-treatment-v1.md`](../../../docs/decisions/001-gas-hub-treatment-v1.md)
 
 ---
