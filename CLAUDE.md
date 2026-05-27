@@ -197,18 +197,21 @@ data/paths/<asset>/            ← per-asset time series (LMP, gas, weather, MOR
 data/tech_class_defaults/      ← cross-asset reference
 data/outputs/<asset>/runs/notebook4_<timestamp>/   ← simulation outputs (gitignored)
 
-docs/methodology/{pnl_ledger,architecture,gaps_and_priorities,dispatch_mechanics,glossary}.md
+docs/methodology/{pnl_ledger,architecture,flowcharts,gaps_and_priorities,dispatch_mechanics,glossary}.md
 docs/methodology/extra/        ← findings docs that don't belong in main flow
 docs/methodology/assets/       ← plot assets used by methodology docs
+docs/implementation/{gt_engine,forward}/   ← how the src/ code works (overview/architecture/function-ref/io-schemas) — mirrors model-gpr's implementation/ pattern
 docs/guides/{asset_profile_dimensions,pulling_specs_from_powerplantsinfo,future_dimensions}.md
-docs/decisions/NNN-topic.md   ← ADRs
+docs/decisions/NNN-topic.md   ← ADRs (006 ambient wear, 007 creep+trip wiring)
 docs/assumptions/{status_taxonomy,placeholder_caveats}.md
 docs/plans/consolidation_plan.md   ← build plan + §13 status log
 docs/extra/                    ← prototype reference (frozen architectural source)
 
-notebooks/0N_topic.{py,ipynb}  ← jupytext pairs
+notebooks/0N_topic.{py,ipynb}  ← jupytext pairs (06 = forward scenarios)
 notebooks/scratch/             ← ad-hoc analysis scripts
-tests/test_*.py                ← 98 tests
+src/gt_engine/                 ← importable engine (extracted from N4): run_path/run_mode
+src/forward/                   ← forward scenario engine: data→select→build→run (RT analog windows → P10/P50/P90)
+tests/test_*.py                ← 104 tests (incl. test_gt_engine_regression.py — byte-identical engine gate)
 ```
 
 ## What v1 produces (every run)

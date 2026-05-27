@@ -61,6 +61,8 @@ Plus a parquet bundle with per-day state, LTSA accruals, inspection events, and 
 
 ## §2. The mental model — three layers, one feedback loop
 
+> **Visual companion**: [`flowcharts.md`](flowcharts.md) renders this loop and the wear/failure internals as Mermaid diagrams — start there if you think better in pictures, then come back for the words.
+
 The whole model can be drawn as three layers and a clock:
 
 ```
@@ -236,7 +238,11 @@ The cogen-VOM markup (×1.35), the synthetic must-run flag (coldest 20% of days)
 
 This is the heart of the model. Once you understand §5, the rest is bookkeeping.
 
+> **Where the code lives.** The engine described in §5 was extracted from notebook 4 into an importable package, [`src/gt_engine/`](../../src/gt_engine/) — exposed as `run_path()` (over an injected market path) with `run_mode()` as the historical-replay wrapper. The line-by-line code walkthrough is in [`docs/implementation/gt_engine/`](../implementation/gt_engine/) (incl. a one-day worked example). The forward scenario engine that runs this over conditioned analog windows is [`src/forward/`](../../src/forward/) / [`docs/implementation/forward/`](../implementation/forward/).
+
 ### §5.1 The plant state vector
+
+> **Worked-example deep dive**: [`wear_mechanics.md`](wear_mechanics.md) walks the state vector + step [8] (`update_stress`) field-by-field with the daily math, the accumulator→consequence map (which fields drive heat rate vs failure hazard vs inspection timing), the creep/fatigue laws, where washing/recovery is costed, and a one-day example.
 
 Twelve fields, one Python dataclass, propagates from day N to day N+1:
 
@@ -266,11 +272,15 @@ Twelve fields, one Python dataclass, propagates from day N to day N+1:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-The accumulators are the model's memory. Heat-rate degradation drifts with `hr_recov + fouling`; forced-outage probability comes from `df` (combustion hockey-stick), `tbc_time` (Weibull hazard rate), and `rotor_life`; inspection events fire when `eoh` crosses thresholds. Damage doesn't go away on its own; only inspection events reset specific accumulators.
+The accumulators are the model's memory. Heat-rate degradation drifts with `hr_recov + fouling`; forced-outage probability comes from `df` (combustion hockey-stick), `tbc_time` (Weibull hazard rate), `rotor_life`, and — since [ADR-007](../decisions/007-creep-wiring-and-trip-wear.md) — `dc` (creep-rupture hockey-stick); inspection events fire when `eoh` crosses thresholds. Damage doesn't go away on its own; only inspection events reset specific accumulators.
+
+> **Hot-section ambient weighting ([ADR-006](../decisions/006-ambient-weighted-wear.md))**: the two metal-temperature-driven accumulators — `dc` (creep) and `tbc_time` (TBC) — advance by an *ambient-weighted* fired-hours sum (hotter ambient → faster, re-anchored to the fired-hour-weighted mean ambient so the calibrated total is preserved and only the seasonal *distribution* shifts). The other accumulators advance on raw fired hours / starts. See [`flowcharts.md`](flowcharts.md) for the wear-accumulation and wear→failure diagrams.
 
 Defined and initialized in [`notebooks/03_daily_loop_feedback.py`](../../notebooks/03_daily_loop_feedback.py) §C; extended for outage tracking in [`notebooks/04_full_path_mode_comparison.py`](../../notebooks/04_full_path_mode_comparison.py) §C.
 
 ### §5.2 The 12-step daily loop
+
+> **Deep dive on steps [1]–[2] (the outage gates)**: [`outage_mechanics.md`](outage_mechanics.md) is an example-driven walkthrough of "am I already down?" + "do I break down today?" — the Bernoulli draw, the weighted cause attribution, the lognormal duration, trip wear, and a full multi-day trace.
 
 ```
 Day N begins (state = closing state of day N-1)
@@ -289,6 +299,9 @@ Day N begins (state = closing state of day N-1)
     │     YES → Pick cause (GT / HRSG / BG) weighted by component probs.
     │           Sample duration (lognormal, median by cause).
     │           Charge owner-cost ($0 / $500K / $750K).
+    │           TRIP WEAR (ADR-007): if plant was RUNNING, this is a
+    │             full-load trip → df += 8×cold-start fatigue,
+    │             eoh += 8×cold-start EOH (+ EOH-reserve accrual).
     │           Set outage_type = "forced_*", outage_days_remaining.
     │           Exit day.
     │
@@ -328,11 +341,13 @@ Day N begins (state = closing state of day N-1)
     state.eoh        += fired_hours + start_eoh_penalty
     state.fouling    += exponential approach to asymptote 2.5%
     state.hr_recov   += slow drift with fired hours
-    state.dc         += creep_rate × fired_hours
+    state.dc         += creep_rate × fired_hours_AMBIENT_WEIGHTED   ← ADR-006
     state.df         += fatigue per start (by type)
-    state.tbc_time   += fired_hours
+    state.tbc_time   += fired_hours_AMBIENT_WEIGHTED               ← ADR-006
     state.hrsg_cycles+= 1 × n_starts
     state.rotor_life += rotor rate × fired_hours
+    (ambient-weighted = Σ ambient_wear_factor(temp) over fired hours;
+     re-anchored so Σ weighted ≈ Σ raw → redistributes, doesn't re-level)
     │
     ▼
 [9] Cycle-end HR tracking: cumulative fuel_mmbtu and MWh since last inspection
@@ -361,6 +376,8 @@ Day N begins (state = closing state of day N-1)
 This is what runs 3,287 times for each of 3 modes in Notebook 4 (= 9,861 day-mode executions, ~50 seconds wall-clock).
 
 ### §5.3 Dispatch decision detail — what makes an operating mode pick
+
+> **Worked-example deep dive**: [`dispatch_economics.md`](dispatch_economics.md) decomposes the per-hour margin (`fuel_cost → spark → effective_spark → margin`) with numbers — including the start hurdles ("run if on" vs "won't start") and exactly where temperature enters (capacity, not the per-MWh spark).
 
 The dispatch decision is the single most-touched piece of logic. Per hour, the loop iterates over the three **operating modes** (3×CC / 2×CC / 1×CC) and picks the highest margin:
 
@@ -393,6 +410,7 @@ A daily probability assembled from three components per the prototype's understa
 P_GT   = P_combustion(df)          ← hockey-stick: P scale × max(0, df/budget − 0.60)²
        + P_TBC(tbc_time)           ← Weibull hazard rate: (β/η)(t/η)^(β-1) × 24
        + P_rotor(rotor_life)       ← 0.00003 × rotor_life (linear)
+       + P_creep(dc)               ← hockey-stick: scale × max(0, dc/budget − 0.50)²  (ADR-007)
 
 P_HRSG = HRSG_BASE × age_mult      ← 0.0075 × (1 + (years_elapsed/10) × 0.5)
 P_BG   = BG_BASE   × age_mult      ← 0.004  × (1 + (years_elapsed/10) × 0.5)
@@ -403,6 +421,7 @@ P_forced = 1 − (1 − P_GT)(1 − P_HRSG)(1 − P_BG)   ← independence assum
 A few notes:
 - The aging multiplier is capped at `(years_elapsed/10, 1.0)`. Earlier versions of the code (N3) treated `year_frac = day_idx / 365.0` as fraction-of-aging-window when the formula expects fraction. N3's 30-day window kept the bug invisible. N4 caught it during 9-year integration → fix applied (see N4 §E.4 + N4 status-log entry).
 - Each `P_combined` is capped at 10%/day per `P_FORCED_DAY_CAP` to prevent runaway hazard rates if `tbc_time` exceeds threshold.
+- `P_creep(dc)` ([ADR-007](../decisions/007-creep-wiring-and-trip-wear.md)) closed a gap where `dc` was accumulated but fed nothing. For low-CF Lockport `dc` stays far below the 0.50 inflection so `P_creep ≈ 0` (physically correct — it doesn't run enough to creep-rupture); the channel activates for high-CF / hot-running assets and is what makes the ADR-006 ambient weighting of `dc` consequential.
 - The constants are all from Bucket B (Athens-prototype defaults). These are the model's biggest tornado-driver per the prototype's sensitivity analysis; Phase L Monte Carlo sweeps them.
 
 ### §5.5 Policy mode A/B/C — the wear-penalty curve
@@ -431,7 +450,7 @@ wear_mult
 
 The multiplier is applied to the GT-share (42%) of the Kumar 2012 start C&M cost; that wear-penalty cash is amortized over a 6-hour min-run proxy to produce an effective hurdle rate on start decisions. Effect: as EOH approaches an inspection threshold, Mode B / C make starts more expensive → fewer starts → less wear → inspection delayed.
 
-**Honest finding in v1**: Lockport's low capacity factor means EOH headroom stays > 4,000 for most of the 9-year horizon. So `wear_mult ≈ 1.0` for nearly all hours, and Mode B / C barely diverge from Mode A in this single-path realization. The mechanic is in place; it just doesn't bind hard at Lockport's CF. See N4 §Q findings.
+**Honest finding in v1 (corrected)**: `wear_mult ≈ 1.0` for *most* hours (low CF → headroom usually > 4,000), but the policies still **diverge meaningfully on Net P&L** — **A ≈ −$146M vs B = C ≈ −$123M (~$23M)**. The driver is *inspection timing*: the per-policy schedule places the MI at A → 2025-04-01 (inside the window) but B → 2026-10 / C → 2029 (outside), so **A incurs the MI while B/C defer it past the horizon**; **B and C are identical** (C's extra conservatism never bites at this CF). ⚠️ Read this with the **finite-horizon caveat** — B/C look better partly because the deferred MI just falls past the window. Full treatment + caveats: [`dispatch_mechanics.md`](dispatch_mechanics.md) §3.5–§3.6.
 
 ### §5.6 Inspection event triggering
 
@@ -771,6 +790,8 @@ The aging-multiplier formula `age_mult = 1 + year_frac × (MAX - 1)` was being c
 
 **Action item**: backport this fix into N3 (or document why N3's short horizon makes it moot).
 
+**Second fix (2026-05-27, Sanity-6 calendar exemption)**: the in-notebook sanity check "inspections triggered near threshold" flagged *any* inspection firing >5K EOH below threshold as an anomaly. But **calendar**-triggered inspections legitimately fire below the EOH threshold (they're time-driven, not wear-driven). After the commitment-hurdle change reduced fired hours, EOH lagged the calendar and a valid calendar MI tripped the assert — **aborting the whole run before the output bundle (incl. `model_card.md`) was written**, so the card silently went stale. Fixed: Sanity-6 now exempts `trigger == "calendar"` and only enforces EOH-proximity on hard-stop triggers. (See [`data/assets/lockport/caveats.md`](../../data/assets/lockport/caveats.md) §12.)
+
 ---
 
 ## §8. Next steps — Phase K, Phase L, and beyond
@@ -852,6 +873,14 @@ A compact map from concept to file:
 
 | Concept | Where it lives |
 |---|---|
+| **Flow charts (visual companion to this doc)** | [`docs/methodology/flowcharts.md`](flowcharts.md) — end-to-end + daily loop + wear/failure + creep-fatigue (Mermaid) |
+| **Outage mechanics (daily-loop steps 1–2, detailed + examples)** | [`docs/methodology/outage_mechanics.md`](outage_mechanics.md) — continuing-outage gate + forced-outage sampling (Bernoulli, cause, lognormal, trip wear), multi-day trace |
+| **Dispatch economics (the per-hour margin, detailed + examples)** | [`docs/methodology/dispatch_economics.md`](dispatch_economics.md) — spark → effective_spark → margin; start hurdles; where temperature enters (capacity vs spark) |
+| **Wear mechanics (state vector + step 8, detailed + examples)** | [`docs/methodology/wear_mechanics.md`](wear_mechanics.md) — the 9 accumulators field-by-field; accumulator→consequence map; creep/fatigue laws; recovery/cost + gaps; one-day example |
+| **Engine code (importable) + how it works** | [`src/gt_engine/`](../../src/gt_engine/) · impl docs [`docs/implementation/gt_engine/`](../implementation/gt_engine/) (overview, architecture, function ref, IO, worked example) |
+| **Forward scenario engine + how it works** | [`src/forward/`](../../src/forward/) · impl docs [`docs/implementation/forward/`](../implementation/forward/) · design [`docs/plans/forward_engine_plan.md`](../plans/forward_engine_plan.md) |
+| ADR-006: ambient-weighted hot-section wear | [`docs/decisions/006-ambient-weighted-wear.md`](../decisions/006-ambient-weighted-wear.md) |
+| ADR-007: creep wiring + trip wear | [`docs/decisions/007-creep-wiring-and-trip-wear.md`](../decisions/007-creep-wiring-and-trip-wear.md) |
 | Build plan + 5 locked decisions | [`docs/plans/consolidation_plan.md`](../plans/consolidation_plan.md) §5 + §8 |
 | ADR-001: gas hub Henry Hub for v1 | [`docs/decisions/001-gas-hub-treatment-v1.md`](../decisions/001-gas-hub-treatment-v1.md) |
 | ADR-002: Lockport-specific vs generic calibration | [`docs/decisions/002-lockport-specific-vs-generic-calibration.md`](../decisions/002-lockport-specific-vs-generic-calibration.md) |

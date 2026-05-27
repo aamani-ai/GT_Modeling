@@ -233,6 +233,39 @@ Full inventory + reasoning + corrections: [`docs/decisions/002-lockport-specific
 
 ---
 
+## §13. Ambient-weighted hot-section wear (B3 ambient half; 2026-05-27)
+
+Hot-section creep (`dc`) and TBC life (`tbc_time`) now accumulate **ambient-weighted** (hotter ambient → faster wear), applied hourly over fired hours and **re-anchored** to the fired-hour-weighted mean ambient (~34.3°F) so the *total* calibrated wear is preserved (anchor ratio 0.9999) and only the *distribution* shifts toward hot hours. Caveats:
+
+- **Coefficient is a literature placeholder** (`0.004/°F`, GER-3620-style) **pending the Friday load-temp paper** — the *mechanism* is committed, the *number* is revisable.
+- **Latent on Lockport-seed-42**: headline is byte-identical to the unweighted model because hot-section terms are sub-threshold and `dc` is not yet wired into any failure mode. The effect is real but only bites for higher-CF / hotter assets or paths near the TBC threshold.
+- **The LOAD half is NOT modeled** (full-dispatch v1 has no load variation to weight) — deferred to Stream A. Reasoning + plan: [`docs/decisions/006-ambient-weighted-wear.md`](../../../docs/decisions/006-ambient-weighted-wear.md); [`docs/methodology/extra/temperature_load_fidelity.md`](../../../docs/methodology/extra/temperature_load_fidelity.md) §10.
+- **Side-fix**: a pre-existing over-strict Sanity-6 check (flagged calendar-triggered inspections firing below the EOH threshold as anomalies) was aborting the whole N4 run before the output bundle wrote — the model_card had silently gone stale. Now calendar triggers are exempt; runs complete again.
+
+---
+
+## §14. Creep wiring + trip-induced wear (ADR-007; 2026-05-27)
+
+Two implementation gaps against the documented "two meters" framework intent were closed:
+
+- **Creep (`dc`) now feeds forced-outage risk** via a `p_creep` creep-rupture hazard in `p_forced_components` (was computed but wired to nothing). For low-CF Lockport `dc`≈0.012 ≪ the 0.5 inflection → `p_creep`≈0 — **physically correct** (Lockport doesn't run enough to creep-rupture); the channel activates for high-CF assets and makes ADR-006's ambient `dc`-weighting non-vacuous.
+- **Trips now carry wear**: a forced outage from a *running* state is a full-load trip (v1 runs full-load) → adds `df` + EOH at the GER-3620 ~8× factor. For Mode A, 7 of 35 forced outages were trips → +1,120 EOH → +$0.24M LTSA reserve (Net P&L −$145.96M → −$146.20M). `df` peaked 0.26 < the 0.6 combustion inflection, so no extra outages this path — the channel bites on higher-stress paths / Monte Carlo.
+- **Coefficients** (`P_CREEP_*`, `TRIP_MAINTENANCE_FACTOR`) are Bucket-B placeholders pending the Friday load-temp paper. Full record: [`docs/decisions/007-creep-wiring-and-trip-wear.md`](../../../docs/decisions/007-creep-wiring-and-trip-wear.md).
+
+---
+
+## §15. Forward dispatch: perfect foresight + RT basis (the loosest upper bound; 2026-05-27)
+
+The forward engine (`src/forward/`) dispatches against **realized** hourly prices — i.e. with **perfect foresight**. A real plant offers/commits in advance under uncertainty, so this **over-states** achievable margin — forward results are an **economic upper bound**, not a realized-output forecast (same spirit as the historical model). v1 uses **RT nodal** prices, which makes it the **loosest** upper bound: RT scarcity spikes are the least foreseeable, so perfect-foresight-on-RT over-states more than DA would. Chosen anyway for the richer 1999–2026 analog pool. Realism fixes (backfilled DA-nodal, RT tail-compression, behavioral output #3, two-settlement) are v2. Full analysis + pros/cons: [`docs/decisions/008-forward-dispatch-basis-and-foresight.md`](../../../docs/decisions/008-forward-dispatch-basis-and-foresight.md) + [`docs/plans/forward_engine_plan.md`](../../../docs/plans/forward_engine_plan.md) §11.
+
+---
+
+## §16. Initial condition & aging are uncalibrated assumptions (2026-05-27)
+
+The historical 9-yr run starts from a **modeling-convention** state — `EOH=24,000`, `rotor_life=0.35`, hot-section damage (`dc`/`df`/`tbc_time`) = 0 ("a plant fresh off a hot-gas-path overhaul, mid contract-clock") — **not Lockport's actual 2017 condition** (a 1992 unit, real cycle-position unknown). And the forced-outage **aging multiplier is clocked from sim-start (2017), not the 1992 vintage** (so a 33-yr-old plant is treated as "young" in 2017). Both are **first-order**: the initial EOH sets *when inspections fire* (the MI fires ~2025 only because EOH starts at 24k and accrues to the 48k threshold → start higher → earlier/more inspections → higher LTSA), and the aging multiplier is the model's dominant sensitivity driver. These are **explicit assumptions to calibrate** from the MOR / data-room (last-overhaul date, accumulated EOH/starts, remaining rotor life) — or to expose as adjustable dashboard knobs. See [`docs/plans/parameter_calibration_plan.md`](../../../docs/plans/parameter_calibration_plan.md) §1 + [`docs/plans/dashboard_plan.md`](../../../docs/plans/dashboard_plan.md).
+
+---
+
 ## See also
 
 - `identity.yaml` — plant identification and status fields (cross-referenced by §1, §9)

@@ -94,7 +94,13 @@ Each type has different fuel, EOH, fatigue, and Kumar 2012 C&M cost.
 
 **TBC threshold** — The Weibull-sampled value (β=3, η=28,000 hours) above which TBC is presumed failed. Below threshold, hazard rate scales as a power function; at threshold, P_TBC jumps to 1.0. Resampled at every MI to reflect new coating after refurbishment.
 
-**tbc_time** — Cumulative time-at-temperature (= fired hours) on the current TBC coating. Reset to 0 at MI. Drives `P_TBC` via Weibull hazard rate.
+**tbc_time** — Cumulative time-at-temperature on the current TBC coating. Reset to 0 at MI. Drives `P_TBC` via Weibull hazard rate. Since [ADR-006](../decisions/006-ambient-weighted-wear.md), advances by *ambient-weighted* fired hours (not raw).
+
+**ambient_wear_factor** — ([ADR-006](../decisions/006-ambient-weighted-wear.md)) A hot-section wear maintenance factor vs ambient, re-anchored at the fired-hour-weighted mean ambient (34.3°F for Lockport) so its weighted mean ≈ 1.0. >1 hotter, <1 colder, bounded [0.7, 1.4]. Applied only to `dc` (creep) and `tbc_time`, only over fired hours — it **redistributes** wear toward hot hours without re-levelling the calibrated total.
+
+**p_creep** — ([ADR-007](../decisions/007-creep-wiring-and-trip-wear.md)) The creep-rupture forced-outage hazard: a hockey-stick on creep life-fraction (`dc/CREEP_BUDGET` above 0.50), mirroring `P_combustion`. Closed a gap where `dc` was accumulated but fed nothing. ≈0 for low-CF Lockport (it doesn't run hot/hard enough); activates for high-CF assets.
+
+**Trip wear** — ([ADR-007](../decisions/007-creep-wiring-and-trip-wear.md)) Extra wear when a forced outage fires while the unit is *running* (a full-load trip): `df += 8× cold-start fatigue` and `eoh += 8× cold-start EOH` (GER-3620 trip maintenance factor). Recorded as `was_trip` on the forced-outage event.
 
 ---
 
@@ -273,3 +279,25 @@ All dollar amounts in the model and outputs are **nominal USD** unless explicitl
 - **Cumulative LTSA stream**: USD over the simulation window, in nominal terms
 
 Year-over-year inflation in nominal USD is captured by the LTSA escalation factor (3.5%/yr placeholder). Spark side is **not** inflation-adjusted in v1 — LMP, gas, RGGI all in the year-of-record nominal dollars they were observed in.
+
+---
+
+## §9. Forward engine & code structure (Stream A / `src/`)
+
+**gt_engine** — The importable dispatch/wear/LTSA engine ([`src/gt_engine/`](../../src/gt_engine/)), extracted verbatim from notebook 4. The single source of truth both the historical replay and the forward runner call. *Impl docs: [`implementation/gt_engine/`](../implementation/gt_engine/).*
+
+**run_path** — The engine entry point: runs the daily loop over an **injected** market path `(sim_dates, sim_start, sim_end, lmp_window, weather_window, henry)`. **run_mode** is a thin wrapper over the module-level historical windows (reproduces notebook 4).
+
+**Forward engine** — [`src/forward/`](../../src/forward/) (`data` → `select` → `build` → `run`): generates SEAS5-conditioned scenario paths and runs `gt_engine` over each to produce a P10/P50/P90 distribution. *Impl docs: [`implementation/forward/`](../implementation/forward/); design: [`plans/forward_engine_plan.md`](../plans/forward_engine_plan.md).*
+
+**Analog window** — A continuous historical **Apr→Mar** year used as a forward scenario ("if next year looks like 2019-2020"). Eligible windows must have ≥99% price/weather/gas coverage; the price basis sets the pool (RT 1999→~25; DA 2017→~8).
+
+**SEAS5 conditioning** — Weighting analog windows by how closely their standardized monthly **temperature anomaly** matches the ECMWF **SEAS5** seasonal forecast ensemble (only months with ≥80% forecast coverage count). Temperature-only in v1.
+
+**Basis (RT vs DA)** — The price series used for dispatch + window eligibility. **RT** (real-time, 1999+) is the v1 default — richer pool, captures the high-gas-year downside. **DA** (day-ahead, 2017+) matches the historical baseline. Selectable via the `basis` arg. See [ADR/plan §6](../plans/forward_engine_plan.md).
+
+**Scenario path / scenario spec** — In v1, a window spec (`source_window_id`, `sim_start/sim_end`, `probability`) run over its native dates — *not* a rebased hourly ensemble (rebasing is only needed for fan charts + forward-price anchoring, both deferred).
+
+**P10 / P50 / P90** — Probability-weighted percentiles of forward Net P&L across the analog scenarios (downside / central / upside). The lender sizes to the downside; equity prices the upside (see [`market_and_operations/07_merchant_economics_and_valuation.md`](../learning_logs/market_and_operations/07_merchant_economics_and_valuation.md)).
+
+**Raw historical levels** — v1 carries each analog window's *actual* price/gas levels, unscaled ("analog-implied"). Anchoring to a forward curve (market-consistent) is a documented follow-up.

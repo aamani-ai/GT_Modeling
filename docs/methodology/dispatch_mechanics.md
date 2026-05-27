@@ -170,6 +170,65 @@ The hurdle starts the same across policies when the plant is far from an inspect
 
 For a **hot start** (Kumar $35), the hurdle is correspondingly smaller: A = $2.45/MWh, C-at-threshold = $9.80/MWh.
 
+### §3.5 What A/B/C *mean* for Lockport — the result, and how to read it (caveats)
+
+In one line each:
+- **A** = run-for-margin, **no self-curtailment** (the aggressive / upper-bound dispatch).
+- **C** = **preserve life** — back off marginal starts hard near an inspection to defer wear/maintenance.
+- **B** = the middle.
+
+**The Lockport 9-year result (it DOES diverge — meaningfully):**
+
+| Policy | Spark margin | LTSA owner | **Net P&L** | Inspections in-window |
+|---|---:|---:|---:|---:|
+| **A** | ~$33.6M | ~$179.8M | **≈ −$146M** | **1 (an MI)** |
+| **B** | ~$30.9M | ~$153.9M | **≈ −$123M** | 0 |
+| **C** | ~$30.9M | ~$153.9M | **≈ −$123M** | 0 |
+
+A is **~$23M worse** than B/C — and **B and C are identical**. The mechanism is specific and worth understanding:
+
+- The inspection schedule is **pre-built per policy using an assumed EOH burn-rate** (A 1.0× / B 0.875× / C 0.65×). That places the big **Major Inspection** at: **A → 2025-04-01 (inside the 2017–2026 window), B → 2026-10-01, C → 2029-10-01 (both *outside* the window).**
+- So **A incurs the MI** (~$10.5M owner + downtime + the extra EOH-reserve/overage from running harder); **B and C defer it past the simulation end** → 0 inspections → they look ~$23M better.
+- **B = C** because both push the MI beyond the horizon; C's *extra* conservatism never bites at Lockport's low capacity factor (the headroom-≤0 region C needs is never reached in-window).
+
+![Policy A/B/C comparison (historical 9-yr)](assets/policy_mode_comparison.png)
+
+*The three policies track together until ~2025-04, when Policy A's Major Inspection fires (middle: A's cumulative Net drops; right: A's cumulative LTSA steps up) — while B and C defer the MI past the window and stay identical. Regenerate with `notebooks/scratch/policy_mode_comparison.py`.*
+
+### §3.6 ⚠️ How to read this honestly — the interpretation caveats
+
+This comparison is **not** as clean as "C is the best policy." Three caveats:
+
+1. **Finite-horizon artifact (the big one)**: B/C look better largely because the MI **just falls past the end of the 9-year window**. That maintenance is *real* and eventually happens — deferring it one day past the simulation makes it look *free*. Over a longer horizon, B/C would incur the MI too, and the gap would shrink. So **the A-vs-B/C gap is partly an artifact of where the window ends**, not a pure economic win.
+2. **B = C is inert for Lockport** — the C lever does nothing extra here (low CF). The A/B/C "spread" is really just A-vs-(B=C).
+3. **Heuristic, not optimal** — A/B/C are three hand-tuned hurdle curves + a schedule-projection multiplier, *not* a value-maximizing dispatch policy. They *bracket* a tradeoff; they don't *solve* it.
+
+> **Bottom line**: A/B/C is a *useful bracket* of the wear-vs-revenue tradeoff, and the historical run does show the aggressive policy (A) over-running into an MI that the conservative ones defer — but read the Net-P&L ranking with the finite-horizon caveat in mind, and remember B=C for this asset.
+
+### §3.7 The forward engine and the "fresh-start" trap (ADR-009)
+
+The wear hurdle only ramps as **EOH headroom to the next inspection shrinks below ~4,000** (§3.2). That is a *plant-state* condition, not a policy condition — which means **where you start the simulation decides whether A/B/C can differ at all.**
+
+The first forward build reset every scenario to the fresh modeling-convention state (`init_state`: EOH 24,000, hot-section damage = 0) and ran **one year**. Over that year EOH climbs only ~24k → ~28k — it stays **~20,000 hours away from the 48,000 MI threshold the entire run**. Headroom that large → `wear_mult` pinned at 1.0 for *all three* policies → the hurdle is identical → **A = B = C, byte-identical** (P50 = −$16.15M for each). That overlap was reported as a model limitation; it was an **artifact of the fresh-start + short-horizon choice**, not a property of the engine. Critically, A≈B≈C *far from a threshold is correct* — there is genuinely no inspection-timing cost out there.
+
+**The fix (ADR-009)**: separate plant state from policy posture. The forward now carries each mode's **own aged historical end-state** (`run_mode(mode)["final_state"]`) as the starting condition, via `run_path(..., init_state_override=...)`. Crucially the three modes inherit *different* histories: A took its MI back in 2025 (§3.5), so it enters the forward **freshly overhauled** (EOH 42,138, `insp_done=1`, rotor 0.176); B and C deferred that MI, so they enter **mid-life carrying it** (EOH 42,370, `insp_done=0`, rotor 0.351, *identical to each other*).
+
+| Start condition | Mode A (P50) | Mode B (P50) | Mode C (P50) | Diverge? |
+|---|---:|---:|---:|---|
+| **Fresh** (EOH 24k, 1-yr) | −$16.15M | −$16.15M | −$16.15M | No — byte-identical |
+| **Aged** (each mode's history, 1-yr) | −$16.35M | −$16.58M | −$16.58M* | A separates; B/C differ only below display precision |
+
+\* B and C are *not* byte-identical — they differ by up to ~$0.14M (≈4 fired-hours) on a single scenario, which rounds away at $M precision.
+
+**The honest reading (corrected after digging in):**
+- **The visible A-vs-B/C gap is mostly *inherited historical state*, not the in-forward policy.** A enters freshly overhauled with the MI behind it; B/C enter still carrying the deferred MI. That difference in starting condition drives most of A's ~$0.2M edge — *not* a divergence in how A dispatches inside the forward year.
+- **The in-forward policy effect is small** (the ~$0.14M B-vs-C). Over the 1-year horizon EOH climbs only ~42.4k → ~46k, so headroom stays in the ~5,630 → ~1,630 band the whole year. **No mode reaches the 48k MI threshold in-window**, and B and C — which share an identical aged start — only ever differ on the handful of marginal start-hours where spark lands between B's hurdle and C's. For low-CF Lockport that's a few hours → ~$0.14M.
+- **Why B ≈ C — the definitional point**: C's *distinctive* aggressiveness lives in the **headroom < 1,000 region** (B clamps at 2.5×; C keeps climbing to 4.0×). The plant never operates there in a 1-year forward from EOH ~42k. B and C are distinguished by behavior in a state regime *this asset, on this horizon, never occupies* — so the difference can't express itself. That is a **definition-vs-operating-regime mismatch**, exactly what ADR-009 §4 flags for re-derivation.
+
+**What would actually make the in-forward policy bite**: a **multi-year forward** that lets the plant accrue across the 48k threshold *inside* the horizon (so headroom enters the sub-1,000 region and an inspection is genuinely deferrable/triggerable in-window). On a single year from mid-life, the policy knob is *live but weak*.
+
+**Scope (ADR-009)**: A/B/C ships as a **what-if bracket and a dashboard knob**, *not* a valuation optimizer. The premium magnitudes (2.5×/4.0×, the ramp geometry) remain *operator-posture config*, not physical constants; re-deriving them from inspection-pull-forward economics is **deferred until the revenue stack is complete and LTSA terms are real** — they only carry meaning against a correct P&L. Initial EOH is now an **explicit input** (calibratable from MOR, or a dashboard knob), not a hidden constant — see [`parameter_calibration_plan.md`](../plans/parameter_calibration_plan.md) §1 and [`caveats.md`](../../data/assets/lockport/caveats.md) §16.
+
 ---
 
 ## §4. The two-axis dispatch decision — a worked example

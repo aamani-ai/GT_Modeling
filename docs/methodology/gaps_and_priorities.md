@@ -266,7 +266,7 @@ The matrix below ranks by **annual Net P&L impact × effort × signal quality**:
 | **5** | **Dispatch realism** (Leg 3) — planned outages, ramp, derates | +$3 to +$5M/yr | Medium (new mechanics in dispatch logic) | Smaller dollar impact than Legs 1/2 but important for model trust. |
 | **6** | **Add Fixed OPEX layer** (F1–F7 from [`pnl_ledger.md`](./pnl_ledger.md)) | −$6 to −$12M/yr | Medium (new YAML + cost layer) | Brings the "improved" Net P&L down to real cash economics. Must be modeled before any investor-grade output. |
 | **7** | **Phase L Monte Carlo** | Uncertainty bands, not point shift | Medium–High (orchestration layer) | Quantifies single-path noise; sweeps Bucket B Athens constants. |
-| **8** | **Per-asset Bucket B calibration** | Tightens uncertainty | High (long tail of engineering parameter learning) | Replaces Athens defaults with Lockport-calibrated state-evolution constants. |
+| **8** | **Per-asset Bucket B calibration** | Tightens uncertainty | High (long tail of engineering parameter learning) | Replaces Athens defaults with Lockport-calibrated state-evolution constants. **Process planned in [`docs/plans/parameter_calibration_plan.md`](../plans/parameter_calibration_plan.md)** (sensitivity-rank → tiered defensibility → provenance register; pre-v2, partly data-gated). |
 | **9** | **Per-generator state** (v2 architecture) | Unlocks 2xCC emergence + single-CT-down | High (state-vector rework) | The piece that fixes the 0% 2xCC backtest divergence. |
 
 ### §6.1 What "done" looks like at priority 1+2 only

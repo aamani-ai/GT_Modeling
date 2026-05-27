@@ -61,6 +61,37 @@ Three workstreams are already running (some recent; some longer):
 
 These are not yet integrated. Integration is what the next phases are about.
 
+### 2.4 Honest assessment & recommended next phase (2026-05-27)
+
+> A clear-eyed "where we really stand" snapshot — written to be re-read when picking the project back up. Not a victory lap; the point is the *gaps* and the *pivot*.
+
+**What's genuinely strong:**
+- The **engine is trustworthy as a mechanism** — extracted to `src/gt_engine/`, regression-gated byte-identical, well-factored.
+- The **forward engine works** end-to-end (SEAS5-conditioned analog windows, RT, P10/P50/P90; `src/forward/` + notebook 06).
+- **Understanding + documentation are now strong** — methodology deep-dives (`wear_mechanics`, `dispatch_economics`, `outage_mechanics`), implementation docs, flowcharts, glossary, ADRs. Readable cold.
+
+**The honest gaps (what actually matters):**
+1. **Mechanically sophisticated, but the *numbers* aren't defensible.** Most wear/hazard/inspection constants are Bucket-B placeholders; LTSA values are Athens placeholders. The headline Net P&L (−$146M hist / ~−$16M/yr fwd) is **explicitly not representative**. We produce a well-engineered number we can't yet stand behind.
+2. **Revenue is structurally incomplete** — energy-only; no capacity / ancillary / steam. For a winter must-run **cogen** that's the difference between "loses $16M/yr" (false) and "makes a few $M/yr" (the survivorship reality). Every current figure misleads *downward*.
+3. **Outputs are perfect-foresight upper bounds** (loosest on RT); the forward is a **1-yr aged-state analog scaffold** (ADR-009), not valuation-grade.
+4. **Mechanism has run ahead of inputs** — much is latent (creep dormant, `hrsg_cycles` unwired, B=C, the finite-horizon artifact). *(The forward A=B=C overlap is now resolved — aged-state start, ADR-009.)*
+
+**Net finding**: a **credible engine + deep understanding, but not yet a defensible valuation.** The bottleneck has moved from *mechanism* → *inputs + revenue completeness*, and those are largely **data-gated** (data room, MOR, the Friday paper).
+
+**Recommended next phase — pivot from mechanism to credibility** (do *not* add more forward sophistication on placeholder inputs):
+1. **Sensitivity rank** (cheap, unblocked) — run [`parameter_calibration_plan.md`](parameter_calibration_plan.md) step 0 so we know which placeholders move the answer. **Do this regardless.**
+2. **Complete the revenue structure (capacity + steam)** — scaffold ICAP + steam modules (labeled placeholders ok) so the P&L *structure* is complete and the headline reaches a plausible range. The single change that stops the model mis-stating the *sign*.
+3. **Data room (D2) + MOR calibration** — the real unlock (LTSA terms, EFOR, steam contract). Most of "make it defensible" is gated here.
+4. **Then** forward enhancements (forward-price anchoring, behavioral output #3, winter conditioning, aged-state forward).
+
+**Discipline**: be **data-and-revenue-led**, not mechanism-led. The risk is indefinitely polishing a sophisticated engine while valuation-readiness waits on inputs.
+
+**The destination — a shareable dashboard** ([`dashboard_plan.md`](dashboard_plan.md)): the next-phase work isn't for its own sake — it feeds a transparent *what-if* dashboard that exposes the key assumptions (initial EOH, gas/capacity/steam prices, LTSA terms, aging, policy A/B/C) as **user-adjustable knobs**. That reframes the placeholders as *scenario inputs*, and is feasible now because the engine is importable (`run_path`). The dashboard doesn't skip the credibility work — it *scopes* it (sensitivity rank → which knobs; revenue scaffolding → a headline worth showing). It also absorbs A/B/C and initial-condition as *knobs* rather than separate analyses.
+
+**Open question flagged 2026-05-27 (initial condition & aging)**: the historical run starts from a convention (`EOH=24k`, fresh hot-section) and clocks aging from 2017 not the 1992 vintage — both uncalibrated and *first-order* (initial EOH sets inspection timing; aging is the #1 sensitivity driver). Calibrate from MOR/data-room or expose as dashboard knobs. See `caveats.md` §16 + `parameter_calibration_plan.md` §1.
+
+**A/B/C disposition** (so it doesn't pull focus) — formalized in [ADR-009](../decisions/009-abc-policy-scope.md): the **historical comparison is done** (`dispatch_mechanics.md` §3.5–§3.6 + chart). The **forward A=B=C byte-identical overlap is now fixed** — the forward carries each mode's aged historical end-state (EOH ~42k) so the modes diverge; but honestly A's separation is mostly *inherited* state (A overhauled in-history, B/C carry a deferred MI), the *in-forward* policy effect is small (~$0.14M B-vs-C), and B≈C because a 1-yr forward never enters C's distinctive headroom<1,000 regime — the in-forward policy only truly bites with a **multi-year forward** (`dispatch_mechanics.md` §3.7). Two things were done now because they serve everything downstream (forward, historical honesty, dashboard): (a) **separate plant state from policy posture** — initial EOH is now an explicit `init_state_override` input, not a hidden constant; (b) relabel A/B/C honestly (myopic / NPV-rational / risk-averse) as a **bracketing knob, not an optimizer**. **Deferred** (per ADR-009 §4): re-deriving the premium magnitudes from inspection-pull-forward economics — it only carries meaning against a complete revenue stack + real LTSA terms. B=C persists (low-information for Lockport). Further A/B/C investment stays **deprioritized** until inputs are real.
+
 ---
 
 ## §3. The strategic view — three streams + a data layer
@@ -244,7 +275,9 @@ The framing (B1) surfaced a root insight that reshaped this phase: **the over-co
 
 **Exit status**: closed at the principled point (#2 in, model labeled upper-bound). The remaining load/output fidelity is Phase 6 (it's the same behavioral dispatch rule).
 
-### Phase 6 — Forward-looking model (Stream A)
+### Phase 6 — Forward-looking model (Stream A) — **v1 BUILT 2026-05-27**
+
+> **Status**: a working v1 forward engine exists. The N4 engine was extracted to an importable `src/gt_engine/` (regression-gated byte-identical), and `src/forward/` (select → build → run) + `notebooks/06_forward_scenarios.py` produce a **SEAS5-conditioned, scenario-based P10/P50/P90** — on **RT** (25 analog windows, 1999–2026; captures the high-gas-year downside a DA-only pool excludes). Full record: [`forward_engine_plan.md`](forward_engine_plan.md). Remaining within Phase 6: forward-price anchoring, outage-RNG Monte Carlo, the behavioral dispatch rule (#3), and coupling to the model-gpr scenario package (currently uses an in-repo analog selection). The deliverables below frame the full Phase 6 scope.
 
 **Deliverables**:
 

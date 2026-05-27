@@ -63,15 +63,18 @@ After running notebooks 1–4 in order, the **headline output** is `data/outputs
 Above plus:
 4. **[`notebooks/05_model_vs_actual.ipynb`](notebooks/05_model_vs_actual.ipynb)** — model vs MOR backtest with 13 plots
 5. **[`docs/methodology/architecture.md`](docs/methodology/architecture.md)** — how the model works (engine, daily loop, state vector)
+   - **[`docs/methodology/flowcharts.md`](docs/methodology/flowcharts.md)** — the visual companion: end-to-end + daily loop + wear/failure + creep-fatigue (Mermaid). Start here if you think in pictures.
 6. **[`docs/methodology/extra/backtest_findings.md`](docs/methodology/extra/backtest_findings.md)** — honest limitations + the 7 documented findings
 7. **[`docs/methodology/gaps_and_priorities.md`](docs/methodology/gaps_and_priorities.md)** §6 — ranked v2 priority list with dollar magnitudes
 
 ### Full understanding (browse as needed)
-- [`docs/methodology/`](docs/methodology/) — 5 main docs + `extra/`
-- [`docs/guides/`](docs/guides/) — 3 how-to guides
-- [`docs/decisions/`](docs/decisions/) — 2 ADRs
+- [`docs/methodology/`](docs/methodology/) — methodology docs incl. [`flowcharts.md`](docs/methodology/flowcharts.md) (visual), `architecture.md`, `pnl_ledger.md`, `glossary.md` + `extra/`
+- [`docs/implementation/`](docs/implementation/) — **how the `src/` code works** (gt_engine + forward: overview · architecture · function reference · IO schemas · worked example)
+- [`docs/guides/`](docs/guides/) — how-to guides
+- [`docs/decisions/`](docs/decisions/) — ADRs
 - [`docs/assumptions/`](docs/assumptions/) — status code taxonomy
-- [`notebooks/01–05`](notebooks/) — end-to-end build sequence
+- [`notebooks/01–05`](notebooks/) — end-to-end historical build sequence
+- **Forward engine (Stream A / Phase 6, v1)**: [`src/gt_engine/`](src/gt_engine/) (importable engine) + [`src/forward/`](src/forward/) (select → build → run) + [`notebooks/06_forward_scenarios.py`](notebooks/06_forward_scenarios.py) — SEAS5-conditioned P10/P50/P90 on RT analog windows. Plan: [`docs/plans/forward_engine_plan.md`](docs/plans/forward_engine_plan.md)
 - [`docs/plans/consolidation_plan.md`](docs/plans/consolidation_plan.md) — build history + status log
 
 ---

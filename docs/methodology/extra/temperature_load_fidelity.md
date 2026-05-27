@@ -1,6 +1,6 @@
 # Temperature + Load Fidelity — Gap Analysis and Engine Changes (Stream B)
 
-> **Status**: **Resolved for v1 (2026-05-27).** This was the framing (B1) for Stream B; §1–§7 are the original analysis. **The outcome of B2/B3/#1/#2/#3 is in §9 (read that for the conclusion).** Headline: only **#2 (commitment hurdle)** was committed; the part-load HR change is a no-op for a price-taker, the gas-basis overlay was tested and reverted, and the realistic-output model (#3) was deferred to Stream A because it *is* Stream A's forward dispatch rule. v1 is honestly labeled an **economic upper bound**.
+> **Status**: **Resolved for v1 (2026-05-27).** This was the framing (B1) for Stream B; §1–§7 are the original analysis. **The outcome of B2/B3/#1/#2/#3 is in §9 (read that for the conclusion).** Headline: only **#2 (commitment hurdle)** was committed; the part-load HR change is a no-op for a price-taker, the gas-basis overlay was tested and reverted, and the realistic-output model (#3) was deferred to Stream A because it *is* Stream A's forward dispatch rule. v1 is honestly labeled an **economic upper bound**. **Update 2026-05-27**: the **ambient half of B3** was subsequently *built* (hot-section creep + TBC ambient-weighted, re-anchored; [ADR-006](../../decisions/006-ambient-weighted-wear.md)); the **load half** stays deferred to Stream A (no load variation to weight in a full-dispatch v1). **See §10.**
 >
 > **Companion**: [`backtest_findings.md`](backtest_findings.md) (sibling analytical doc). Concept-level discussion of load is in [`../../discussion/02_load_as_a_dimension.md`](../../discussion/02_load_as_a_dimension.md) (local-only).
 >
@@ -141,11 +141,54 @@ The §1–§7 proposals were executed and the surprising bits resolved. Final v1
 | **#2 commitment hurdle** | ✅ **COMMITTED** (commit d429d18). | Always-on full-start-C&M-recovery hurdle. The one principled dispatch-realism win. Over-commit 2.07× → **1.94×**, fired hours −15%, spark $36M → $33.6M, 98 tests pass. |
 | **#3 realistic (price-responsive) output** | **Deferred to Stream A (Phase 6).** | There is no *principled* price-taker version of part-load output — it's inherently a **behavioral / dispatched** model, which is exactly the forward dispatch rule Stream A needs. Doing it now would be a fudge or a premature behavioral commitment. #3 *is* Stream A. |
 | **2×CC emergence** | **Not achievable in v1.** | It needs either #3 (behavioral output, → Stream A) or per-generator availability (v2 state-vector rework, gaps #9). |
-| **B3 temperature × load degradation** | **Deferred.** | Modest & redistributive for low-CF Lockport (§3.3); wants the Friday load-temp paper; a generalization investment for high-CF assets. |
+| **B3 — ambient half** | ✅ **COMMITTED** (2026-05-27, [ADR-006](../../decisions/006-ambient-weighted-wear.md)). | Hot-section creep (`dc`) + TBC life (`tbc_time`) now ambient-weighted at hourly resolution over fired hours, re-anchored to the fired-hour-weighted mean ambient (34.3°F) so total wear is preserved (anchor 0.9999) and only the *distribution* shifts toward hot hours. Headline byte-identical (latent on Lockport-seed-42). Coefficient is a literature placeholder pending the Friday paper. **See §10.** |
+| **B3 — load half** | **Deferred to Stream A (Phase 6).** | A full-dispatch price-taker has no load variation to weight → load-weighted wear is a structural no-op until Stream A introduces behavioural/price-responsive output (the same dependency as #3). Plan documented in §10 + ADR-006. |
 
 **The v1 stance (the key decision)**: the model is an **honest economic upper bound** — "the most this asset could economically generate/earn." The ~1.94× over-commit is the *economic ceiling*, NOT a realized-output forecast, because the model self-commits as a price-taker; real output is lower due to ISO dispatch-to-quantity, steam-following, conservatism, and unit availability — none of which are economic. The **behavioral output model that would turn the ceiling into a realized-output predictor is Stream A's job** (a forward valuation has no future dispatched-MW, so it needs a behavioral/price-responsive dispatch rule — the same thing #3 needs). This avoids a premature behavioral fudge and does the dispatch rule once, properly, in Stream A.
 
 **The root insight for the whole stream**: the over-commit is the **price-taker self-commitment paradigm**, not gas price or part-load HR. #2 dents the *hours* component principledly; the *MW-per-hour* component is the upper-bound-vs-predictor fork, resolved by labeling v1 as an upper bound and carrying the behavioral output into Stream A.
+
+---
+
+## §10. Ambient-weighted hot-section wear — built (2026-05-27)
+
+This section is the implementation record for the **ambient half of B3** and the **deferred plan for the load half**. Full reasoning trail: [ADR-006](../../decisions/006-ambient-weighted-wear.md).
+
+### §10.1 What was built (the ambient half) — DONE
+
+The wear physics meeting-point — "ambient temperature drives degradation, not just hours" — is now in the N4 engine for the **hot-section thermal accumulators**:
+
+- **New**: `ambient_wear_factor(temp_f)` — a bounded maintenance factor (∈ [0.70, 1.40]) = `1 + 0.004·(temp_f − 34.3)`, ~1.0 at the reference ambient, >1 hotter, <1 colder.
+- **Applied**: at **hourly resolution over fired hours**, accumulated in `dispatch_day_mode_aware` as `fired_hours_hotweighted`, consumed in `update_stress(..., fired_hours_hot=...)`.
+- **Weights ONLY**: creep (`state.dc`) and TBC life (`state.tbc_time`) — the metal-temperature-driven hot-section terms. `eoh`, `fouling`, `rotor_life`, `df` stay on raw `fired_hours` by design (see ADR-006 table for why each).
+- **Physics direction**: hotter ambient → hotter compressor-discharge cooling air → hotter blade metal → faster creep / TBC oxidation; colder ambient → the reverse.
+
+**Re-anchored, not re-levelled** (the key correctness property): the reference (`AMBIENT_WEAR_REF_F = 34.3 °F`) is the **fired-hour-weighted mean ambient** of Lockport's post-#2 path, so the applied factor's weighted mean ≈ 1.0. This **redistributes** wear toward hot hours (changing inspection *timing*) without changing the calibrated *total*.
+
+**Validation** (2026-05-27 run, mode A):
+
+| Check | Result |
+|---|---|
+| Anchor: Σ`fired_hours_hot` / Σ`fired_hours` | **0.9999** (total preserved) |
+| Redistribution: effective factor by ambient band | <32°F **0.94** → 32–50°F 1.00 → 65–80°F **1.15** → >80°F **1.19** |
+| Headline (spark / net / inspections / forced) vs baseline | **byte-identical** ($33.59M / −$145.96M / 1 / 35) |
+| Unit tests | 98/98 pass |
+
+**Why the headline is unchanged (and why that's correct)**: for Lockport-seed-42 the hot-section accumulators are **sub-threshold** (`tbc_time` ≪ Weibull η; `p_tbc` negligible) and `dc` (creep) **is not wired into any outcome** (not in `p_forced`; the `dc+df > D_LIM` halving never fires). So redistribution is **real and directionally correct but latent** — it will bite for higher-CF / hotter assets, for paths where `tbc_time` nears threshold, and once creep is wired to a failure mode. This matches the §3.3 prediction ("modest & redistributive; changes distribution/timing, not total").
+
+### §10.2 What is deferred (the load half) — Stream A / Phase 6, with a plan
+
+The load half is **not** built in v1, on purpose and with a documented reason and plan:
+
+- **Why deferred (the blocker)**: v1 dispatches at **full mode capacity** (price-taker, §9). With load pinned at 100%, a load-weighted wear term has *no signal to act on*. The load half **requires** a per-hour **dispatched MW < capacity**, which is produced by **Stream A's behavioural/price-responsive dispatch rule** (Phase 6, the realistic-output work ex-#3). So it's blocked on a dependency, not merely postponed.
+- **How to build it (when unblocked)**: form `load_fraction = dispatched_MW / mode_capacity_MW` per hour; multiply the hot-section weight → `ambient_wear_factor(temp_f) × load_wear_factor(load_fraction)`, accumulated into the **same** `fired_hours_hotweighted` seam this ADR built. The plumbing already exists — the load half is *an additional multiplier on the same accumulator*, not new structure.
+- **Direction + a trap**: higher load → higher firing temp / peak-fire → faster hot-section wear (GER-3620 peak-load factor). But §3.3 showed load-weighting *reduces* Lockport's modeled **total** (it runs part-load, not peak-fire) — so the load half must be **re-anchored too** (redistribute, not re-level) or it silently drops total wear.
+- **Rides along**: the **`eoh` peak-fire maintenance factor** belongs with the load half (industry EOH counts peak-fire hours at a multiple) — same dependency, same paper.
+- **Coefficients**: from the Friday load-temp paper (same source as the ambient coefficient).
+
+### §10.3 Side-fix surfaced by this work — Sanity-6 (calendar inspections)
+
+Validating the run exposed a **pre-existing** over-strict sanity check (N4 §O "inspections triggered near threshold"): it flagged *any* inspection firing >5K EOH below threshold, but **calendar-triggered** inspections legitimately fire below the EOH threshold (they're time-driven). Once the #2 commitment hurdle cut fired hours, EOH lags the calendar, so a valid calendar MI tripped the assert and **aborted the whole run before any output bundle was written** (the model_card had silently gone stale). Fixed: Sanity-6 now exempts `trigger == "calendar"` inspections and only enforces the EOH-proximity rule on EOH/hard-stop triggers. Run now completes; fresh model_card regenerated. Noted in `caveats.md` §12.
 
 ---
 
