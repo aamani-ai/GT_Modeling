@@ -618,6 +618,15 @@ def dispatch_day_mode_aware(
         # Amortize over expected min-run hours → an effective per-MWh hurdle
         wear_hurdle_per_mwh = wear_penalty_per_mw / MIN_RUN_HOURS_FOR_AMORTIZATION
 
+        # B2 / step #2 commitment hurdle (always-on; added 2026-05-27).
+        # A start must recover the FULL Kumar start C&M (not just the 0.42 wear fraction), amortized
+        # over the min-run window — independent of EOH/wear policy. This is the "don't start the plant
+        # for a marginal hour" commitment economics real operators apply. Without it the model self-
+        # commits to any spark>0 hour and over-commits ~2x vs MOR (backtest_findings §3.6). The policy-
+        # mode wear_hurdle above remains as ADDITIONAL preservation pressure near EOH thresholds.
+        # Warming fuel is costed separately (ADR-002), so START_CM (non-fuel C&M) does not double-count.
+        commitment_hurdle_per_mwh = START_CM_USD_PER_MW[stype_candidate] / MIN_RUN_HOURS_FOR_AMORTIZATION
+
         # Compute best mode this hour
         best_mode = None
         best_margin = -float("inf")
@@ -627,8 +636,8 @@ def dispatch_day_mode_aware(
             cap_mw = cap_eff_for_mode(mode_name, temp_f)
             fuel_cost = hr / 1000 * delivered_fuel_per_mmbtu
             spark = lmp - fuel_cost - VOM_USD_PER_MWH
-            # Add wear hurdle ONLY when starting (currently off)
-            effective_spark = spark - (wear_hurdle_per_mwh if not op else 0.0)
+            # Add commitment + wear hurdles ONLY when starting (currently off)
+            effective_spark = spark - ((commitment_hurdle_per_mwh + wear_hurdle_per_mwh) if not op else 0.0)
             margin = max(effective_spark, 0) * cap_mw
             if margin > best_margin:
                 best_margin = margin
