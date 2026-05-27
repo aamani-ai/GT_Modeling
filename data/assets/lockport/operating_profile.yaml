@@ -287,10 +287,10 @@ steam_only_mode:
     source: "EIA-860 6_2 Y2024 — boiler_type='Db' for boiler ID 4 linked to GEN4 (per engineering.yaml)"
     caveat: "v1 N4 must add a steam-only branch in must-run logic. Decision rule: when must_run AND uneconomic, compare cost(1×CC dispatch) vs cost(steam-only) and pick lower-cost. Steam-only uses ~871 MMBtu/day gas, no EOH accumulation, no CT operation."
   v1_modeling_treatment:
-    value: "Add as a third option in must-run branch of N4 dispatch loop"
-    status: placeholder
-    source: "Phase J refactor — N4 §F.run_mode()"
-    validation_path: "After implementation, modeled steam-only-day count should fall in 60-100 days/year range (vs MOR ~92/yr)"
+    value: "IMPLEMENTED — steam-only is a branch in N4 run_mode() (~lines 1153-1204): on must-run days where the day's best-case 3xCC spark at peak LMP is <=0, the whole day switches to steam-only (gas-for-steam cost only, 0 MWh, 0 EOH). Verified 2026-05-26."
+    status: real_reported
+    source: "N4 04_full_path_mode_comparison.py run_mode() steam_only_today branch"
+    caveat: "Trigger is a daily best-case-spark check on must-run (coldest-20%) days only. It does NOT capture steam-only days outside the coldest-20% must-run window, so modeled steam-only-day count may under-shoot the MOR 460/1826 (25%). Refining the steam-only trigger beyond the coldest-20% proxy is a known open item (gaps_and_priorities steam-only recall)."
 
 # ============================================================================
 # Annotations for dispatch modeling
