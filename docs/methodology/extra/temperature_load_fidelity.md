@@ -71,6 +71,24 @@ Illustrative wear-weighting sensitivity (pending the Friday load-temp paper):
 
 Counter-intuitive but important: because Lockport runs **part-load, not peak-fire**, load-weighting *redistributes* wear toward the (few) high-load hours and, absent recalibration, would *reduce* modeled total wear by 30–50% vs flat fired-hours. The current fired-hours-only model may therefore **overstate** Lockport's wear (it treats every part-load hour as full-stress). Only **14%** of operating fired-hours occur at ambient >80°F, and total fired hours are low (~1,340/yr). So **B3's absolute effect on Lockport is modest** — it matters far more for high-CF, peak-firing assets. For Lockport, B3 mainly changes the *distribution* (and hence inspection *timing*), not the total.
 
+### §3.4 The 2×CC lockout is (mostly) a B2 byproduct, not a separate fix
+
+The model never picks 2×CC (0% vs ~26% of operating days in MOR; `gaps_and_priorities.md` #9). Root cause confirmed in N4 `dispatch_day_mode_aware()` (~line 632): mode-pick is `margin = max(spark, 0) × full_mode_capacity`. Because **3×CC has both the best heat rate (8,901 vs 9,598 Btu/kWh) AND the most capacity (221 vs 173 MW)**, it strictly dominates 2×CC whenever spark is positive. So 2×CC can never win economically; 1×CC appears only via the must-run branch. **The lockout is a direct consequence of the 100%-load (full-capacity) assumption** — the same assumption B2 fixes.
+
+Once B2 makes dispatch a **joint (mode, load) decision** with a part-load HR penalty, 2×CC stops being dominated: 3×CC at part-load (e.g., 68%, HR penalty ~7%) becomes *less* efficient than 2×CC at higher load (e.g., 87%) for intermediate output. So **the economic portion of the 2×CC gap resolves as a byproduct of doing B2 correctly** — not extra work, but a *correctness criterion* for B2.
+
+How much of Lockport's 26% is economic vs unit-availability (data, 97 MOR 2×CC days):
+
+| Signal | Finding | Driver |
+| :--- | :--- | :--- |
+| Output level | 2×CC median 106 MW vs 3×CC 159 MW; within-mode load 0.61 vs 0.72 | **Economic** — lower-output days, part-load → B2 captures |
+| Which CT off | CT3 68% / CT1 20% / CT2 11% (preferential, not random) | **Unit-availability** — some specific-CT-down pattern |
+| Clustering | median 3-day gap, 41% consecutive, 8-day max streak | **Mixed** — scattered (economic) + clustered (possible unit-down) |
+
+**Conclusion**: the **economic** part (the majority signal — lower-output part-load days) is recoverable by B2's joint (mode, load) dispatch. The **unit-availability** residual (CT3-preferential, multi-day streaks = a specific CT down for maintenance/derate) genuinely needs **per-generator state** (v2, `gaps_and_priorities.md` #9 — a state-vector rework tracking each CT's EOH/availability/forced-outage). Do **not** bundle per-generator state into B2; it balloons scope. B2 should target the economic 2×CC; the unit-down 2×CC stays v2.
+
+**B2 acceptance criterion (added)**: after B2, 2×CC should emerge on a non-trivial share of operating days (economic, intermediate-output) — closing much of the 0%→~26% gap, with the residual attributable to single-CT-down events that await per-generator state.
+
 ---
 
 ## §4. The data constraint
@@ -86,7 +104,7 @@ Confirmed (02 §7 Q5): we have **hourly ambient** (`weather_hourly.parquet`) but
 
 | Sub-step | Change | Touches | Decision needed |
 | :--- | :--- | :--- | :--- |
-| **B2 — part-load HR** | Add a load decision within mode + a (cogen-aware) part-load HR multiplier to the fuel-cost calc | N4 dispatch + HR (`hr_degraded_for_mode`); `operating_profile.yaml` (add the corrected polynomial); fixes framework doc | (a) continuous load vs 3 bands? (b) how to separate part-load HR from cogen steam allocation? (c) does the dispatch optimizer pick load, or heuristic 100%-unless-steam? |
+| **B2 — part-load HR + joint (mode, load) dispatch** | Make dispatch a joint (mode, load) decision with a (cogen-aware) part-load HR multiplier. **Byproduct: resolves the economic 2×CC lockout** (§3.4) — 2×CC stops being dominated once 3×CC-at-part-load is penalized | N4 `dispatch_day_mode_aware()` (the mode-pick + the `margin = spark × full_capacity` line) + HR (`hr_degraded_for_mode`); `operating_profile.yaml` (corrected polynomial); fixes framework doc | (a) continuous load vs 3 bands? (b) separate part-load HR from cogen steam allocation? (c) dispatch optimizer picks load vs heuristic? **Acceptance: economic 2×CC emerges; unit-down 2×CC stays v2** |
 | **B3 — load × temp degradation** | Weight `update_stress()` wear terms by load and ambient | N4 `update_stress` (eoh/fouling/tbc_time/rotor_life); recalibrate base coefficients so totals stay anchored | (a) coefficients from the **Friday paper** (pending); (b) recalibrate base wear so we redistribute, not double-count; (c) which terms get load-weighting vs ambient-weighting |
 | **B4 — ADR-006** | Commit the load representation + degradation approach | `docs/decisions/006-*.md` + methodology | After B2/B3 direction |
 
