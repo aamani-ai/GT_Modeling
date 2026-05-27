@@ -424,9 +424,11 @@ The GT wear cost component is subject to dynamic adjustment via the dispatch mod
 
 **Part-load heat rate adjustment (polynomial):** Rather than a step table, the model uses a fitted quadratic for continuous evaluation within the dispatch optimizer:
 
-`HR_multiplier(L) = 2.648 - 4.296×L + 2.648×L²` where L is fractional load (0.5 ≤ L ≤ 1.0)
+`HR_multiplier(L) = 0.471·L² − 1.026·L + 1.556` where L is fractional load (0.5 ≤ L ≤ 1.0)
 
-This yields: 1.000× at 100%, 1.015× at 90%, 1.038× at 80%, 1.068× at 70%, 1.107× at 60%, 1.162× at 50%. The polynomial captures the non-convexity of CC heat rate at part load, which affects unit commitment decisions near minimum load.
+This yields: 1.000× at 100%, 1.015× at 90%, 1.038× at 80%, 1.068× at 70%, 1.107× at 60%, 1.162× at 50%. The multiplier rises monotonically as load falls (part-load operation is less efficient), capturing the heat-rate penalty that affects unit-commitment decisions near minimum load.
+
+> **Correction (2026-05-26)**: the coefficients above were previously transcribed as `2.648 − 4.296·L + 2.648·L²`, which is internally inconsistent — it dips *below* 1.0 in the interior (a part-load HR multiplier must be ≥ 1.0) and does not reproduce the stated anchor values (it gives 0.927 at L=0.9, not 1.015). The stated anchors (1.000 @ 100% … 1.162 @ 50%) are the real GE 7FA.03 part-load data; the coefficients here are refit to those anchors (monotonic, ≥ 1.0). See `docs/methodology/extra/temperature_load_fidelity.md` §3.2.
 
 ### 4.7 Gas supply
 
@@ -631,7 +633,7 @@ Assumptions embedded in the engineering model methodology. Distinct from simulat
 
 | Assumption / variable | Value | Purpose in model | Certainty | Reference / source |
 | :---- | :---- | :---- | :---- | :---- |
-| HR multiplier polynomial coefficients | `2.648 − 4.296L + 2.648L²` for L ∈ [0.5, 1.0] | Continuous part-load HR correction; captures non-convexity near minimum load | Green | Fitted to GE 7FA.03 OEM part-load data; Tofighi-Niaki (2024 *MDPI Processes* 12(6)) |
+| HR multiplier polynomial coefficients | `0.471·L² − 1.026·L + 1.556` for L ∈ [0.5, 1.0] | Continuous part-load HR correction; monotonic ≥ 1.0 (anchors: 1.000 @100% … 1.162 @50%) | Amber | Refit 2026-05-26 to GE 7FA.03 anchor values (prior `2.648 − 4.296L + 2.648L²` was inconsistent — dipped below 1.0; see §4.6 correction note + `methodology/extra/temperature_load_fidelity.md` §3.2). Tofighi-Niaki (2024 *MDPI Processes* 12(6)) |
 
 ### B.7 TBC failure model
 

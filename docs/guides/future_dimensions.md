@@ -2,7 +2,7 @@
 
 > **Status**: design specifications for YAMLs we know we'll need, written BEFORE the data is available. The point: when the data shows up (from a data room, MOR extraction, or financial statements), the location, schema, and downstream consumption is already designed.
 >
-> **Companion doc**: [`asset_profile_dimensions.md`](./asset_profile_dimensions.md) — the current 5 dimensions. This doc covers the 3 anticipated additions.
+> **Companion doc**: [`asset_profile_dimensions.md`](./asset_profile_dimensions.md) — the current 7 dimensions (5 core + capability_envelope + realized_operating_profile). This doc covers the 3 *further* anticipated additions (outage_history, offtake_contracts, fixed_opex).
 >
 > **Important**: do NOT create empty/placeholder YAMLs for these. Wait until real data exists. Stubs in this doc are designs, not implementations.
 
@@ -10,7 +10,7 @@
 
 ## §1. Why "future dimensions"?
 
-The current 5 dimensions (`identity`, `engineering`, `operating_profile`, `market_context`, `ltsa_terms`) cover **what we have data for in v1**. But we know several other meaningful aspects of a power plant exist — we just don't have the data yet for Lockport. Rather than wait until the data drops and then design under pressure, we sketch the design now.
+The current 7 dimensions — 5 core (`identity`, `engineering`, `operating_profile`, `market_context`, `ltsa_terms`) plus 2 regime-decomposition (`capability_envelope`, `realized_operating_profile`, per ADR-003) — cover **what we have data for in v1**. But we know several other meaningful aspects of a power plant exist — we just don't have the data yet for Lockport. Rather than wait until the data drops and then design under pressure, we sketch the design now.
 
 Each future dimension here has:
 - **Purpose**: what aspect of the asset it captures

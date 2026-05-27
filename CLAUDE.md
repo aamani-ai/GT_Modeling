@@ -66,7 +66,7 @@ notebooks/05_model_vs_actual.{py,ipynb}              ← MOR backtest deep-dive 
 
 ## Asset profile structure (the data foundation)
 
-Every modeled asset lives at `data/assets/<asset>/` with 5 YAML dimensions:
+Every modeled asset lives at `data/assets/<asset>/` with 7 YAML dimensions (5 core + 2 regime-decomposition, added 2026-05 per ADR-003):
 
 | YAML | Captures | Status maturity (Lockport) |
 |---|---|---|
@@ -75,6 +75,8 @@ Every modeled asset lives at `data/assets/<asset>/` with 5 YAML dimensions:
 | `operating_profile.yaml` | Heat rate by mode, cold-start gas, DHTS, steam-only empirics | High — MOR-derived |
 | `market_context.yaml` | ISO zone, eGRID, RGGI, gas hub treatment | High |
 | `ltsa_terms.yaml` | OEM contract terms (placeholder by default) | **LOW — all placeholder** |
+| `capability_envelope.yaml` | What duties the plant *can* do (capability side; ADR-003) | Tier-1 (EIA) + Tier-2-D1 done; D2 pending |
+| `realized_operating_profile.yaml` | What duties the plant *is* doing (realization side; ADR-003) | Populated from MOR; informal classifier (→ ADR-005) |
 
 Plus `caveats.md` (operational notes) + `provenance.md` (source lineage).
 
@@ -93,7 +95,7 @@ Full dimensional framework: [`docs/guides/asset_profile_dimensions.md`](docs/gui
 | `docs/methodology/gaps_and_priorities.md` | What's missing + ranked priority list with $ magnitudes | ~360 |
 | `docs/methodology/glossary.md` | Term definitions | ~275 |
 | `docs/methodology/extra/backtest_findings.md` | Model-vs-MOR analysis + known divergences | ~350 |
-| `docs/guides/asset_profile_dimensions.md` | The 5-dimension framework + plant archetypes | ~585 |
+| `docs/guides/asset_profile_dimensions.md` | The 7-dimension framework (5 core + capability/realization) + plant archetypes | ~585 |
 | `docs/guides/pulling_specs_from_powerplantsinfo.md` | How to lift specs from renewablesinfo_org pipeline | ~345 |
 | `docs/guides/future_dimensions.md` | Stubs for anticipated YAMLs (outage / offtake / fixed_opex) | ~465 |
 | `docs/decisions/` | ADRs — substantive decisions with reasoning trail | 2 ADRs |
@@ -190,7 +192,7 @@ From the latest run (Lockport, 2017–2025, seed=42, post-steam-only-mode additi
 ## Key file-path patterns
 
 ```
-data/assets/<asset>/           ← per-asset YAML profile (5 dimensions + caveats/provenance)
+data/assets/<asset>/           ← per-asset YAML profile (7 dimensions + caveats/provenance)
 data/paths/<asset>/            ← per-asset time series (LMP, gas, weather, MOR daily)
 data/tech_class_defaults/      ← cross-asset reference
 data/outputs/<asset>/runs/notebook4_<timestamp>/   ← simulation outputs (gitignored)

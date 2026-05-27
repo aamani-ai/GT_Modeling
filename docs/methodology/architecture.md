@@ -112,7 +112,7 @@ Everything the model consumes is either a static **YAML** file (per-asset config
 
 ### §3.1 Static configuration — `data/assets/lockport/`
 
-Five YAML files describe Lockport. Every leaf value carries a `{value, status, source, confidence?, caveat?, validation_path?}` schema per the status taxonomy.
+Seven YAML files describe Lockport (5 core + `capability_envelope` + `realized_operating_profile`, the two regime-decomposition dimensions added 2026-05 per ADR-003). Every leaf value carries a `{value, status, source, confidence?, caveat?, validation_path?}` schema per the status taxonomy.
 
 | File | What it holds | Approx leaves | Real share |
 |---|---|---:|---:|

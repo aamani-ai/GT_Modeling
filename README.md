@@ -89,7 +89,7 @@ gt_models/
 │
 ├── data/
 │   ├── assets/                        ← per-asset profiles (YAML)
-│   │   └── lockport/                  ← 5 YAMLs + caveats + provenance
+│   │   └── lockport/                  ← 7 YAMLs + caveats + provenance
 │   ├── paths/                         ← per-asset time-series (parquet)
 │   │   └── lockport/                  ← LMP, gas, weather, MOR daily
 │   ├── tech_class_defaults/           ← cross-asset reference table
@@ -172,7 +172,7 @@ From the latest run (Lockport, 2017–2025, seed=42):
 - 5 methodology docs + 1 in `extra/` (1,700+ lines of structured analysis)
 - 3 how-to guides (1,400+ lines)
 - 2 ADRs (gas hub treatment, Lockport-specific calibration)
-- Lockport asset profile (5 YAMLs + caveats + provenance)
+- Lockport asset profile (7 YAMLs + caveats + provenance)
 - Time-series spine (LMP, gas, weather, MOR daily — 1,826 days)
 - Tech-class defaults (cross-asset reference)
 - 98/98 tests pass
@@ -217,7 +217,7 @@ This is an invitation to extend, not just review. Specific questions:
 
 1. **Which v2 priorities to tackle first?** The ranked list in `gaps_and_priorities.md §6` is my best guess; team input would re-rank if you have additional context (data-room availability, deal urgency, etc.).
 
-2. **Does the dimensional framework work for multi-asset scaling?** The 5-dimension structure (`identity` / `engineering` / `operating_profile` / `market_context` / `ltsa_terms`) is the proposed pattern for asset onboarding. Want to validate before applying to a second asset.
+2. **Does the dimensional framework work for multi-asset scaling?** The core 5-dimension structure (`identity` / `engineering` / `operating_profile` / `market_context` / `ltsa_terms`) plus the 2 regime-decomposition dimensions (`capability_envelope` / `realized_operating_profile`, added 2026-05 per ADR-003) is the proposed pattern for asset onboarding. Want to validate before applying to a second asset.
 
 3. **Are the asset archetypes useful as a prior?** See `asset_profile_dimensions.md` §13 — proposed taxonomy (peaker / mid-merit / baseload / cogen / qf_purpa / rmr / battery / hybrid) with Lockport as "cogen + qf_purpa (TBD) + low_cf". Not implemented in YAML yet.
 

@@ -48,7 +48,7 @@ cat data/outputs/lockport/runs/notebook4_<latest>/model_card.md
 | Notebook format | jupytext pairs: `.py` (percent format) is canonical, `.ipynb` is regenerated |
 | YAML status taxonomy | Every leaf has `{value, status, source}` — 9 status codes in `docs/assumptions/status_taxonomy.md` |
 | ADRs | Substantive decisions live in `docs/decisions/NNN-topic.md` with full reasoning trail |
-| Asset profile | 5 YAMLs per asset (`identity`/`engineering`/`operating_profile`/`market_context`/`ltsa_terms`) + caveats.md + provenance.md |
+| Asset profile | 7 YAMLs per asset: 5 core (`identity`/`engineering`/`operating_profile`/`market_context`/`ltsa_terms`) + 2 regime-decomposition (`capability_envelope`/`realized_operating_profile`, per ADR-003) + caveats.md + provenance.md |
 | Plant archetype | Tag asset as one of: peaker / mid_merit / baseload / cogen / qf_purpa / rmr / battery / hybrid. Drives modeling defaults. Lockport = cogen + qf_purpa (TBD) + low_cf. |
 | Outputs | `data/outputs/<asset>/runs/notebook4_<ts>/` — gitignored, regenerable from `run_config.yaml` |
 | Annual primary | All dollar magnitudes in docs are annual averages; 9-year totals are derivations |
@@ -125,7 +125,7 @@ Check assumption distribution at the top (80% real / 17.5% placeholder for Lockp
 1. Read [`docs/guides/asset_profile_dimensions.md`](docs/guides/asset_profile_dimensions.md) for the framework
 2. Read [`docs/guides/pulling_specs_from_powerplantsinfo.md`](docs/guides/pulling_specs_from_powerplantsinfo.md) for the lift-from-platform workflow
 3. Classify by archetype (peaker / mid_merit / baseload / cogen / qf_purpa)
-4. Build 5 YAMLs + caveats + provenance
+4. Build the 5 core YAMLs + caveats + provenance (then capability_envelope + realized_operating_profile per the capability-envelope skill / `extracting_capability_from_thermal_archive.md`)
 5. Pull time-series spine into `data/paths/<new-asset>/`
 6. Add tests at `tests/test_<new-asset>_static_profile.py`
 7. Run N1 to validate spine; iterate

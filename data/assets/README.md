@@ -2,7 +2,7 @@
 
 > One subfolder per asset. Each contains the asset's static specs as assumption-tracked YAML files. v1 has `lockport/` only.
 >
-> **For understanding what each YAML captures and why**: read [`docs/guides/asset_profile_dimensions.md`](../../docs/guides/asset_profile_dimensions.md) — the principle (plant profile is upstream of everything), the 5 dimensions, decision tree for where ambiguous fields go.
+> **For understanding what each YAML captures and why**: read [`docs/guides/asset_profile_dimensions.md`](../../docs/guides/asset_profile_dimensions.md) — the principle (plant profile is upstream of everything), the 7 dimensions, decision tree for where ambiguous fields go.
 >
 > **For setting up a new asset from the renewablesinfo_org pipeline**: read [`docs/guides/pulling_specs_from_powerplantsinfo.md`](../../docs/guides/pulling_specs_from_powerplantsinfo.md) — the step-by-step lift-from-platform workflow.
 

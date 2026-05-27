@@ -45,7 +45,7 @@ Within-mode median load by mode: **1×CC 0.36, 2×CC 0.62, 3×CC 0.72**. The pla
 
 ### §3.2 The framework polynomial is wrong (a finding for B2)
 
-`02_load_as_a_dimension.md` §4.1 / `performance_and_risk_framework.md` §4.6 transcribe the part-load HR curve as:
+`InfraSure_ModelingFramework_V2.md` §4.6 / Appendix B.6 (and the copy in `02_load_as_a_dimension.md` §4.1) transcribe the part-load HR curve as:
 
 ```
 HR_multiplier(L) = 2.648 - 4.296·L + 2.648·L²      ← AS TRANSCRIBED — INCORRECT
@@ -114,7 +114,8 @@ Confirmed (02 §7 Q5): we have **hourly ambient** (`weather_hourly.parquet`) but
 ## §8. Cross-references
 
 - [`../../plans/00_strategic_spine.md`](../../plans/00_strategic_spine.md) §3.2, §4 (Phase 5) — Stream B in the overall plan
-- [`../../discussion/02_load_as_a_dimension.md`](../../discussion/02_load_as_a_dimension.md) — load concept (local-only); §4.1 polynomial (needs the §3.2 correction)
+- [`../../discussion/02_load_as_a_dimension.md`](../../discussion/02_load_as_a_dimension.md) — load concept (local-only); §4.1 polynomial corrected 2026-05-26
+- [`../../InfraSure_ModelingFramework_V2.md`](../../InfraSure_ModelingFramework_V2.md) §4.6 + App B.6 — the actual source of the part-load polynomial (corrected 2026-05-26)
 - [`../architecture.md`](../architecture.md) §5 — the engine + state vector B2/B3 would change
 - [`backtest_findings.md`](backtest_findings.md) — sibling findings (incl. steam-only mode, mode divergence)
 - [`../../data/assets/lockport/realized_operating_profile.yaml`](../../../data/assets/lockport/realized_operating_profile.yaml) — the conditioning signal for B2/B3
