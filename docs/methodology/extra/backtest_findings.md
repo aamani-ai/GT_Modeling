@@ -204,6 +204,14 @@ The 2.07× over-commit means we're still over-dispatching by 2×. The remaining 
 
 So we cut the gap from 2.22× → 2.07× with steam-only, but the remaining mechanics are still missing. Phase K refactor + per-generator state in v2 are the next big levers.
 
+#### Update 2026-05-27 — commitment hurdle + the v1 "economic upper bound" stance (Stream B)
+
+Dispatch-realism work (Stream B; see [`temperature_load_fidelity.md`](temperature_load_fidelity.md) §9) reached a clean, honest landing:
+
+- **#2 commitment hurdle committed** (d429d18): a start must recover the *full* Kumar start C&M (always on, not just near EOH). Over-commit **2.07× → 1.94×**, fired hours −15%. Principled (published start cost), not tuned to MOR.
+- **Root cause established**: the residual over-commit is the **price-taker self-commitment paradigm** — the model maximizes profit by running full output whenever spark > 0, which is *economically correct for a price-taker* but not what an ISO-dispatched, steam-constrained, conservative real operator does. Gas-basis (#1, reverted) and part-load HR (no-op) do **not** touch this.
+- **v1 is therefore an honest *economic upper bound*** — the over-commit is the economic *ceiling*, not a realized-output forecast. The behavioral/price-responsive dispatch model that would turn it into a realized-output predictor is **Stream A's job** (the forward model needs that dispatch rule anyway). 2×CC still requires that behavioral output (→ Stream A) or per-generator state (v2).
+
 ---
 
 ### §3.7 The Mode A/B/C bracket is collapsed AND mis-shifted — and partly due to a wrong starting state

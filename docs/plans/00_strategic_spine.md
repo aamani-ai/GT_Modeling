@@ -226,32 +226,35 @@ The phase you specifically called out as needing to exist. Without this, the fra
 
 **Exit criteria**: ADR-005 written; methodology updated; realized profile is a first-class concept; per-period classification can be applied to MOR data.
 
-### Phase 5 — Temperature + load fidelity (Stream B)
+### Phase 5 — Temperature + load fidelity (Stream B) — **largely RESOLVED 2026-05-27**
 
-**Deliverables**:
+**Outcome** (full detail: [`../methodology/extra/temperature_load_fidelity.md`](../methodology/extra/temperature_load_fidelity.md) §9):
 
-- Load level representation in the engine (graduating `02_load_as_a_dimension.md` to methodology)
-- Part-load heat rate polynomial (from `extra/performance_and_risk_framework.md` §4.6 or asset-specific)
-- Load-conditional and ambient-conditional degradation chain (Friday meeting paper as starting reference)
-- Updated `dispatch_day_mode_aware()` to consider load as a continuous decision variable
-- ADR-006 (or next): Load representation + temperature dependency methodology
+The framing (B1) surfaced a root insight that reshaped this phase: **the over-commit is the price-taker self-commitment paradigm, not gas price or part-load HR.** Consequences:
 
-**Why after C**: Load-conditional parameters need a place to land. Without realized operating profile, the parameters are global; with it, they can be profile-conditional, which is more accurate.
+- ✅ **#2 commitment hurdle — COMMITTED** (d429d18): always-on full-start-C&M recovery. Over-commit 2.07× → **1.94×**, fired hours −15%. The one principled dispatch-realism win for the price-taker model.
+- **Part-load HR — no-op** for a price-taker (always dispatches full when economic); the framework polynomial was *corrected* (a0b2e18) regardless.
+- **Gas-basis overlay (#1) — tested and reverted** (4e2ff49): overstates post-2018 winter gas (caveats §11) and didn't fix over-commit. Flat Henry Hub stands for v1.
+- **Realistic (price-responsive) output (#3) — deferred to Phase 6 (Stream A).** There's no *principled* price-taker version of part-load output; it's inherently a **behavioral/dispatched** model — which is exactly the forward dispatch rule Stream A needs. **#3 ≡ Stream A's dispatch rule.**
+- **Temperature × load degradation (B3) — deferred**: modest/redistributive for low-CF Lockport; wants the Friday paper.
 
-**Gaps_and_priorities mapping**: this phase absorbs gaps #5 (dispatch realism), part of #8 (per-asset Bucket B calibration that becomes load-aware), and the Friday meeting items.
+**The v1 stance**: the model is an **honest economic upper bound** — the over-commit is the economic *ceiling*, not a realized-output forecast. The behavioral output model that turns it into a realized-output predictor is Phase 6.
 
-**Exit criteria**: Load level is committed; temperature dependency is wired into degradation; the "100% load when on" silent assumption is removed.
+**Gaps mapping**: this phase landed gap #5 (dispatch realism — partially, via #2). Gaps #2/#4/#6 (revenue/OPEX integration) and #9 (per-generator state, for 2×CC) remain.
+
+**Exit status**: closed at the principled point (#2 in, model labeled upper-bound). The remaining load/output fidelity is Phase 6 (it's the same behavioral dispatch rule).
 
 ### Phase 6 — Forward-looking model (Stream A)
 
 **Deliverables**:
 
 - Step 1 ↔ Step 2 coupling: gt_models consumes price/gas/weather paths from model-gpr
+- **Behavioral dispatch rule (absorbed from Stream B #3, 2026-05-27)**: a price-responsive / dispatched-quantity output model that turns the v1 *economic upper bound* into a *realized-output predictor*. This is the realistic-output work deferred from Phase 5 — it's the same dispatch rule a forward model needs, so it's done here, once, properly. (Where 2×CC can finally emerge economically.)
 - Single-scenario forward run capability
 - Multi-scenario / Monte Carlo orchestration (Phase L from the original consolidation plan)
 - Forward conditioning: capability envelope + realized profile (from Phases 3 + 4) inform dispatch in forward simulations
 
-**Why last in the dependency chain**: Forward-looking benefits from having all the conditioning structure (capability, realization, load, temperature) in place. Doing it earlier means re-doing it once those land.
+**Why last in the dependency chain**: Forward-looking benefits from having all the conditioning structure (capability, realization, load, temperature) in place. Doing it earlier means re-doing it once those land. **Note**: the v1 model (Phase 5 endpoint) is an *economic upper bound*; Phase 6's behavioral dispatch rule is what makes forward outputs *realized-output predictions* rather than ceilings.
 
 **Gaps_and_priorities mapping**: this phase absorbs gap #7 (Phase L Monte Carlo). Possibly also gap #9 (per-generator state) if the engine refactor is bundled.
 

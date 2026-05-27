@@ -1,6 +1,6 @@
-# Temperature + Load Fidelity — Gap Analysis and Proposed Engine Changes (Stream B)
+# Temperature + Load Fidelity — Gap Analysis and Engine Changes (Stream B)
 
-> **Status**: Analysis + proposal. This is the framing (B1) for Stream B of the [strategic spine](../../plans/00_strategic_spine.md). It quantifies the gaps from the 2026-05-22 advisory meeting (Siddharth: GT degradation is driven by load % and ambient temperature, not just fired hours) and **proposes** engine changes (B2/B3) that are NOT yet made — they await direction, per the repo's "propose code changes that alter model output, don't unilaterally fix" discipline.
+> **Status**: **Resolved for v1 (2026-05-27).** This was the framing (B1) for Stream B; §1–§7 are the original analysis. **The outcome of B2/B3/#1/#2/#3 is in §9 (read that for the conclusion).** Headline: only **#2 (commitment hurdle)** was committed; the part-load HR change is a no-op for a price-taker, the gas-basis overlay was tested and reverted, and the realistic-output model (#3) was deferred to Stream A because it *is* Stream A's forward dispatch rule. v1 is honestly labeled an **economic upper bound**.
 >
 > **Companion**: [`backtest_findings.md`](backtest_findings.md) (sibling analytical doc). Concept-level discussion of load is in [`../../discussion/02_load_as_a_dimension.md`](../../discussion/02_load_as_a_dimension.md) (local-only).
 >
@@ -126,6 +126,26 @@ Confirmed (02 §7 Q5): we have **hourly ambient** (`weather_hourly.parquet`) but
 2. Load representation: continuous vs 3 bands (per 02 §10 stepping-stone)?
 3. Recalibration: if B3 redistributes wear, how do we re-anchor base coefficients to avoid double-counting?
 4. Does B2 change dispatch (load becomes a decision) or just accounting (HR penalty on the realized load)?
+
+---
+
+## §9. Resolution (2026-05-27) — what was actually built, and the v1 stance
+
+The §1–§7 proposals were executed and the surprising bits resolved. Final v1 outcome:
+
+| Item | Outcome | Why |
+| :--- | :--- | :--- |
+| **Part-load HR (the "B2 prize")** | **No-op — not implemented.** | For a price-taker merchant CCGT, per-MWh margin is *best* at full load, so the model always dispatches full when spark > 0 → the part-load multiplier never fires. Adding it alone changes nothing. |
+| **Framework polynomial** | **Corrected** (commit a0b2e18). | `2.648 − 4.296L + 2.648L²` was internally inconsistent; refit to `0.471L² − 1.026L + 1.556`. Kept regardless, since it's just wrong. |
+| **#1 gas-basis overlay** | **Tested and reverted** (commit 4e2ff49). | Overstates post-2018 winter gas (caveats §11: Atlantic Sunrise tightened the basis) AND didn't fix the over-commit. Flat Henry Hub stands for v1. |
+| **#2 commitment hurdle** | ✅ **COMMITTED** (commit d429d18). | Always-on full-start-C&M-recovery hurdle. The one principled dispatch-realism win. Over-commit 2.07× → **1.94×**, fired hours −15%, spark $36M → $33.6M, 98 tests pass. |
+| **#3 realistic (price-responsive) output** | **Deferred to Stream A (Phase 6).** | There is no *principled* price-taker version of part-load output — it's inherently a **behavioral / dispatched** model, which is exactly the forward dispatch rule Stream A needs. Doing it now would be a fudge or a premature behavioral commitment. #3 *is* Stream A. |
+| **2×CC emergence** | **Not achievable in v1.** | It needs either #3 (behavioral output, → Stream A) or per-generator availability (v2 state-vector rework, gaps #9). |
+| **B3 temperature × load degradation** | **Deferred.** | Modest & redistributive for low-CF Lockport (§3.3); wants the Friday load-temp paper; a generalization investment for high-CF assets. |
+
+**The v1 stance (the key decision)**: the model is an **honest economic upper bound** — "the most this asset could economically generate/earn." The ~1.94× over-commit is the *economic ceiling*, NOT a realized-output forecast, because the model self-commits as a price-taker; real output is lower due to ISO dispatch-to-quantity, steam-following, conservatism, and unit availability — none of which are economic. The **behavioral output model that would turn the ceiling into a realized-output predictor is Stream A's job** (a forward valuation has no future dispatched-MW, so it needs a behavioral/price-responsive dispatch rule — the same thing #3 needs). This avoids a premature behavioral fudge and does the dispatch rule once, properly, in Stream A.
+
+**The root insight for the whole stream**: the over-commit is the **price-taker self-commitment paradigm**, not gas price or part-load HR. #2 dents the *hours* component principledly; the *MW-per-hour* component is the upper-bound-vs-predictor fork, resolved by labeling v1 as an upper bound and carrying the behavioral output into Stream A.
 
 ---
 
