@@ -25,10 +25,10 @@
 # ============================================================================
 
 envelope_as_of:
-  value: "2026-05-25"
+  value: "2026-05-26"
   status: real_reported
-  source: "Date this envelope skeleton was assembled (Phase 1 of strategic spine)"
-  caveat: "This is a skeleton — many fields are placeholder pending Phase 2 data-fill (D1 open data + D2 diligence-extractor outputs)."
+  source: "Skeleton assembled 2026-05-25 (Phase 1); Tier-1 enrichment 2026-05-26 from renewablesinfo_org thermal_enriched.parquet (EIA-860 3_1/3_5)"
+  caveat: "Tier-1 (physical/engineering capability from EIA) now populated. Tier-2 (regulatory/market qualification: AGC, PURPA QF, ICAP, RMR) remains placeholder pending NYISO/FERC web sourcing + D2 diligence-extractor (still processing). See extracting_capability_from_thermal_archive.md for the two-tier framing."
 
 envelope_methodology_ref:
   framework_anchor:
@@ -43,6 +43,10 @@ envelope_methodology_ref:
     value: "docs/learning_logs/basics/11_capability_vs_realization.md"
     status: real_reported
     source: "Two-layer framework: capability (this file) vs realization (separate, inferred from history)"
+  extraction_guide_ref:
+    value: "docs/guides/extracting_capability_from_thermal_archive.md"
+    status: real_reported
+    source: "The repeatable recipe for filling this file from the renewablesinfo_org thermal archive (Tier-1) + the Tier-2 sourcing that the archive can't cover"
 
 # ============================================================================
 # Envelope summary — derived; for quick programmatic consumption
@@ -66,6 +70,10 @@ envelope_summary:
     value: ["must_run_eligible.purpa_qf", "must_run_eligible.capacity_firm"]
     status: real_computed
     source: "Sub-mechanisms within must_run_eligible that have placeholder status"
+  capability_modifiers:
+    value: ["fuel_switching", "simple_cycle_capable", "supplemental_firing", "load_turndown"]
+    status: real_computed
+    source: "Physical capability attributes (Tier-1, EIA) that condition duties without being duties themselves — see capability_modifiers section"
 
 # ============================================================================
 # Per-duty blocks
@@ -115,15 +123,14 @@ baseload:
 peaker:
   qualified:
     value: false
-    status: real_computed
-    source: "Derived from engineering.yaml: 1992-vintage frame GT (not aeroderivative); cold-start time exceeds peaker requirements"
-    confidence: MEDIUM
-    validation_path: "Confirm via NYISO MIS resource registration: is Lockport NYISO fast-start certified? Absence of fast-start cert is sufficient (though not necessary) for peaker-unqualified."
+    status: real_reported
+    source: "EIA-860 3_1 time_to_full_load_min = 720 (12 hr) for all 4 generators, via renewablesinfo_org thermal_enriched.parquet (queried 2026-05-26)"
+    confidence: HIGH
   evidence:
-    value: "Frame-class GT (not aero), 1992 vintage; estimated cold-start time ~60+ minutes (CCGT with HRSG/ST warmup); ramp adequate but not peaker-grade. Even with adequate ramp, the cold-start time alone disqualifies for fast-response peaker duty in NYISO markets that require fast-start certification."
-    status: real_computed
-    source: "Composite: engineering.yaml plant.combined_cycle_unit_code (3×1 CCGT with HRSG) + identity.yaml operating_dates (1992 commissioning) + technology-class knowledge per learning_logs/basics/10 §5.1"
-    caveat: "Status would benefit from explicit NYISO fast-start cert check. The 'peaker not in envelope' claim is high-confidence because the hardware is wrong for peaker duty, but the formal certification status hasn't been verified."
+    value: "Cold-start-to-full-load is 720 min (12 hr) per EIA — far slower than fast-response peaker duty (which needs minutes). Frame-class CCGT (CT prime movers + CA steam side), not aeroderivative. Even setting aside formal certification, the 12-hr start physically disqualifies fast peaker duty."
+    status: real_reported
+    source: "thermal_enriched.parquet: time_to_full_load_min=720, prime_mover_code=CT/CA, configuration_label='Combined Cycle' (EIA-860 3_1)"
+    caveat: "The 720-min value is EIA's '12H' clustering default (86% of CCGTs report exactly 720 — see extracting_capability_from_thermal_archive.md §6 and pulling_specs_from_powerplantsinfo.md §5.4). It is therefore a coarse bucket, not a precise Lockport measurement — but it is still decisive: a fast peaker would report minutes, not hours. A formal NYISO fast-start-certification check (Tier 2) would confirm but is low-priority since the physical proxy already decides."
 
 frequency_regulation:
   qualified:
@@ -193,31 +200,121 @@ must_run_eligible:
         source: "Open; same Phase 2 D1 audit will address"
 
 # ============================================================================
+# Capability modifiers — not duties, but attributes that condition duties
+# ============================================================================
+# These are physical capabilities (all Tier-1, from EIA) that shape which
+# duties are realizable and how. They don't map 1:1 to a single duty.
+# Added 2026-05-26 from thermal_enriched.parquet.
+
+capability_modifiers:
+  fuel_switching:
+    qualified:
+      value: true
+      status: real_reported
+      source: "EIA-860 3_5 Multifuel via thermal_enriched.parquet: is_dual_fuel=True, can_switch_when_operating=True (all 4 generators)"
+      confidence: HIGH
+    secondary_fuel:
+      value: "DFO"
+      status: real_reported
+      source: "thermal_enriched secondary_energy_source = DFO (distillate fuel oil)"
+    switch_time_hr:
+      value: 1.0
+      status: real_reported
+      source: "thermal_enriched switch_time_gas_to_oil_hr = switch_time_oil_to_gas_hr = 1.0"
+    can_switch_while_operating:
+      value: true
+      status: real_reported
+      source: "thermal_enriched can_switch_when_operating = True"
+    storage_limited:
+      value: true
+      status: real_reported
+      source: "thermal_enriched fuel_switch_storage_limited = True — oil-tank runtime bounds sustained oil operation"
+    air_permit_limited:
+      value: true
+      status: real_reported
+      source: "thermal_enriched fuel_switch_air_permit_limited = True — Title V permit bounds oil-firing hours"
+    capacity_mw_with_oil:
+      value: "~43 per CT, 78 for CA (roughly fuel-symmetric with gas)"
+      status: real_reported
+      source: "thermal_enriched capacity_mw_with_gas vs capacity_mw_with_oil"
+    conditions_duties:
+      value: "Strengthens must_run_eligible and winter reliability: during natural-gas curtailment (polar vortex), Lockport can switch to oil in 1 hr and keep delivering steam (cogen must-run). Bounded by oil storage + air permit."
+      status: real_computed
+      source: "Interpretation per learning_logs/market_and_operations/05 §9 (must-run) + extracting_capability_from_thermal_archive.md §4"
+
+  simple_cycle_capable:
+    qualified:
+      value: true
+      status: real_reported
+      source: "EIA-860 3_1 via thermal_enriched: can_bypass_hrsg = True for the 3 CTs (GEN1/2/3)"
+      confidence: MEDIUM
+    conditions_duties:
+      value: "Expands the operating-mode envelope — the CTs can run GT-only (bypassing the HRSG), not just in combined-cycle. Relevant to operating-mode flexibility; in v1 the engine models 3xCC/2xCC/1xCC/steam-only/offline but not explicit simple-cycle GT operation."
+      status: real_computed
+      source: "Interpretation; can_bypass_hrsg from EIA-860 3_1"
+    caveat: "can_bypass_hrsg is None for GEN4 (the CA/steam side), which is expected — bypass applies to the CTs."
+
+  supplemental_firing:
+    qualified:
+      value: true
+      status: real_reported
+      source: "EIA-860 3_1 via thermal_enriched: has_duct_burners = True for GEN4 (the CA/steam side)"
+      confidence: MEDIUM
+    conditions_duties:
+      value: "Duct-burner supplemental firing boosts steam output independent of GT load — cogen steam flexibility. May contribute to steam-only-mode capability (see operating_profile.yaml steam-only analysis + pulling_specs guide §Phase 2 steam-only framework)."
+      status: real_computed
+      source: "Interpretation; has_duct_burners from EIA-860 3_1"
+
+  load_turndown:
+    ct_min_load_pct:
+      value: 0.62
+      status: real_reported
+      source: "EIA-860 3_1 via thermal_enriched: min_load_pct = 0.616 for CTs (min_load_mw 30 / nameplate 48.7)"
+      caveat: "62% is a relatively high floor — limited CT turndown. Design/permit floor, not necessarily observed economic min."
+    ca_min_load_pct:
+      value: 0.19
+      status: real_reported
+      source: "thermal_enriched min_load_pct = 0.186 for GEN4 (CA): min_load 14 / nameplate 75.2"
+    conditions_duties:
+      value: "CT turndown is limited (62% floor); the CA is more flexible (19%). Conditions mid-merit cycling depth and is a key input to the load-level dimension (Stream B / 02_load_as_a_dimension.md), which the model does not yet represent (assumes 100% load when on)."
+      status: real_computed
+      source: "Interpretation; min_load_pct from EIA-860 3_1"
+
+# ============================================================================
 # Gaps surfaced by this skeleton (Phase 2 inputs)
 # ============================================================================
 # These are the open data items that the data-fill phase needs to close
 # in order to graduate this envelope from skeleton to populated.
 
 phase_2_data_gaps:
-  d1_open_data:
+  tier_1_closed_2026_05_26:
     value:
-      - "NYISO MIS — AGC qualification record for plant 54041 (for frequency_regulation)"
-      - "FERC PURPA QF database — plant 54041 / Lockport Energy Associates LP entry (for must_run.purpa_qf)"
-      - "NYISO MIS — fast-start certification record (for peaker verification)"
-      - "NYISO operations — RMR designation list (for must_run.rmr re-verification)"
-      - "NYISO public — ICAP auction clearing records for Lockport (for must_run.capacity_firm + gap #2 in gaps_and_priorities.md)"
-      - "OEM spec sheet or EIA-923 — ramp rate verification (~20 MW/min asserted)"
+      - "peaker disqualification — CLOSED via EIA time_to_full_load_min=720 (thermal_enriched)"
+      - "fuel-switching capability — CLOSED via EIA 3_5 dual-fuel block (thermal_enriched)"
+      - "simple-cycle / HRSG-bypass capability — CLOSED via EIA can_bypass_hrsg"
+      - "supplemental-firing (duct burners) — CLOSED via EIA has_duct_burners"
+      - "load-turndown floors (CT 62%, CA 19%) — CLOSED via EIA min_load_pct"
     status: real_reported
-    source: "Inventory of D1 gaps surfaced by skeleton; for Phase 2 audit closure"
-  d2_diligence_extractor:
+    source: "Tier-1 (physical/engineering) capability closed from renewablesinfo_org thermal_enriched.parquet, 2026-05-26. See extracting_capability_from_thermal_archive.md."
+  tier_2_open_d1_web:
     value:
-      - "Steam-host status post-2024 (commercial agreements + host correspondence)"
+      - "NYISO MIS — AGC qualification record for plant 54041 (for frequency_regulation; binary gate)"
+      - "FERC PURPA QF database — plant 54041 entry (for must_run.purpa_qf; can lapse on efficiency threshold)"
+      - "NYISO public — ICAP auction clearing records for Lockport (for must_run.capacity_firm + gap #2 in gaps_and_priorities.md, +$5-9M/yr)"
+      - "NYISO operations — RMR designation list (for must_run.rmr re-verification; negative-evidence check)"
+      - "NYISO MIS — fast-start certification (for peaker formal confirmation; LOW PRIORITY — physical proxy time_to_full_load already decides)"
+      - "OEM spec sheet or EIA-923 — ramp-rate verification (~20 MW/min asserted for mid_merit; time_to_full_load is cold-start not ramp)"
+    status: real_reported
+    source: "Tier-2 regulatory/market qualification — NOT in EIA archive; needs NYISO/FERC public web records. Per extracting_capability_from_thermal_archive.md §8."
+  tier_2_open_d2_dataroom:
+    value:
+      - "Steam-host status post-2024 (commercial agreements + host correspondence) — confirms cogen *realization* (capability already confirmed via is_chp)"
       - "PURPA QF documentation (regulatory filings)"
       - "Active steam-offtake contract terms (hours, quantities, force majeure)"
       - "ICAP commitment letters (if Lockport participates in NYISO ICAP)"
       - "LTSA-related capability constraints (cycle-count limits, EOH allowances) — also feeds gap #1 in gaps_and_priorities.md"
     status: real_reported
-    source: "Inventory of D2 gaps surfaced by skeleton; user-led extraction workstream"
+    source: "Tier-2 via diligence-extractor (D2); user-led workstream, still processing."
 
 # ============================================================================
 # Graduation criteria (notes for ADR-004, the future capability envelope ADR)
