@@ -36,6 +36,8 @@ constant · current value · status · source · sensitivity rank · defensibili
 
 It makes visible, at a glance: what's **doable now** (literature + calibrate-to-MOR) vs **blocked** (data room / Friday paper).
 
+> **Live artifact**: [`docs/assumptions/parameter_calibration_register.md`](../assumptions/parameter_calibration_register.md) — Gen 1 (2026-05-28). Two-tier structure: §3 the 17 high-priority cited rows (the rows defensible enough to anchor a v2 conversation) + §4 the broader inventory backlog (~50 distinct constants, ~80 rows across 6 sub-tables) pending sensitivity-rank, citation, or calibration.
+
 ## §4. Sequence (when executed)
 
 1. **Sensitivity-rank** the constants (cheap; reuse the Phase-L sweep machinery or a local sweep).
