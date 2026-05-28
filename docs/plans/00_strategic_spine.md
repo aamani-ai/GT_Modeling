@@ -76,7 +76,7 @@ These are not yet integrated. Integration is what the next phases are about.
 3. **Outputs are perfect-foresight upper bounds** (loosest on RT); the forward is a **1-yr aged-state analog scaffold** (ADR-009), not valuation-grade.
 4. **Mechanism has run ahead of inputs** — much is latent (creep dormant, `hrsg_cycles` unwired, B=C, the finite-horizon artifact). *(The forward A=B=C overlap is now resolved — aged-state start, ADR-009.)*
 
-**Net finding**: a **credible engine + deep understanding, but not yet a defensible valuation.** The bottleneck has moved from *mechanism* → *inputs + revenue completeness*, and those are largely **data-gated** (data room, MOR, the Friday paper).
+**Net finding**: a **credible engine + deep understanding, but not yet a defensible valuation.** The bottleneck has moved from *mechanism* → *inputs + revenue completeness*, and those are largely **data-gated** (data room, MOR; load-temp paper landed 2026-05-27 — Saturday & Isaiah 2018 — with a sensitivity-check still pending).
 
 **Recommended next phase — pivot from mechanism to credibility** (do *not* add more forward sophistication on placeholder inputs):
 1. **Sensitivity rank** (cheap, unblocked) — run [`parameter_calibration_plan.md`](parameter_calibration_plan.md) step 0 so we know which placeholders move the answer. **Do this regardless.**
@@ -116,7 +116,7 @@ The forward path has three conceptual streams plus a cross-cutting data layer un
 
 **Why it matters**: Per the 2026-05-22 advisory meeting with Siddharth, gas turbine degradation is driven not only by operating hours but significantly by load percentage and ambient temperature. Current model treats wear as fired-hour-driven; this is a known calibration gap.
 
-**Discussion docs**: [`docs/discussion/02_load_as_a_dimension.md`](../discussion/02_load_as_a_dimension.md); [Friday paper] referenced in `docs/methodology/extra/forward_looking_framing.md`.
+**Discussion docs**: [`docs/discussion/02_load_as_a_dimension.md`](../discussion/02_load_as_a_dimension.md); Saturday & Isaiah 2018 (the load-temp paper, acquired 2026-05-27) referenced in `docs/methodology/extra/forward_looking_framing.md` and `docs/assumptions/parameter_calibration_register.md` §9.
 
 ### 3.3 Stream C — Capability envelope + framework operationalization
 
@@ -267,7 +267,7 @@ The framing (B1) surfaced a root insight that reshaped this phase: **the over-co
 - **Part-load HR — no-op** for a price-taker (always dispatches full when economic); the framework polynomial was *corrected* (a0b2e18) regardless.
 - **Gas-basis overlay (#1) — tested and reverted** (4e2ff49): overstates post-2018 winter gas (caveats §11) and didn't fix over-commit. Flat Henry Hub stands for v1.
 - **Realistic (price-responsive) output (#3) — deferred to Phase 6 (Stream A).** There's no *principled* price-taker version of part-load output; it's inherently a **behavioral/dispatched** model — which is exactly the forward dispatch rule Stream A needs. **#3 ≡ Stream A's dispatch rule.**
-- **Temperature × load degradation (B3) — deferred**: modest/redistributive for low-CF Lockport; wants the Friday paper.
+- **Temperature × load degradation (B3) — deferred**: modest/redistributive for low-CF Lockport; load-temp paper landed (Saturday & Isaiah 2018) — informs §3.2/§3.7 of the calibration register, but a sensitivity sweep is needed before lifting coefficients.
 
 **The v1 stance**: the model is an **honest economic upper bound** — the over-commit is the economic *ceiling*, not a realized-output forecast. The behavioral output model that turns it into a realized-output predictor is Phase 6.
 

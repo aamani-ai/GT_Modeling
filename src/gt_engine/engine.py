@@ -237,7 +237,8 @@ P_CREEP_SCALE = 0.10        # hockey-stick scale (mirrors P_COMBUSTION_SCALE)
 # planned shutdown (~8 factored starts of hot-section damage for a full-load trip). v1 runs
 # full-load when on, so a forced outage from a running state IS a full-load trip → the full
 # 8× factor applies (when Stream A adds part-load, this factor scales down with trip load).
-# Bucket-B placeholder pending the Friday load-temp paper.
+# Bucket-B placeholder; Saturday & Isaiah 2018 (the load-temp paper, register §9) is
+# creep-only and doesn't constrain this; pending OEM-specific evidence.
 TRIP_MAINTENANCE_FACTOR = 8.0
 
 TBC_WEIBULL_BETA = 3.0
@@ -258,15 +259,18 @@ TBC_WEIBULL_ETA = 28_000.0
 # fired hours < 32°F, only ~2% > 80°F), so most hours get a factor < 1 and the few
 # summer hours > 1. Validated per run: Σ fired_hours_hot / Σ fired_hours ≈ 1.00.
 #
-# COEFFICIENTS ARE LITERATURE DEFAULTS (modest hot-section sensitivity) pending
-# the Friday load-temp paper — see ADR-006 §5. The LOAD half of B3 is deliberately
+# COEFFICIENTS ARE LITERATURE DEFAULTS (modest hot-section sensitivity). The
+# load-temp paper has landed — Saturday & Isaiah (2018) — and surfaces a ~17×
+# higher ambient creep sensitivity (6.85%/°F on LM2500+ aero-derivative vs our
+# 0.4%/°F here). Sensitivity sweep needed before adoption; see ADR-006 §5 and
+# parameter_calibration_register.md §3.7. The LOAD half of B3 is deliberately
 # NOT implemented in v1: a full-dispatch price-taker has no load variation to
 # weight, so load-weighted wear is a structural no-op until Stream A (Phase 6)
 # introduces behavioural/price-responsive output. Full reasoning + the deferred
 # load-half plan: docs/decisions/006-ambient-weighted-wear.md;
 # docs/methodology/extra/temperature_load_fidelity.md §10.
 AMBIENT_WEAR_REF_F = 34.3         # re-anchor point = realized fired-hour-weighted mean ambient (Lockport, post-#2 path)
-AMBIENT_WEAR_SENS_PER_F = 0.004   # hot-section sensitivity per °F (literature default; pending paper)
+AMBIENT_WEAR_SENS_PER_F = 0.004   # hot-section sensitivity per °F (literature default; Saturday-Isaiah 2018 suggests ~6.85%/°F for LM2500+ — see ADR-006 §5)
 AMBIENT_WEAR_FACTOR_MIN = 0.70
 AMBIENT_WEAR_FACTOR_MAX = 1.40
 

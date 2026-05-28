@@ -61,7 +61,7 @@ HR_multiplier(L) ≈ 0.471·L² - 1.026·L + 1.556     ← refit to published an
 
 ### §3.3 Load × temperature degradation (the B3 question) — modest & redistributive for Lockport
 
-Illustrative wear-weighting sensitivity (pending the Friday load-temp paper):
+Illustrative wear-weighting sensitivity (pending the Saturday & Isaiah (2018) load-temp paper):
 
 | Wear model | Total weighted / flat |
 | :--- | --: |
@@ -105,7 +105,7 @@ Confirmed (02 §7 Q5): we have **hourly ambient** (`weather_hourly.parquet`) but
 | Sub-step | Change | Touches | Decision needed |
 | :--- | :--- | :--- | :--- |
 | **B2 — part-load HR + joint (mode, load) dispatch** | Make dispatch a joint (mode, load) decision with a (cogen-aware) part-load HR multiplier. **Byproduct: resolves the economic 2×CC lockout** (§3.4) — 2×CC stops being dominated once 3×CC-at-part-load is penalized | N4 `dispatch_day_mode_aware()` (the mode-pick + the `margin = spark × full_capacity` line) + HR (`hr_degraded_for_mode`); `operating_profile.yaml` (corrected polynomial); fixes framework doc | (a) continuous load vs 3 bands? (b) separate part-load HR from cogen steam allocation? (c) dispatch optimizer picks load vs heuristic? **Acceptance: economic 2×CC emerges; unit-down 2×CC stays v2** |
-| **B3 — load × temp degradation** | Weight `update_stress()` wear terms by load and ambient | N4 `update_stress` (eoh/fouling/tbc_time/rotor_life); recalibrate base coefficients so totals stay anchored | (a) coefficients from the **Friday paper** (pending); (b) recalibrate base wear so we redistribute, not double-count; (c) which terms get load-weighting vs ambient-weighting |
+| **B3 — load × temp degradation** | Weight `update_stress()` wear terms by load and ambient | N4 `update_stress` (eoh/fouling/tbc_time/rotor_life); recalibrate base coefficients so totals stay anchored | (a) coefficients from the **Saturday & Isaiah (2018) paper** (pending); (b) recalibrate base wear so we redistribute, not double-count; (c) which terms get load-weighting vs ambient-weighting |
 | **B4 — ADR-006** | Commit the load representation + degradation approach | `docs/decisions/006-*.md` + methodology | After B2/B3 direction |
 
 ---
@@ -113,13 +113,13 @@ Confirmed (02 §7 Q5): we have **hourly ambient** (`weather_hourly.parquet`) but
 ## §6. Conditioning + dependencies
 
 - **Realized-profile conditioning** (now available, Phase 4): B2/B3 parameters could be conditioned on the realized profile — e.g., winter cogen days (steam-driven, low electrical load) want the cogen-aware HR allocation; summer mid-merit days want the pure part-load curve. The realized profile tells the engine *which regime's load/wear physics apply*.
-- **Friday paper dependency**: B3's load-and-temperature fatigue/creep coefficients should come from the paper Siddharth shared (citation pending, per `04_industry_vocabulary_and_references.md` §5.3). Until then B3 is illustrative.
+- **Saturday & Isaiah (2018) paper dependency**: B3's load-and-temperature fatigue/creep coefficients should come from the paper Siddharth shared (citation pending, per `04_industry_vocabulary_and_references.md` §5.3). Until then B3 is illustrative.
 
 ---
 
 ## §7. Recommendation + open questions
 
-**Recommendation**: B2 (part-load HR) is the higher-value Lockport change (~6% gen-weighted margin effect, real), but it must be **cogen-aware** (don't naively apply a part-load curve to electrical load on steam-driven days). B3 (load×temp degradation) is mostly a **generalization investment** for future high-CF assets and **wants the Friday paper** — lower priority for Lockport, where its effect is modest and redistributive. Sequence: fix the framework polynomial → B2 cogen-aware part-load HR → (paper) B3.
+**Recommendation**: B2 (part-load HR) is the higher-value Lockport change (~6% gen-weighted margin effect, real), but it must be **cogen-aware** (don't naively apply a part-load curve to electrical load on steam-driven days). B3 (load×temp degradation) is mostly a **generalization investment** for future high-CF assets and **wants the Saturday & Isaiah (2018) paper** — lower priority for Lockport, where its effect is modest and redistributive. Sequence: fix the framework polynomial → B2 cogen-aware part-load HR → (paper) B3.
 
 **Open questions**:
 1. Cogen gas allocation: how to split gas between steam and electricity so part-load HR isn't conflated with steam co-production?
@@ -141,7 +141,7 @@ The §1–§7 proposals were executed and the surprising bits resolved. Final v1
 | **#2 commitment hurdle** | ✅ **COMMITTED** (commit d429d18). | Always-on full-start-C&M-recovery hurdle. The one principled dispatch-realism win. Over-commit 2.07× → **1.94×**, fired hours −15%, spark $36M → $33.6M, 98 tests pass. |
 | **#3 realistic (price-responsive) output** | **Deferred to Stream A (Phase 6).** | There is no *principled* price-taker version of part-load output — it's inherently a **behavioral / dispatched** model, which is exactly the forward dispatch rule Stream A needs. Doing it now would be a fudge or a premature behavioral commitment. #3 *is* Stream A. |
 | **2×CC emergence** | **Not achievable in v1.** | It needs either #3 (behavioral output, → Stream A) or per-generator availability (v2 state-vector rework, gaps #9). |
-| **B3 — ambient half** | ✅ **COMMITTED** (2026-05-27, [ADR-006](../../decisions/006-ambient-weighted-wear.md)). | Hot-section creep (`dc`) + TBC life (`tbc_time`) now ambient-weighted at hourly resolution over fired hours, re-anchored to the fired-hour-weighted mean ambient (34.3°F) so total wear is preserved (anchor 0.9999) and only the *distribution* shifts toward hot hours. Headline byte-identical (latent on Lockport-seed-42). Coefficient is a literature placeholder pending the Friday paper. **See §10.** |
+| **B3 — ambient half** | ✅ **COMMITTED** (2026-05-27, [ADR-006](../../decisions/006-ambient-weighted-wear.md)). | Hot-section creep (`dc`) + TBC life (`tbc_time`) now ambient-weighted at hourly resolution over fired hours, re-anchored to the fired-hour-weighted mean ambient (34.3°F) so total wear is preserved (anchor 0.9999) and only the *distribution* shifts toward hot hours. Headline byte-identical (latent on Lockport-seed-42). Coefficient is a literature placeholder pending the Saturday & Isaiah (2018) paper. **See §10.** |
 | **B3 — load half** | **Deferred to Stream A (Phase 6).** | A full-dispatch price-taker has no load variation to weight → load-weighted wear is a structural no-op until Stream A introduces behavioural/price-responsive output (the same dependency as #3). Plan documented in §10 + ADR-006. |
 
 **The v1 stance (the key decision)**: the model is an **honest economic upper bound** — "the most this asset could economically generate/earn." The ~1.94× over-commit is the *economic ceiling*, NOT a realized-output forecast, because the model self-commits as a price-taker; real output is lower due to ISO dispatch-to-quantity, steam-following, conservatism, and unit availability — none of which are economic. The **behavioral output model that would turn the ceiling into a realized-output predictor is Stream A's job** (a forward valuation has no future dispatched-MW, so it needs a behavioral/price-responsive dispatch rule — the same thing #3 needs). This avoids a premature behavioral fudge and does the dispatch rule once, properly, in Stream A.
@@ -184,7 +184,7 @@ The load half is **not** built in v1, on purpose and with a documented reason an
 - **How to build it (when unblocked)**: form `load_fraction = dispatched_MW / mode_capacity_MW` per hour; multiply the hot-section weight → `ambient_wear_factor(temp_f) × load_wear_factor(load_fraction)`, accumulated into the **same** `fired_hours_hotweighted` seam this ADR built. The plumbing already exists — the load half is *an additional multiplier on the same accumulator*, not new structure.
 - **Direction + a trap**: higher load → higher firing temp / peak-fire → faster hot-section wear (GER-3620 peak-load factor). But §3.3 showed load-weighting *reduces* Lockport's modeled **total** (it runs part-load, not peak-fire) — so the load half must be **re-anchored too** (redistribute, not re-level) or it silently drops total wear.
 - **Rides along**: the **`eoh` peak-fire maintenance factor** belongs with the load half (industry EOH counts peak-fire hours at a multiple) — same dependency, same paper.
-- **Coefficients**: from the Friday load-temp paper (same source as the ambient coefficient).
+- **Coefficients**: from the Saturday & Isaiah (2018) load-temp paper (same source as the ambient coefficient).
 
 ### §10.3 Side-fix surfaced by this work — Sanity-6 (calendar inspections)
 

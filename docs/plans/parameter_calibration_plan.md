@@ -23,7 +23,7 @@ For a specific 1992 plant the *true* physical value is often unknowable. The ach
 | Tier | Source | Status earned |
 |---|---|---|
 | **1 — measured** | the asset's own **MOR / data room / GADS / SCADA** (real EFOR, real LTSA intervals + costs, observed HR-degradation) | `real_observed` / `real_reported` |
-| **2 — vendor / literature** | OEM specs (GER-3620, TBC curves), published F-class data, the **Friday load-temp paper**, Kumar 2012 — *cited* | `assumed_vendor` / `assumed_industry` (with a reference) |
+| **2 — vendor / literature** | OEM specs (GER-3620, TBC curves), published F-class data, **Saturday & Isaiah (2018)** load-temp paper (acquired 2026-05-27 — previously placeholder-tagged `[Friday]` after the meeting day), Kumar 2012 — *cited* | `assumed_vendor` / `assumed_industry` (with a reference) |
 | **3 — calibrated** | when neither exists: **tune to a known target** — wear rates so modeled EOH→MI timing matches the contract MI interval; `P_forced` so modeled **EFOR matches MOR/GADS** | `assumed_derived` (calibration target recorded) |
 
 ## §3. The artifact — a parameter-provenance / calibration register
@@ -34,7 +34,7 @@ A single table (lives in `docs/assumptions/`, the per-leaf value-provenance home
 constant · current value · status · source · sensitivity rank · defensibility target · blocked-on · owner
 ```
 
-It makes visible, at a glance: what's **doable now** (literature + calibrate-to-MOR) vs **blocked** (data room / Friday paper).
+It makes visible, at a glance: what's **doable now** (literature + calibrate-to-MOR) vs **blocked** (data room / vendor specs / sensitivity sweeps).
 
 > **Live artifact**: [`docs/assumptions/parameter_calibration_register.md`](../assumptions/parameter_calibration_register.md) — Gen 1 (2026-05-28). Two-tier structure: §3 the 17 high-priority cited rows (the rows defensible enough to anchor a v2 conversation) + §4 the broader inventory backlog (~50 distinct constants, ~80 rows across 6 sub-tables) pending sensitivity-rank, citation, or calibration.
 
@@ -43,13 +43,13 @@ It makes visible, at a glance: what's **doable now** (literature + calibrate-to-
 1. **Sensitivity-rank** the constants (cheap; reuse the Phase-L sweep machinery or a local sweep).
 2. **Build the register** (status + source + rank + target for each).
 3. **Upgrade the high-impact, data-available ones now** — literature/vendor (cited) + calibrate-to-MOR (EFOR, inspection timing).
-4. **Close the rest as data lands** — D2 data-room (LTSA terms/costs, gap #1), the Friday paper (ambient/load wear coefficients, ADR-006/007), MOR depth.
+4. **Close the rest as data lands** — D2 data-room (LTSA terms/costs, gap #1), the load-temp paper (now landed as Saturday & Isaiah 2018 — see register §3.7 cross-check; informs ADR-006/007), MOR depth.
 5. **Re-run** + update the model-card's assumption-status distribution (it already reports the real_* vs placeholder split).
 
 ## §5. Gating & timing
 
 - **Doable now**: sensitivity rank, the register, literature/vendor citations, calibrate-to-MOR (EFOR + inspection timing).
-- **Blocked on data**: LTSA monetary terms (data room, #1), ambient/load coefficients (Friday paper), some EFOR detail (GADS).
+- **Blocked on data**: LTSA monetary terms (data room, #1), aging-multiplier curves + TBC vendor specs (literature/OEM), some EFOR detail (GADS). *(Load-temp paper landed 2026-05-27 — Saturday & Isaiah 2018; surfaces a §3.7 cross-check needing a sensitivity sweep before adoption.)*
 - **Target**: the **high-impact** constants defensible **before v2 / before sharing**; the inert ones can stay flagged with status + sensitivity. The register tracks the boundary.
 
 ## §6. Cross-references

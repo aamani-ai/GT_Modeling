@@ -268,6 +268,7 @@ The matrix below ranks by **annual Net P&L impact × effort × signal quality**:
 | **7** | **Phase L Monte Carlo** | Uncertainty bands, not point shift | Medium–High (orchestration layer) | Quantifies single-path noise; sweeps Bucket B Athens constants. |
 | **8** | **Per-asset Bucket B calibration** | Tightens uncertainty | High (long tail of engineering parameter learning) | Replaces Athens defaults with Lockport-calibrated state-evolution constants. **Process planned in [`docs/plans/parameter_calibration_plan.md`](../plans/parameter_calibration_plan.md)** (sensitivity-rank → tiered defensibility → provenance register; pre-v2, partly data-gated). |
 | **9** | **Per-generator state** (v2 architecture) | Unlocks 2xCC emergence + single-CT-down | High (state-vector rework) | The piece that fixes the 0% 2xCC backtest divergence. |
+| **10** | **Heat-rate vs ambient temperature** | Small (a few % HR drift in hot months → modest spark margin shift) | Low–Medium (add `temp_f` arg to `hr_clean_for_mode` + a curve from EIA-860 / vendor specs) | Capacity already derates with ambient (`ambient_derate_factor`), and ambient already drives hot-section wear (ADR-006). But heat rate itself is currently **mode-only** — it does NOT vary with ambient. Real GTs degrade HR ~0.5%/°C in hot weather. Surfaced 2026-05-28 while reviewing the load-temp paper (Saturday & Isaiah 2018), which handles this implicitly via PYTHIA gas-path recomputation. Small structural gap, not a Stream A item. |
 
 ### §6.1 What "done" looks like at priority 1+2 only
 
