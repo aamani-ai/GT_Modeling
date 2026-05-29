@@ -69,29 +69,20 @@ jobs:
             --publish
 
       - name: Deploy to Cloud Run
-        # IAP enabled + no public access — only aamani.ai domain users can reach it
-        # (binding granted in the next step). No env-vars / secrets needed:
-        # the app reads precomputed JSONs bundled into the image, no DB / API keys.
+        # Public access (no IAP). The showcase is energy-only + explicitly framed
+        # as "not a valuation," with no sensitive data — precomputed JSONs bundled
+        # into the image. --allow-unauthenticated grants allUsers → run.invoker so
+        # anyone with the URL can load it. If we ever need to gate it again, flip
+        # to `--iap --no-allow-unauthenticated` + re-add the aamani.ai IAP binding.
         run: |
           IMAGE="${{ env.AR_HOST }}/${{ env.AR_PROJECT }}/${{ env.AR_REPO }}/${{ env.SERVICE }}:${{ github.sha }}"
           gcloud run deploy ${{ env.SERVICE }} \
             --image "$IMAGE" \
             --platform managed \
             --region ${{ env.REGION }} \
-            --iap \
-            --no-allow-unauthenticated \
+            --no-iap \
+            --allow-unauthenticated \
             --service-account project-service-account@modeling-nonprod-svc-db5x.iam.gserviceaccount.com
-
-      - name: Grant IAP access to aamani.ai domain
-        # Idempotent — running again is a no-op if the binding already exists.
-        run: |
-          gcloud iap web add-iam-policy-binding \
-            --resource-type=cloud-run \
-            --service=${{ env.SERVICE }} \
-            --region=${{ env.REGION }} \
-            --member='domain:aamani.ai' \
-            --role='roles/iap.httpsResourceAccessor' \
-            --condition=None
 
       - name: Print service URL
         run: |
