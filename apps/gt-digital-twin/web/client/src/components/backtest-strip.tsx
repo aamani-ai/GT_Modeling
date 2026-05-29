@@ -5,7 +5,7 @@ export function BacktestStrip() {
   return (
     <section className="space-y-5">
       <header className="max-w-2xl">
-        <p className="eyebrow mb-2">§06 · Model vs. observed</p>
+        <p className="eyebrow mb-2">§07 · Model vs. observed</p>
         <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
           Calibrated against the record.
         </h2>

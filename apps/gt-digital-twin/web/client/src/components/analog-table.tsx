@@ -23,7 +23,7 @@ export function AnalogTable({ cell, policy, initState, gasMult }: Props) {
     <section className="space-y-5">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§05 · Analog scenario table</p>
+          <p className="eyebrow mb-2">§06 · Analog scenario table</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
             Every path is named.
           </h2>

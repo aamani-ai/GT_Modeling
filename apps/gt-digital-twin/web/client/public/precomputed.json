@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T03:45:29.684860+00:00",
+  "generated_at": "2026-05-29T18:51:03.946492+00:00",
   "engine_version": "gt_engine.run_path + forward.run_forward (verbatim from N4)",
   "basis": "RT",
   "n_scenarios": 25,
@@ -17,6 +17,174 @@
     "aged",
     "fresh"
   ],
+  "plant_profile": {
+    "identity": {
+      "name": "Lockport Energy Associates LP",
+      "short_name": "Lockport",
+      "sector": "IPP CHP",
+      "configuration": "3-on-1 CCGT cogeneration, dual-fuel",
+      "status": "OP",
+      "cts_operating_since": "1992-07",
+      "st_operating_since": "1992-09",
+      "location": {
+        "address": "5087 Junction Road, Lockport, NY 14094",
+        "county": "Niagara",
+        "state": "NY"
+      },
+      "operator": "Lockport Energy Associates LP",
+      "iso_zone": "NYISO Zone A",
+      "regulatory": "NR",
+      "regulatory_caveat": "NR = Non-Regulated, merchant. No FERC Form 1 coverage. Financial data limited; LTSA terms pending data room extraction (see ltsa_terms.yaml).",
+      "sole_owner": "Lockport Energy Associates LP",
+      "orispl": 54041
+    },
+    "engineering": {
+      "total_nameplate_mw": 221.3,
+      "total_net_summer_mw": 219.0,
+      "total_net_winter_mw": 230.0,
+      "configuration": "3-on-1 CCGT cogeneration, dual-fuel",
+      "hrsg_count": 3,
+      "is_chp": true,
+      "is_ambient_sensitive": true
+    },
+    "capability_envelope": {
+      "as_of": "2026-05-26",
+      "qualified_duties": [
+        "cogen",
+        "mid_merit",
+        "baseload",
+        "must_run_eligible"
+      ],
+      "unqualified_duties": [
+        "peaker"
+      ],
+      "open_duties": [
+        "frequency_regulation"
+      ],
+      "per_duty": {
+        "cogen": {
+          "qualified": true,
+          "status": "real_reported",
+          "confidence": "HIGH",
+          "source": "engineering.yaml plant.is_chp = true; EIA-860 schedule 3_1 'Associated with CHP System = Yes' for all 4 generators",
+          "evidence": "DHTS (Daily Heat Tape Schedule) infrastructure present per renewablesinfo equipment profile; HRSGs configured with steam-export capability; PURPA-era 1992 plant designed for cogeneration as primary purpose; Entity Type Q (cogeneration entity) per EIA-860; MOR data shows winter steam-driven dispatch patterns. STEAM HOST identified (2026-05-26 web audit): the original cogen host is the Harrison Radiator Division of General Motors (steam + electricity delivered to the GM Harrison Radiator plant in Lockport, NY); electricity also sold to NYSEG (New York State Electric & Gas) under a PURPA-era arrangement."
+        },
+        "mid_merit": {
+          "qualified": true,
+          "status": "real_computed",
+          "confidence": "HIGH",
+          "source": "Derived from engineering.yaml: 3\u00d71 CCGT configuration, F-class, 1992 vintage; ramp adequate; HR mix (8,901-10,424 Btu/kWh across modes per operating_profile.yaml) is competitive in mid-merit dispatch",
+          "evidence": "Cycle-tolerant 3\u00d71 CCGT supports daily on/off and intra-day ramping. Heat rate range from operating_profile.yaml is in mid-merit-economic range. MOR data shows historical mid-merit-realized behavior during summer months."
+        },
+        "baseload": {
+          "qualified": true,
+          "status": "real_computed",
+          "confidence": "MEDIUM",
+          "source": "Derived from engineering.yaml: F-class CCGT, continuous-duty design; HR efficient enough for sustained operation; no structural barrier to high-CF operation",
+          "evidence": "Hardware supports continuous duty. Baseload capability is structurally present in the envelope even though current realization is well below baseload CF (~12-15% observed vs >70% baseload threshold)."
+        },
+        "peaker": {
+          "qualified": false,
+          "status": "real_reported",
+          "confidence": "HIGH",
+          "source": "EIA-860 3_1 time_to_full_load_min = 720 (12 hr) for all 4 generators, via renewablesinfo_org thermal_enriched.parquet (queried 2026-05-26)",
+          "evidence": "Cold-start-to-full-load is 720 min (12 hr) per EIA \u2014 far slower than fast-response peaker duty (which needs minutes). Frame-class CCGT (CT prime movers + CA steam side), not aeroderivative. Even setting aside formal certification, the 12-hr start physically disqualifies fast peaker duty."
+        },
+        "frequency_regulation": {
+          "qualified": null,
+          "status": "placeholder",
+          "confidence": null,
+          "source": "NYISO AGC qualification status unverified. Web audit 2026-05-26 finding: per-plant AGC/regulation participation is NOT publicly retrievable (NYISO does not publish a public AGC-qualified-resource list at plant grain). Does not yield to a D1 web check.",
+          "evidence": "Hardware *may* partly suffice (the CA ramps; CTs have a high 62% floor), but AGC qualification is a binary formal certification, not a hardware property \u2014 and it's not publicly disclosed per-plant. Genuinely unknown; needs D2 or operator inquiry."
+        },
+        "must_run_eligible": {
+          "qualified": true,
+          "status": "real_reported",
+          "confidence": "MEDIUM",
+          "source": "Composite: at least one mechanism (steam_host_obligation) is structurally present and active per MOR data. See mechanism sub-blocks for the breakdown.",
+          "evidence": "Multiple must-run mechanisms may apply to Lockport. Most-confidently active: steam-host obligation during DHTS-driven periods. Likely also: PURPA QF status (1992 PURPA-era + Entity Type Q + IPP CHP sector all consistent with QF). Not active: RMR (Lockport not on NYISO RMR list). Open: NYISO ICAP capacity-firm participation."
+        }
+      },
+      "modifiers": {
+        "fuel_switching": {
+          "qualified": true,
+          "secondary_fuel": "DFO",
+          "switch_time_hr": 1.0,
+          "can_switch_while_operating": true
+        },
+        "simple_cycle_capable": {
+          "qualified": true
+        },
+        "supplemental_firing": {
+          "qualified": true
+        },
+        "load_turndown": {
+          "ct_min_load_pct": 0.62,
+          "ca_min_load_pct": 0.19
+        }
+      }
+    },
+    "realized_operating_profile": {
+      "as_of": "2026-05-26",
+      "horizon": "2021\u20132025 (1,826 days)",
+      "overall_cf_pct": 9.7,
+      "realized_duties": [
+        "cogen",
+        "mid_merit",
+        "must_run"
+      ],
+      "not_realized_but_capable": [
+        "baseload"
+      ],
+      "trend_flag": "Generation trending UP: annual CF 2.9% (2021) -> 21.0% (2025), ~2x prior years. Possible realization shift (market / merit-order change) worth tracking \u2014 the kind of transition the realized-profile concept is meant to surface.",
+      "per_season": {
+        "winter": {
+          "days": 451,
+          "cf_pct": 23.6,
+          "operating_days": 177,
+          "steam_only_days": 267,
+          "offline_days": 7,
+          "dhts_per_day_mmbtu": 628,
+          "mean_ambient_f": 30,
+          "label": "cogen + must-run"
+        },
+        "shoulder": {
+          "days": 915,
+          "cf_pct": 1.3,
+          "operating_days": 39,
+          "steam_only_days": 193,
+          "offline_days": 683,
+          "dhts_per_day_mmbtu": 123,
+          "mean_ambient_f": 50,
+          "label": "mostly-idle (+ light steam)"
+        },
+        "summer": {
+          "days": 460,
+          "cf_pct": 12.6,
+          "operating_days": 140,
+          "steam_only_days": 0,
+          "offline_days": 320,
+          "dhts_per_day_mmbtu": 0,
+          "mean_ambient_f": 71,
+          "label": "mid-merit"
+        }
+      },
+      "per_year_cf_pct": {
+        "2021": 2.9,
+        "2022": 10.1,
+        "2023": 4.5,
+        "2024": 9.9,
+        "2025": 21.0
+      },
+      "trend_interpretation": "Steam delivery is stable year-over-year (cogen obligation steady); the rising CF is incremental electricity generation. So the realized-profile shift is 'more mid-merit on top of steady cogen', not a cogen change."
+    },
+    "regime_note": "Structural anchor only \u2014 capability envelope + realized profile define what plant is being modeled, but v1 engine output does not condition dispatch on either. Forward conditioning on realized profile is the v2 payoff (ADR-005 \u00a74).",
+    "adr_refs": [
+      "ADR-003 (regime split)",
+      "ADR-004 (capability graduation)",
+      "ADR-005 (realized graduation)"
+    ]
+  },
   "aged_state_summary": {
     "A": {
       "eoh": 42138.0,
@@ -650,7 +818,7 @@
           "mean": 17139866.21582842
         },
         "total_mwh": {
-          "P10": 170011.4225681165,
+          "P10": 170011.42256811648,
           "P50": 274739.63219078403,
           "P90": 332687.2547341513,
           "mean": 268166.5302062634
@@ -1247,7 +1415,7 @@
         },
         "ltsa_owner_usd": {
           "P10": 15526696.587604461,
-          "P50": 17544219.45733805,
+          "P50": 17544219.457338046,
           "P90": 19114254.280241262,
           "mean": 17526355.03298108
         },
@@ -1259,7 +1427,7 @@
         },
         "fired_hours": {
           "P10": 1398.2358645306927,
-          "P50": 1973.6494289273126,
+          "P50": 1974.056944984266,
           "P90": 2439.2452776039395,
           "mean": 1968.7384369500676
         }
@@ -2149,13 +2317,13 @@
           "mean": 4665353.596208809
         },
         "ltsa_owner_usd": {
-          "P10": 15498570.683986444,
+          "P10": 15498570.683986442,
           "P50": 17482065.13644945,
           "P90": 19087456.604301345,
           "mean": 17504011.86117115
         },
         "total_mwh": {
-          "P10": 235879.8097124084,
+          "P10": 235879.80971240837,
           "P50": 349002.5336620028,
           "P90": 451130.80990214023,
           "mean": 354246.88163462514
@@ -2446,7 +2614,7 @@
         "spark_margin_usd": {
           "P10": -3260751.1808498763,
           "P50": 577850.5200640272,
-          "P90": 6323300.428978415,
+          "P90": 6323300.428978416,
           "mean": 1399033.568112179
         },
         "ltsa_owner_usd": {

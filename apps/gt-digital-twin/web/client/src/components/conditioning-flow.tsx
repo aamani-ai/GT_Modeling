@@ -9,7 +9,7 @@ export function ConditioningFlow({ data }: { data: Precomputed }) {
   return (
     <section className="space-y-7">
       <header>
-        <p className="eyebrow mb-2">§04 · How conditioning works</p>
+        <p className="eyebrow mb-2">§05 · How conditioning works</p>
         <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
           From a seasonal forecast<br className="hidden sm:block" /> to a weighted scenario set.
         </h2>

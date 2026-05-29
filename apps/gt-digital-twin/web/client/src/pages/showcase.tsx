@@ -16,6 +16,7 @@ import { EngineLayers } from "@/components/engine-layers";
 import { AssumptionPanel } from "@/components/assumption-panel";
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { TwinLayers } from "@/components/twin-layers";
+import { PlantProfile } from "@/components/plant-profile";
 import { ReferencesContext } from "@/components/info-popover";
 import { TwinConfiguration } from "@/components/twin-configuration";
 
@@ -83,18 +84,23 @@ export default function Showcase() {
 
         {/* ─────────────────────────────────────────────────────────────
             Section order — high-level story open by default,
-            technical sections collapsed. (P&L moved above the forecast
-            2026-05-29: lead with economics, then show the forward.)
+            technical sections collapsed.
+
+            History:
+              2026-05-29 (PM): P&L moved above the forecast — lead with economics
+              2026-05-29 (PM): inserted §02 Plant Profile between P&L and forecast;
+                               renumbered downstream sections by +1
 
               §01  P&L decomposition + distribution ── open
-              §02  Forecast (interactive 6-panel) ── open
-              §03  Assumptions & provenance ── open
-              §04  Conditioning flow ── collapsed
-              §05  Analog scenario table ── collapsed
-              §06  Model vs. observed ── collapsed
-              §07  Engine mechanics ── collapsed
-              §08  What matters most ── open
-              §09  Twin configuration deep-dive (every knob, sourced) ── open
+              §02  Plant profile (identity · capability · realization) ── open
+              §03  Forecast (interactive 6-panel) ── open
+              §04  Assumptions & provenance ── open
+              §05  Conditioning flow ── collapsed
+              §06  Analog scenario table ── collapsed
+              §07  Model vs. observed ── collapsed
+              §08  Engine mechanics ── collapsed
+              §09  What matters most ── open
+              §10  Twin configuration deep-dive (every knob, sourced) ── open
             ─────────────────────────────────────────────────────────── */}
         {/* Methodology block — collapsed by default; sits ABOVE §01 so the
             reader knows it's there but isn't forced through it. Mirrors the
@@ -112,7 +118,7 @@ export default function Showcase() {
         </div>
 
         <div className="space-y-20 pt-14">
-          {/* §01 — P&L decomposition + forward distribution (moved above the forecast 2026-05-29: economics first) */}
+          {/* §01 — P&L decomposition + forward distribution */}
           <PnlDecomposition
             data={data}
             cell={cell}
@@ -123,7 +129,12 @@ export default function Showcase() {
             setComparePolicies={setComparePolicies}
           />
 
-          {/* §02 — Interactive forecast envelope (was §01) */}
+          {/* §02 — Plant profile: identity + capability envelope + realized operating profile.
+              Answers "what plant produced the §01 P&L?" before the §03 forecast.
+              Structural anchor only; v1 engine output does not condition on it (see ADR-005 §4 — v2 payoff). */}
+          <PlantProfile data={data} />
+
+          {/* §03 — Interactive forecast envelope */}
           {monthly && monthlyCell && cell ? (
             <ForecastSixPanel
               data={data}
@@ -138,7 +149,7 @@ export default function Showcase() {
             <ForecastEnvelope data={data} cell={cell} policy={policy} initState={initState} gasMult={gasMult} />
           )}
 
-          {/* §03 — Assumptions & provenance (was §08, moved up so reader sees what's real before going deeper) */}
+          {/* §04 — Assumptions & provenance */}
           <AssumptionPanel register={data.calibration_register} />
         </div>
 
@@ -153,7 +164,7 @@ export default function Showcase() {
           </div>
 
           <CollapsibleSection
-            index="04"
+            index="05"
             title="Conditioning flow"
             hint="SEAS5 ensemble → analog softmax → probability weights"
             meta="real · explainer"
@@ -163,7 +174,7 @@ export default function Showcase() {
           </CollapsibleSection>
 
           <CollapsibleSection
-            index="05"
+            index="06"
             title="Analog scenario table"
             hint={`25 SEAS5-conditioned analog windows · sorted by weight`}
             meta="real · per-path"
@@ -173,7 +184,7 @@ export default function Showcase() {
           </CollapsibleSection>
 
           <CollapsibleSection
-            index="06"
+            index="07"
             title="Model vs. observed backtest"
             hint="MOR · EIA-923 · modeled — three-way reconciliation"
             meta="real · static"
@@ -183,7 +194,7 @@ export default function Showcase() {
           </CollapsibleSection>
 
           <CollapsibleSection
-            index="07"
+            index="08"
             title="Engine mechanics"
             hint="Dispatch · wear · LTSA layers across 12-cell knob grid"
             meta="real · grid"
@@ -193,12 +204,12 @@ export default function Showcase() {
           </CollapsibleSection>
         </div>
 
-        {/* §08 — What matters most (kept open as closing story) */}
+        {/* §09 — What matters most (kept open as closing story) */}
         <div className="mt-20">
           <WhatMattersMost ranks={data.sensitivity_ranks} />
         </div>
 
-        {/* §09 — Twin configuration deep-dive: every knob in the engine, sourced.
+        {/* §10 — Twin configuration deep-dive: every knob in the engine, sourced.
             The natural home for the [KEY] citation links (Saturday-Isaiah, GER-3620,
             Kumar 2012, NERC-GADS) since the per-constant rows live here. */}
         <div className="mt-20">

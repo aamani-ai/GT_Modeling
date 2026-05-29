@@ -54,7 +54,7 @@ export function TwinConfiguration({
     <section className="space-y-7" data-testid="twin-configuration">
       <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§09 · Twin configuration</p>
+          <p className="eyebrow mb-2">§10 · Twin configuration</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
             Every knob in the engine, sourced.
           </h2>
