@@ -210,6 +210,24 @@
     @apply bg-card border border-card-border rounded-md;
   }
 
+  /* Roadmap affordance — dashed border + diagonal stripe pattern.
+     Used for disabled controls that signal "future feature" (e.g. the
+     PolicyWorkbenchAffordance next to the A/B/C selector). */
+  .control-disabled {
+    border: 1px dashed hsl(var(--border-strong));
+    background:
+      repeating-linear-gradient(135deg,
+        transparent 0,
+        transparent 9px,
+        hsl(var(--muted) / 0.55) 9px,
+        hsl(var(--muted) / 0.55) 10px),
+      hsl(var(--card));
+    color: hsl(var(--muted-foreground));
+    cursor: not-allowed;
+  }
+  .control-disabled[aria-disabled="true"] *,
+  .control-disabled * { cursor: not-allowed; }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }

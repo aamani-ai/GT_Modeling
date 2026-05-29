@@ -27,6 +27,7 @@ import {
   fmtNumber,
 } from "@/lib/data";
 import { InfoPopover } from "./info-popover";
+import { TermInfo, TERMS } from "./term-info";
 
 interface Props {
   data: Precomputed;
@@ -96,18 +97,25 @@ function Panel({
   title,
   unit,
   caption,
+  termKeys,
   children,
 }: {
   title: string;
   unit: string;
   caption?: string;
+  termKeys?: (keyof typeof TERMS)[];
   children: React.ReactNode;
 }) {
   return (
     <div className="card-clean p-4 flex flex-col h-[300px]" data-testid={`panel-${title.toLowerCase().replace(/\s+/g, "-")}`}>
       <div className="flex items-start justify-between mb-2 gap-2">
         <div className="min-w-0">
-          <p className="text-[12px] font-medium text-foreground leading-tight">{title}</p>
+          <p className="text-[12px] font-medium text-foreground leading-tight inline-flex items-center gap-1">
+            <span>{title}</span>
+            {termKeys?.map((k) => (
+              <TermInfo key={k as string} termKey={k} side="top" />
+            ))}
+          </p>
           <p className="text-[10px] font-mono text-muted-foreground mt-0.5 tracking-tight">{unit}</p>
         </div>
         <span
@@ -286,7 +294,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
     <section className="space-y-6">
       <header className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§01 · Forward forecast (interactive)</p>
+          <p className="eyebrow mb-2">§02 · Forward forecast (interactive)</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.015em] leading-[1.05] text-foreground">
             Six panels, one year forward.
           </h2>
@@ -321,6 +329,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Ambient temperature · SEAS5"
             unit="°F · daily"
+            termKeys={["seas5"]}
             caption={`${monthly.temperature_f_daily.n_members}-member SEAS5 ensemble · daily P10/P50/P90`}
           >
             <EnvelopeChart
@@ -337,6 +346,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Forward LMP · monthly mean"
             unit="$/MWh"
+            termKeys={["lmp"]}
             caption="Monthly mean of per-path daily LMP · across-path P10/P50/P90"
           >
             <EnvelopeChart rows={lmpRows} yFormat={(v) => `$${v.toFixed(0)}`} color={GOLD} bandFaint={GOLD_FAINT} bandMid={GOLD_MID} />
@@ -345,6 +355,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Henry Hub natural gas · monthly mean"
             unit="$/MMBtu"
+            termKeys={["henry_hub"]}
             caption="Monthly mean of per-path daily Henry Hub · across-path P10/P50/P90"
           >
             <EnvelopeChart rows={gasRows} yFormat={(v) => `$${v.toFixed(1)}`} color={TERRA} bandFaint={TERRA_FAINT} bandMid={TERRA_MID} />
@@ -353,6 +364,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Generation · monthly sum"
             unit="MWh"
+            termKeys={["generation_mwh"]}
             caption="Monthly sum of engine mwh_degraded · across-path P10/P50/P90"
           >
             <EnvelopeChart rows={genRows} yFormat={fmtMwh} />
@@ -361,6 +373,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Gross margin · monthly sum"
             unit="USD"
+            termKeys={["gross_margin"]}
             caption="Monthly sum of engine margin_degraded · across-path P10/P50/P90"
           >
             <EnvelopeChart rows={marginRows} yFormat={fmtUsdShort} zeroLine />
@@ -369,6 +382,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
           <Panel
             title="Net P&L distribution · annual"
             unit="CDF of annual USD"
+            termKeys={["cdf"]}
             caption="Real per-path annual Net P&L · cumulative SEAS5 probability"
           >
             <CdfChart points={cdfPoints} median={netP50} />
@@ -388,20 +402,23 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
 
       {/* Quantile strip — five metrics side by side */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        <MetricStrip label="Net P&L" p10={fmtMoneyM(cell.quantiles.net_pl_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.net_pl_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.net_pl_usd.P90, 1)} />
-        <MetricStrip label="Spark margin" p10={fmtMoneyM(cell.quantiles.spark_margin_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.spark_margin_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.spark_margin_usd.P90, 1)} />
-        <MetricStrip label="LTSA owner cost" p10={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P90, 1)} />
-        <MetricStrip label="Generation" p10={`${fmtNumber(cell.quantiles.total_mwh.P10 / 1000, 0)}k`} p50={`${fmtNumber(cell.quantiles.total_mwh.P50 / 1000, 0)}k`} p90={`${fmtNumber(cell.quantiles.total_mwh.P90 / 1000, 0)}k`} unit="MWh" />
-        <MetricStrip label="Fired hours" p10={fmtNumber(cell.quantiles.fired_hours.P10, 0)} p50={fmtNumber(cell.quantiles.fired_hours.P50, 0)} p90={fmtNumber(cell.quantiles.fired_hours.P90, 0)} unit="h" />
+        <MetricStrip label="Net P&L" termKey="net_pl" p10={fmtMoneyM(cell.quantiles.net_pl_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.net_pl_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.net_pl_usd.P90, 1)} />
+        <MetricStrip label="Spark margin" termKey="spark_margin" p10={fmtMoneyM(cell.quantiles.spark_margin_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.spark_margin_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.spark_margin_usd.P90, 1)} />
+        <MetricStrip label="LTSA owner cost" termKey="ltsa_owner" p10={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P10, 1)} p50={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P50, 1)} p90={fmtMoneyM(cell.quantiles.ltsa_owner_usd.P90, 1)} />
+        <MetricStrip label="Generation" termKey="generation_mwh" p10={`${fmtNumber(cell.quantiles.total_mwh.P10 / 1000, 0)}k`} p50={`${fmtNumber(cell.quantiles.total_mwh.P50 / 1000, 0)}k`} p90={`${fmtNumber(cell.quantiles.total_mwh.P90 / 1000, 0)}k`} unit="MWh" />
+        <MetricStrip label="Fired hours" termKey="fired_hours" p10={fmtNumber(cell.quantiles.fired_hours.P10, 0)} p50={fmtNumber(cell.quantiles.fired_hours.P50, 0)} p90={fmtNumber(cell.quantiles.fired_hours.P90, 0)} unit="h" />
       </div>
     </section>
   );
 }
 
-function MetricStrip({ label, p10, p50, p90, unit }: { label: string; p10: string; p50: string; p90: string; unit?: string }) {
+function MetricStrip({ label, p10, p50, p90, unit, termKey }: { label: string; p10: string; p50: string; p90: string; unit?: string; termKey?: keyof typeof TERMS }) {
   return (
     <div className="card-clean p-4">
-      <p className="eyebrow mb-2">{label}{unit ? ` · ${unit}` : ""}</p>
+      <p className="eyebrow mb-2 inline-flex items-center gap-1">
+        <span>{label}{unit ? ` · ${unit}` : ""}</span>
+        {termKey && <TermInfo termKey={termKey} side="top" />}
+      </p>
       <p className="num-md text-foreground">{p50}</p>
       <p className="font-mono text-[10.5px] text-muted-foreground mt-1.5">
         <span className="text-foreground/60">P10</span> {p10}

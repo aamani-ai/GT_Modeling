@@ -1,7 +1,10 @@
 import { Precomputed } from "@/lib/data";
 import { Switch } from "@/components/ui/switch";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Lock, SlidersHorizontal } from "lucide-react";
 import { InfoPopover } from "./info-popover";
 import { StatusBadge } from "./status-badge";
+import { TERMS } from "./term-info";
 
 interface Props {
   policy: string;
@@ -24,14 +27,17 @@ export function ControlBar(p: Props) {
       <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
         <span className="eyebrow text-[10px] text-primary tracking-[0.2em]">Scenario anchor</span>
 
-        <Group label="Policy" badge={reg.policy.status} info={
+        <Group label="Policy" termKey="policy_abc" badge={reg.policy.status} info={
           <InfoPopover title="A/B/C dispatch policy" status={reg.policy.status} source={reg.policy.source} whyV1={reg.policy.why_v1} upgrade={reg.policy.upgrade}
             value={`A = myopic merchant (1.0× wear hurdle)\nB = NPV-rational (clamps at 2.5×)\nC = risk-averse (ramps to 4.0×)`} />
         }>
-          <Segmented options={p.data.modes.map((m) => ({ k: m, label: m }))} value={p.policy} onChange={p.setPolicy} testid="policy" />
+          <div className="inline-flex items-stretch gap-1.5">
+            <Segmented options={p.data.modes.map((m) => ({ k: m, label: m }))} value={p.policy} onChange={p.setPolicy} testid="policy" />
+            <PolicyWorkbenchAffordance />
+          </div>
         </Group>
 
-        <Group label="Gas price" badge={reg.gas_price.status} info={
+        <Group label="Gas price" termKey="henry_hub" badge={reg.gas_price.status} info={
           <InfoPopover title="Henry Hub multiplier" status={reg.gas_price.status} source={reg.gas_price.source} whyV1={reg.gas_price.why_v1} upgrade={reg.gas_price.upgrade}
             value="Uniform multiplier on Henry Hub series" />
         }>
@@ -43,7 +49,7 @@ export function ControlBar(p: Props) {
           />
         </Group>
 
-        <Group label="Initial state" badge={reg.init_state.status} info={
+        <Group label="Initial state" termKey="initial_state" badge={reg.init_state.status} info={
           <InfoPopover title="Initial plant state" status={reg.init_state.status} source={reg.init_state.source} whyV1={reg.init_state.why_v1} upgrade={reg.init_state.upgrade}
             value={`aged: each mode's historical end-state\nfresh: EOH 24k modeling default`} />
         }>
@@ -66,7 +72,60 @@ export function ControlBar(p: Props) {
   );
 }
 
-function Group({ label, badge, info, children }: { label: string; badge?: string; info?: React.ReactNode; children: React.ReactNode }) {
+// Disabled "Custom" affordance next to the A/B/C selector — communicates that
+// A/B/C are three fixed postures inside a broader policy-design surface that
+// is on the roadmap, not the engine's full ceiling. Visual language: lock
+// icon + dashed/striped (.control-disabled) consistent with the rest of the
+// roadmap signals across the dashboard.
+function PolicyWorkbenchAffordance() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-disabled="true"
+          data-testid="button-policy-workbench"
+          title="Policy strategy workbench — roadmap"
+          className="control-disabled inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium tracking-tight text-muted-foreground hover:text-foreground transition-colors cursor-help"
+        >
+          <SlidersHorizontal className="w-3 h-3 text-muted-foreground/80" aria-hidden="true" />
+          <span className="hidden md:inline">Custom</span>
+          <Lock className="w-2.5 h-2.5 text-muted-foreground/70" aria-hidden="true" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        className="w-[340px] text-xs leading-relaxed p-4 border border-popover-border"
+      >
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <p className="text-sm font-medium tracking-tight">Policy strategy workbench</p>
+          <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-muted-foreground border border-card-border bg-card/70 px-1.5 py-[1px] rounded shrink-0">
+            roadmap
+          </span>
+        </div>
+        <p className="text-[11.5px] text-foreground/85 leading-[1.55]">
+          Future module: design and compare candidate dispatch / wear policies — custom
+          wear hurdles, headroom rules, start-cost weights — against the same
+          probability-weighted forward engine that drives A·B·C today.
+        </p>
+        <p className="text-[11px] text-muted-foreground leading-[1.55] mt-2 italic">
+          v1 ships only the three fixed postures (A myopic · B NPV-rational · C risk-averse);
+          the premium magnitudes (2.5×/4.0×) are deferred per ADR-009 pending a complete
+          revenue stack. This workbench is where that re-derivation will land.
+        </p>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// Group label has ONE info icon — the InfoPopover (i) — which already carries
+// the term explanation in its `value` block plus the calibration-register
+// provenance (status / source / why-v1 / upgrade). We deliberately do NOT also
+// render a TermInfo (?) here, to avoid duplicate icons on the same label.
+// The `termKey` prop is kept on the signature so call-sites still type-check,
+// but is intentionally unused.
+function Group({ label, badge, info, termKey: _termKey, children }: { label: string; badge?: string; info?: React.ReactNode; termKey?: keyof typeof TERMS; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-1.5">

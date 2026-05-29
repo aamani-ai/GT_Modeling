@@ -16,7 +16,7 @@ export function PnlDecomposition({ data, cell, policy, gasMult, initState, compa
   return (
     <section className="space-y-6">
       <header className="max-w-2xl">
-        <p className="eyebrow mb-2">§02 · P&amp;L decomposition</p>
+        <p className="eyebrow mb-2">§01 · P&amp;L decomposition</p>
         <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
           Where the dollars go.
         </h2>

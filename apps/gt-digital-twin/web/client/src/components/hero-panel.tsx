@@ -1,5 +1,6 @@
 import { Precomputed, GridCell, fmtMoneyM, fmtNumber } from "@/lib/data";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { TermInfo } from "./term-info";
 
 interface Props {
   data: Precomputed;
@@ -44,8 +45,8 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
           </p>
 
           <ul className="mt-8 space-y-3 max-w-[60ch]">
-            <Proof n="01" title="25 SEAS5-conditioned analog windows" body="Each forward run weights 25 Apr→Mar reanalysis windows (1999–2026) by anomaly match against the current SEAS5 ensemble." />
-            <Proof n="02" title="Energy-only, by design" body="Capacity and steam revenue are deliberately excluded so engine mechanics aren't entangled with host-contract assumptions." />
+            <Proof n="01" title="25 SEAS5-conditioned analog windows" body="Each forward run weights 25 Apr→Mar reanalysis windows (1999–2026) by anomaly match against the current SEAS5 ensemble." termKeys={["seas5", "analog_scenarios"]} />
+            <Proof n="02" title="Energy-only, by design" body="Capacity and steam revenue are deliberately excluded so engine mechanics aren't entangled with host-contract assumptions." termKeys={["energy_only"]} />
             <Proof n="03" title="Every control carries a status badge" body="From the parameter calibration register — real-observed, assumed-industry, modeling-convention, or deferred." />
           </ul>
         </div>
@@ -66,12 +67,17 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
   );
 }
 
-function Proof({ n, title, body }: { n: string; title: string; body: string }) {
+function Proof({ n, title, body, termKeys }: { n: string; title: string; body: string; termKeys?: any[] }) {
   return (
     <li className="flex gap-4">
       <span className="font-mono text-[10.5px] text-muted-foreground/70 pt-1 tracking-wider">{n}</span>
       <div>
-        <p className="text-[13.5px] font-medium tracking-tight text-foreground">{title}</p>
+        <p className="text-[13.5px] font-medium tracking-tight text-foreground inline-flex items-center gap-1.5">
+          <span>{title}</span>
+          {termKeys?.map((k) => (
+            <TermInfo key={k} termKey={k} side="top" />
+          ))}
+        </p>
         <p className="text-[12.5px] text-muted-foreground leading-[1.55] mt-0.5">{body}</p>
       </div>
     </li>
@@ -117,7 +123,10 @@ function KpiCard({ data, cell, policy, initState, gasMult, aged }: Props & { age
 
       {/* Headline numeric */}
       <div className="px-6 pt-6 pb-5">
-        <p className="eyebrow mb-1.5">Net P&amp;L · P50</p>
+        <p className="eyebrow mb-1.5 inline-flex items-center gap-1">
+          <span>Net P&amp;L · P50</span>
+          <TermInfo termKey="net_pl" side="bottom" />
+        </p>
         <div className="flex items-baseline gap-3 flex-wrap">
           <span className={`tabular font-medium text-[2.75rem] leading-[1.05] tracking-[-0.02em] ${negative ? "text-foreground" : "text-[hsl(var(--status-real))]"}`}>
             {fmtMoneyM(q.P50, 2)}
@@ -151,14 +160,18 @@ function KpiCard({ data, cell, policy, initState, gasMult, aged }: Props & { age
           <span className="text-center">P50 <span className="text-foreground">{fmtMoneyM(q.P50, 1)}</span></span>
           <span className="text-right">P90 <span className="text-foreground/80">{fmtMoneyM(q.P90, 1)}</span></span>
         </div>
+        <p className="mt-2 text-[10px] text-muted-foreground/80 inline-flex items-center gap-1">
+          <span>Energy-only basis</span>
+          <TermInfo termKey="energy_only" size="xs" side="bottom" />
+        </p>
       </div>
 
       {/* Sub KPIs */}
       <div className="grid grid-cols-2 border-t border-card-border">
-        <SubKpi label="Spark margin P50" value={fmtMoneyM(sparkP50, 1)} sub="Energy − fuel − VOM" />
-        <SubKpi label="LTSA owner P50" value={fmtMoneyM(ltsa, 1)} sub="Fee + EOH + inspections" border />
-        <SubKpi label="Generation P50" value={`${fmtNumber(mwh.P50 / 1000, 0)}k MWh`} sub={`${fmtNumber(mwh.P10/1000,0)}k – ${fmtNumber(mwh.P90/1000,0)}k`} topBorder />
-        <SubKpi label="Fired hours P50" value={fmtNumber(fh.P50, 0)} sub={`${fmtNumber(fh.P10,0)} – ${fmtNumber(fh.P90,0)}`} border topBorder />
+        <SubKpi label="Spark margin P50" value={fmtMoneyM(sparkP50, 1)} sub="Energy − fuel − VOM" termKey="spark_margin" />
+        <SubKpi label="LTSA owner P50" value={fmtMoneyM(ltsa, 1)} sub="Fee + EOH + inspections" termKey="ltsa_owner" border />
+        <SubKpi label="Generation P50" value={`${fmtNumber(mwh.P50 / 1000, 0)}k MWh`} sub={`${fmtNumber(mwh.P10/1000,0)}k – ${fmtNumber(mwh.P90/1000,0)}k`} termKey="generation_mwh" topBorder />
+        <SubKpi label="Fired hours P50" value={fmtNumber(fh.P50, 0)} sub={`${fmtNumber(fh.P10,0)} – ${fmtNumber(fh.P90,0)}`} termKey="fired_hours" border topBorder />
       </div>
 
       {/* Asset metadata footer */}
@@ -168,24 +181,38 @@ function KpiCard({ data, cell, policy, initState, gasMult, aged }: Props & { age
           <span className="text-foreground/80">Lockport Energy · 3-on-1 F-class · 221 MW</span>
         </div>
         {aged && initState === "aged" && (
-          <div className="flex justify-between gap-3">
-            <span>Aged state · {policy}</span>
-            <span className="text-foreground/80">EOH {fmtNumber(aged.eoh)} · rotor {(aged.rotor_life*100).toFixed(1)}%</span>
+          <div className="flex justify-between gap-3 items-center">
+            <span className="inline-flex items-center gap-1">
+              <span>Aged state · {policy}</span>
+              <TermInfo termKey="initial_state" size="xs" side="top" />
+            </span>
+            <span className="text-foreground/80 inline-flex items-center gap-1">
+              <span>EOH {fmtNumber(aged.eoh)}</span>
+              <TermInfo termKey="eoh" size="xs" side="top" align="end" />
+              <span>· rotor {(aged.rotor_life*100).toFixed(1)}%</span>
+              <TermInfo termKey="rotor_life" size="xs" side="top" align="end" />
+            </span>
           </div>
         )}
-        <div className="flex justify-between gap-3">
+        <div className="flex justify-between gap-3 items-center">
           <span>Scenario set</span>
-          <span className="text-foreground/80">{data.n_scenarios} SEAS5 analog windows · {data.basis} basis</span>
+          <span className="text-foreground/80 inline-flex items-center gap-1">
+            <span>{data.n_scenarios} SEAS5 analog windows · {data.basis} basis</span>
+            <TermInfo termKey="analog_scenarios" size="xs" side="top" align="end" />
+          </span>
         </div>
       </div>
     </div>
   );
 }
 
-function SubKpi({ label, value, sub, border, topBorder }: { label: string; value: string; sub: string; border?: boolean; topBorder?: boolean }) {
+function SubKpi({ label, value, sub, border, topBorder, termKey }: { label: string; value: string; sub: string; border?: boolean; topBorder?: boolean; termKey?: any }) {
   return (
     <div className={`px-6 py-4 ${border ? "border-l border-card-border" : ""} ${topBorder ? "border-t border-card-border" : ""}`}>
-      <p className="eyebrow mb-1">{label}</p>
+      <p className="eyebrow mb-1 inline-flex items-center gap-1">
+        <span>{label}</span>
+        {termKey && <TermInfo termKey={termKey} side="top" />}
+      </p>
       <p className="tabular text-lg tracking-tight font-medium text-foreground">{value}</p>
       <p className="text-[10.5px] text-muted-foreground/80 font-mono mt-1">{sub}</p>
     </div>

@@ -15,6 +15,7 @@ import { WhatMattersMost } from "@/components/what-matters-most";
 import { EngineLayers } from "@/components/engine-layers";
 import { AssumptionPanel } from "@/components/assumption-panel";
 import { CollapsibleSection } from "@/components/collapsible-section";
+import { TwinLayers } from "@/components/twin-layers";
 
 export default function Showcase() {
   const [policy, setPolicy] = useState<string>("A");
@@ -80,20 +81,46 @@ export default function Showcase() {
         />
 
         {/* ─────────────────────────────────────────────────────────────
-            v1.2 section order — high-level story open by default,
-            technical sections collapsed.
+            Section order — high-level story open by default,
+            technical sections collapsed. (P&L moved above the forecast
+            2026-05-29: lead with economics, then show the forward.)
 
-              §01  Forecast (interactive 6-panel) ── open
-              §02  P&L decomposition + distribution ── open  (was §04)
-              §03  Assumptions & provenance ── open  (was §08)
-              §04  Conditioning flow ── collapsed  (was §02)
-              §05  Analog scenario table ── collapsed  (was §03)
-              §06  Model vs. observed ── collapsed  (was §05)
-              §07  Engine mechanics ── collapsed  (was §06)
-              §08  What matters most ── open  (was §07)
+              §01  P&L decomposition + distribution ── open
+              §02  Forecast (interactive 6-panel) ── open
+              §03  Assumptions & provenance ── open
+              §04  Conditioning flow ── collapsed
+              §05  Analog scenario table ── collapsed
+              §06  Model vs. observed ── collapsed
+              §07  Engine mechanics ── collapsed
+              §08  What matters most ── open
             ─────────────────────────────────────────────────────────── */}
+        {/* Methodology block — collapsed by default; sits ABOVE §01 so the
+            reader knows it's there but isn't forced through it. Mirrors the
+            "How the twin composes" diagram the fork places open at the top. */}
+        <div className="pt-10">
+          <CollapsibleSection
+            index="00"
+            title="How the twin composes"
+            hint="Five engine modules · inputs → state → dispatch → wear → distribution"
+            meta="methodology · explainer"
+            testId="section-methodology"
+          >
+            <TwinLayers />
+          </CollapsibleSection>
+        </div>
+
         <div className="space-y-20 pt-14">
-          {/* §01 — Interactive forecast envelope (the marquee) */}
+          {/* §01 — P&L decomposition + forward distribution (moved above the forecast 2026-05-29: economics first) */}
+          <PnlDecomposition
+            data={data}
+            cell={cell}
+            policy={policy}
+            gasMult={gasMult}
+            initState={initState}
+            comparePolicies={comparePolicies}
+          />
+
+          {/* §02 — Interactive forecast envelope (was §01) */}
           {monthly && monthlyCell && cell ? (
             <ForecastSixPanel
               data={data}
@@ -107,16 +134,6 @@ export default function Showcase() {
           ) : (
             <ForecastEnvelope data={data} cell={cell} policy={policy} initState={initState} gasMult={gasMult} />
           )}
-
-          {/* §02 — P&L decomposition + forward distribution (was §04) */}
-          <PnlDecomposition
-            data={data}
-            cell={cell}
-            policy={policy}
-            gasMult={gasMult}
-            initState={initState}
-            comparePolicies={comparePolicies}
-          />
 
           {/* §03 — Assumptions & provenance (was §08, moved up so reader sees what's real before going deeper) */}
           <AssumptionPanel register={data.calibration_register} />

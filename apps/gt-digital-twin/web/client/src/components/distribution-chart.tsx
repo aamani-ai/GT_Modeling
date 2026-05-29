@@ -1,5 +1,6 @@
 import { GridCell, Precomputed, fmtMoneyM, keyFor } from "@/lib/data";
 import { InfoPopover } from "./info-popover";
+import { TermInfo } from "./term-info";
 
 interface Props {
   cell: GridCell | null;
@@ -43,9 +44,26 @@ export function DistributionChart({ cell, data, policy, gasMult, initState, comp
     <section className="card-clean p-5 lg:p-6 h-full flex flex-col">
       <header className="flex items-start justify-between gap-4 mb-1">
         <div>
-          <h2 className="text-sm font-medium tracking-tight">Forward Net P&L distribution</h2>
-          <p className="text-[11.5px] text-muted-foreground mt-0.5 leading-relaxed">
-            25 SEAS5-conditioned analog windows · probability-weighted P10/P50/P90.
+          <h2 className="text-sm font-medium tracking-tight inline-flex items-center gap-1.5">
+            <span>Forward Net P&L distribution</span>
+            <TermInfo termKey="net_pl" side="top" />
+          </h2>
+          <p className="text-[11.5px] text-muted-foreground mt-0.5 leading-relaxed inline-flex items-center gap-1 flex-wrap">
+            <span>25</span>
+            <span className="inline-flex items-center gap-1">
+              <span>SEAS5</span>
+              <TermInfo termKey="seas5" size="xs" side="top" />
+            </span>
+            <span>-conditioned</span>
+            <span className="inline-flex items-center gap-1">
+              <span>analog windows</span>
+              <TermInfo termKey="analog_scenarios" size="xs" side="top" />
+            </span>
+            <span>· probability-weighted</span>
+            <span className="inline-flex items-center gap-1">
+              <span>P10/P50/P90.</span>
+              <TermInfo termKey="p_quantiles" size="xs" side="top" />
+            </span>
           </p>
         </div>
         <InfoPopover
