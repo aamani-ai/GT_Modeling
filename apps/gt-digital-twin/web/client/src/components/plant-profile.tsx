@@ -92,7 +92,7 @@ export function PlantProfile({ data }: { data: Precomputed }) {
 
       <IdentityStrip identity={id} engineering={eng} ageYears={ageYears} onlineYear={onlineYear} />
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
         <CapabilityEnvelopeBlock cap={cap} />
         <RealizedProfileBlock rop={rop} />
       </div>
@@ -215,7 +215,7 @@ function CapabilityEnvelopeBlock({ cap }: { cap: PP["capability_envelope"] }) {
   const duties = ["cogen", "mid_merit", "baseload", "peaker", "must_run_eligible", "frequency_regulation"];
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <BlockHeader
         eyebrow="Capability envelope"
         title="What this plant CAN be."
@@ -223,14 +223,17 @@ function CapabilityEnvelopeBlock({ cap }: { cap: PP["capability_envelope"] }) {
         meta={`as of ${cap.as_of}`}
       />
 
-      <div className="card-clean overflow-hidden">
+      <div className="card-clean overflow-hidden flex-1 flex flex-col">
+        {/* Top band — duty header row */}
         <div className="grid grid-cols-12 px-4 py-2 border-b border-card-border bg-secondary/30 text-[10px] eyebrow">
           <div className="col-span-4">Duty</div>
           <div className="col-span-2 text-center">Qual</div>
           <div className="col-span-2">Conf.</div>
           <div className="col-span-4">Status</div>
         </div>
-        <ul>
+
+        {/* Middle band — duty table, fills available height */}
+        <ul className="flex-1">
           {duties.map((d, i) => {
             const block = cap.per_duty[d];
             return (
@@ -257,9 +260,11 @@ function CapabilityEnvelopeBlock({ cap }: { cap: PP["capability_envelope"] }) {
             );
           })}
         </ul>
-      </div>
 
-      <ModifiersStrip mods={cap.modifiers} />
+        {/* Bottom band — modifiers (merged into same card; previously a separate
+            card below, which broke alignment vs the right column). */}
+        <ModifiersBand mods={cap.modifiers} />
+      </div>
     </div>
   );
 }
@@ -285,9 +290,9 @@ function ConfidencePill({ confidence }: { confidence: string | null }) {
   return <span className={`font-mono text-[10px] tracking-wider ${color}`}>{confidence}</span>;
 }
 
-function ModifiersStrip({ mods }: { mods: PP["capability_envelope"]["modifiers"] }) {
+function ModifiersBand({ mods }: { mods: PP["capability_envelope"]["modifiers"] }) {
   return (
-    <div className="mt-4 border border-card-border rounded-sm bg-card/40">
+    <div className="border-t border-card-border bg-secondary/15">
       <p className="eyebrow px-4 pt-3 pb-1.5">Capability modifiers</p>
       <ul className="px-4 pb-3 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-1.5 text-[11px]">
         <li className="flex items-baseline justify-between gap-3">
@@ -326,7 +331,7 @@ function RealizedProfileBlock({ rop }: { rop: PP["realized_operating_profile"] }
   const maxCfYear = Math.max(...Object.values(rop.per_year_cf_pct));
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <BlockHeader
         eyebrow="Realized operating profile"
         title="What this plant IS doing."
@@ -334,7 +339,7 @@ function RealizedProfileBlock({ rop }: { rop: PP["realized_operating_profile"] }
         meta={`as of ${rop.as_of} · ${rop.horizon}`}
       />
 
-      <div className="card-clean overflow-hidden">
+      <div className="card-clean overflow-hidden flex-1 flex flex-col">
         {/* Overall CF + realized duties summary */}
         <div className="grid grid-cols-3 divide-x divide-card-border border-b border-card-border">
           <div className="px-4 py-3">
