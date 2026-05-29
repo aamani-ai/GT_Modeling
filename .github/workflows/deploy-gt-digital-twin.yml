@@ -53,12 +53,17 @@ jobs:
         # Node app, not Python — uses the Paketo Node buildpack. BP_NODE_RUN_SCRIPTS=build
         # tells the buildpack to run `npm run build` after install, which compiles the
         # Vite client into dist/public/ and the server into dist/index.cjs.
-        # The launch image then runs `npm start` (server reads PORT from env, which
-        # Cloud Run supplies).
+        # The launch image then runs `npm start` via the Procfile (server reads PORT
+        # from env, which Cloud Run supplies).
+        #
+        # Using builder-jammy-FULL (not -base or -tiny): the Node binary is
+        # dynamically linked against libatomic.so.1, which is stripped from the
+        # base/tiny run images. -full ships the standard glibc libraries; the
+        # image is a few MB larger but Node actually starts.
         run: |
           IMAGE="${{ env.AR_HOST }}/${{ env.AR_PROJECT }}/${{ env.AR_REPO }}/${{ env.SERVICE }}:${{ github.sha }}"
           pack build "$IMAGE" \
-            --builder paketobuildpacks/builder-jammy-base \
+            --builder paketobuildpacks/builder-jammy-full \
             --path ${{ env.APP_PATH }} \
             --env BP_NODE_RUN_SCRIPTS=build \
             --publish
