@@ -92,11 +92,14 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
+  // reusePort: true is unsupported on macOS for 0.0.0.0 (ENOTSUP). Omit it —
+  // it's only useful for multi-process production scaling, not a single-process
+  // dev server. Keeps Linux/Replit (where the app was authored) and macOS both
+  // workable.
   httpServer.listen(
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
     },
     () => {
       log(`serving on port ${port}`);
