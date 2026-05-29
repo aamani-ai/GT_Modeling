@@ -295,7 +295,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
     <section className="space-y-6">
       <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§02 · Forward forecast (interactive)</p>
+          <p className="eyebrow mb-2">§03 · Forward forecast (interactive)</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.015em] leading-[1.05] text-foreground">
             Six panels, one year forward.
           </h2>

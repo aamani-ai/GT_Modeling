@@ -59,7 +59,7 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
             <Proof
               n="02"
               title="Decision-relevant, not descriptive."
-              body="Distribution + provenance inspectable in minutes via §03 assumptions, §08 what-matters-most, §09 twin configuration."
+              body="Distribution + provenance inspectable in minutes via §04 assumptions, §09 what-matters-most, §10 twin configuration."
             />
             <Proof
               n="03"

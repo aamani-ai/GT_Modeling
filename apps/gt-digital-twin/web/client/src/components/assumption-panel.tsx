@@ -34,7 +34,7 @@ export function AssumptionPanel({ register }: { register: Record<string, Calibra
     <section>
       <header className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§03 · Assumptions &amp; provenance</p>
+          <p className="eyebrow mb-2">§04 · Assumptions &amp; provenance</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
             What's real. What's a placeholder. What's deferred.
           </h2>

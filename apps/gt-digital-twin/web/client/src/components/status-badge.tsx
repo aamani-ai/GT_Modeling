@@ -4,6 +4,7 @@ export type StatusKey = "real_observed" | "real_reported" | "assumed_industry" |
 const map: Record<string, { label: string; color: string; dot: string; bg: string }> = {
   real_observed:        { label: "Real · observed",        color: "hsl(var(--status-real))",        dot: "bg-[hsl(var(--status-real))]",        bg: "bg-[hsl(var(--status-real)/0.10)]" },
   real_reported:        { label: "Real · reported",        color: "hsl(var(--status-real))",        dot: "bg-[hsl(var(--status-real))]",        bg: "bg-[hsl(var(--status-real)/0.10)]" },
+  real_computed:        { label: "Real · computed",        color: "hsl(var(--status-real))",        dot: "bg-[hsl(var(--status-real))]",        bg: "bg-[hsl(var(--status-real)/0.10)]" },
   assumed_industry:     { label: "Assumed · industry",     color: "hsl(var(--status-assumed))",     dot: "bg-[hsl(var(--status-assumed))]",     bg: "bg-[hsl(var(--status-assumed)/0.10)]" },
   assumed_vendor:       { label: "Assumed · vendor",       color: "hsl(var(--status-assumed))",     dot: "bg-[hsl(var(--status-assumed))]",     bg: "bg-[hsl(var(--status-assumed)/0.10)]" },
   assumed_derived:      { label: "Assumed · derived",      color: "hsl(var(--status-assumed))",     dot: "bg-[hsl(var(--status-assumed))]",     bg: "bg-[hsl(var(--status-assumed)/0.10)]" },

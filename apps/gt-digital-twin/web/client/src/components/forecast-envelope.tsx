@@ -20,7 +20,7 @@ export function ForecastEnvelope({ data, cell, policy, initState, gasMult }: Pro
     <section className="space-y-6">
       <header className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§02 · Forward forecast envelope</p>
+          <p className="eyebrow mb-2">§03 · Forward forecast envelope</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05] text-foreground">
             The distribution is the story.
           </h2>

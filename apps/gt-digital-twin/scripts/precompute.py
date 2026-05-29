@@ -24,11 +24,154 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import pandas as pd
 import numpy as np
+import yaml
 import gt_engine.engine as eng
 from forward.select import select
 from forward.build import build_scenarios
 from forward.data import load_market
 from forward.run import LTSA_KEYS
+
+ASSET_DIR = ROOT / "data" / "assets" / "lockport"
+
+
+def _yaml(path):
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+def _val(node):
+    """Pull .value from a {value, status, source} dict, or pass through scalar."""
+    if isinstance(node, dict) and "value" in node:
+        return node["value"]
+    return node
+
+
+def build_plant_profile():
+    """Read the 3 status-tagged YAMLs and emit the dashboard-ready profile.
+
+    The YAMLs are the source of truth — this function does no interpretation,
+    only the structural projection needed for the §02 Plant Profile section.
+    Status tags and source strings are preserved so the UI can render the
+    Bloomberg-style "data · source · as-of" attribution per fact.
+    """
+    ident = _yaml(ASSET_DIR / "identity.yaml")
+    engin = _yaml(ASSET_DIR / "engineering.yaml")
+    cap = _yaml(ASSET_DIR / "capability_envelope.yaml")
+    rop = _yaml(ASSET_DIR / "realized_operating_profile.yaml")
+
+    plant_i = ident["plant"]
+    dates_i = ident["operating_dates"]
+    loc_i = ident["location"]
+    ops_i = ident["operator"]
+    own_i = ident["ownership"]
+    plant_e = engin["plant"]
+
+    def _duty(block):
+        q = block.get("qualified", {})
+        ev = block.get("evidence", {})
+        return {
+            "qualified": _val(q),
+            "status": q.get("status"),
+            "confidence": q.get("confidence"),
+            "source": q.get("source"),
+            "evidence": _val(ev),
+        }
+
+    duties = ["cogen", "mid_merit", "baseload", "peaker",
+              "frequency_regulation", "must_run_eligible"]
+    cap_per = {d: _duty(cap[d]) for d in duties}
+
+    mods = cap["capability_modifiers"]
+    cap_mods = {
+        "fuel_switching": {
+            "qualified": _val(mods["fuel_switching"]["qualified"]),
+            "secondary_fuel": _val(mods["fuel_switching"]["secondary_fuel"]),
+            "switch_time_hr": _val(mods["fuel_switching"]["switch_time_hr"]),
+            "can_switch_while_operating": _val(mods["fuel_switching"]["can_switch_while_operating"]),
+        },
+        "simple_cycle_capable": {"qualified": _val(mods["simple_cycle_capable"]["qualified"])},
+        "supplemental_firing": {"qualified": _val(mods["supplemental_firing"]["qualified"])},
+        "load_turndown": {
+            "ct_min_load_pct": _val(mods["load_turndown"]["ct_min_load_pct"]),
+            "ca_min_load_pct": _val(mods["load_turndown"]["ca_min_load_pct"]),
+        },
+    }
+
+    sum_r = rop["profile_summary"]
+    per_season = {}
+    for s in ("winter", "shoulder", "summer"):
+        b = rop["per_season"][s]
+        per_season[s] = {
+            "days": _val(b["days"]),
+            "cf_pct": _val(b["capacity_factor_pct"]),
+            "operating_days": _val(b["operating_days"]),
+            "steam_only_days": _val(b["steam_only_days"]),
+            "offline_days": _val(b["offline_days"]),
+            "dhts_per_day_mmbtu": _val(b["dhts_per_day_mmbtu"]),
+            "mean_ambient_f": _val(b["mean_ambient_f"]),
+            "label": _val(b["realized_label"]),
+        }
+
+    per_year_cf = _val(rop["per_year_trend"]["capacity_factor_pct_by_year"])
+    per_year_cf = {str(k): float(v) for k, v in per_year_cf.items()}
+
+    return {
+        "identity": {
+            "name": _val(plant_i["name"]),
+            "short_name": _val(plant_i["short_name"]),
+            "sector": _val(plant_i["sector"]),
+            "configuration": _val(plant_i["configuration"]),
+            "status": _val(plant_i["status"]),
+            "cts_operating_since": _val(dates_i["cts_operating_since"]),
+            "st_operating_since": _val(dates_i["st_operating_since"]),
+            "location": {
+                "address": _val(loc_i["address"]),
+                "county": _val(loc_i["county"]),
+                "state": _val(loc_i["state"]),
+            },
+            "operator": _val(ops_i["name"]),
+            "iso_zone": "NYISO Zone A",
+            "regulatory": _val(ident["regulatory"]["status_code"]),
+            "regulatory_caveat": ident["regulatory"]["status_code"].get("caveat", ""),
+            "sole_owner": _val(own_i["sole_owner"]),
+            "orispl": _val(plant_i["id"]),
+        },
+        "engineering": {
+            "total_nameplate_mw": _val(plant_e["total_nameplate_mw"]),
+            "total_net_summer_mw": _val(plant_e["total_net_summer_mw"]),
+            "total_net_winter_mw": _val(plant_e["total_net_winter_mw"]),
+            "configuration": _val(plant_e["configuration"]),
+            "hrsg_count": _val(plant_e["hrsg_count"]),
+            "is_chp": _val(plant_e["is_chp"]),
+            "is_ambient_sensitive": _val(plant_e["is_ambient_sensitive"]),
+        },
+        "capability_envelope": {
+            "as_of": _val(cap["envelope_as_of"]),
+            "qualified_duties": _val(cap["envelope_summary"]["qualified_duties"]),
+            "unqualified_duties": _val(cap["envelope_summary"]["unqualified_duties"]),
+            "open_duties": _val(cap["envelope_summary"]["open_duties"]),
+            "per_duty": cap_per,
+            "modifiers": cap_mods,
+        },
+        "realized_operating_profile": {
+            "as_of": _val(rop["profile_as_of"]),
+            "horizon": "2021–2025 (1,826 days)",
+            "overall_cf_pct": _val(sum_r["overall_capacity_factor_pct"]),
+            "realized_duties": _val(sum_r["realized_duties"]),
+            "not_realized_but_capable": _val(sum_r["not_realized_but_capable"]),
+            "trend_flag": _val(sum_r["trend_flag"]),
+            "per_season": per_season,
+            "per_year_cf_pct": per_year_cf,
+            "trend_interpretation": _val(rop["per_year_trend"]["interpretation"]),
+        },
+        "regime_note": (
+            "Structural anchor only — capability envelope + realized profile "
+            "define what plant is being modeled, but v1 engine output does not "
+            "condition dispatch on either. Forward conditioning on realized "
+            "profile is the v2 payoff (ADR-005 §4)."
+        ),
+        "adr_refs": ["ADR-003 (regime split)", "ADR-004 (capability graduation)", "ADR-005 (realized graduation)"],
+    }
 
 
 BASIS = "RT"
@@ -228,6 +371,9 @@ def main():
         r["abs_max"] = float(max(abs(r["delta_p50_low"]), abs(r["delta_p50_high"])))
     ranks.sort(key=lambda x: -x["abs_max"])
 
+    print("=== Building plant profile from asset YAMLs ===", flush=True)
+    plant_profile = build_plant_profile()
+
     payload = {
         "generated_at": pd.Timestamp.utcnow().isoformat(),
         "engine_version": "gt_engine.run_path + forward.run_forward (verbatim from N4)",
@@ -236,6 +382,7 @@ def main():
         "modes": MODES,
         "gas_multipliers": GAS_MULTS,
         "init_presets": INIT_PRESETS,
+        "plant_profile": plant_profile,
         "aged_state_summary": {
             m: {"eoh": float(aged_states[m].eoh),
                 "rotor_life": float(aged_states[m].rotor_life),

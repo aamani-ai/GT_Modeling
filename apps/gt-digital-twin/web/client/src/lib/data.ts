@@ -65,6 +65,89 @@ export interface Reference {
   url: string;
 }
 
+// ---------- §02 Plant Profile (sourced from data/assets/lockport/*.yaml) ----------
+// The three YAMLs the precompute.py reads are the source of truth. The shapes
+// below are the structural projection emitted into precomputed.json.
+
+export interface DutyQualification {
+  /** true = qualified, false = explicitly disqualified, null = open (placeholder/D2 needed) */
+  qualified: boolean | null;
+  /** 9-code status taxonomy: real_reported / real_computed / assumed_industry / placeholder / ... */
+  status: string;
+  /** HIGH / MEDIUM / LOW — only set when qualified is true/false; null when open */
+  confidence: string | null;
+  source: string;
+  evidence: string;
+}
+
+export interface PlantProfile {
+  identity: {
+    name: string;
+    short_name: string;
+    sector: string;
+    configuration: string;
+    status: string;
+    cts_operating_since: string;
+    st_operating_since: string;
+    location: { address: string; county: string; state: string };
+    operator: string;
+    iso_zone: string;
+    regulatory: string;
+    regulatory_caveat: string;
+    sole_owner: string;
+    orispl: number;
+  };
+  engineering: {
+    total_nameplate_mw: number;
+    total_net_summer_mw: number;
+    total_net_winter_mw: number;
+    configuration: string;
+    hrsg_count: number;
+    is_chp: boolean;
+    is_ambient_sensitive: boolean;
+  };
+  capability_envelope: {
+    as_of: string;
+    qualified_duties: string[];
+    unqualified_duties: string[];
+    open_duties: string[];
+    per_duty: Record<string, DutyQualification>;
+    modifiers: {
+      fuel_switching: {
+        qualified: boolean;
+        secondary_fuel: string;
+        switch_time_hr: number;
+        can_switch_while_operating: boolean;
+      };
+      simple_cycle_capable: { qualified: boolean };
+      supplemental_firing: { qualified: boolean };
+      load_turndown: { ct_min_load_pct: number; ca_min_load_pct: number };
+    };
+  };
+  realized_operating_profile: {
+    as_of: string;
+    horizon: string;
+    overall_cf_pct: number;
+    realized_duties: string[];
+    not_realized_but_capable: string[];
+    trend_flag: string;
+    per_season: Record<"winter" | "shoulder" | "summer", {
+      days: number;
+      cf_pct: number;
+      operating_days: number;
+      steam_only_days: number;
+      offline_days: number;
+      dhts_per_day_mmbtu: number;
+      mean_ambient_f: number;
+      label: string;
+    }>;
+    per_year_cf_pct: Record<string, number>;
+    trend_interpretation: string;
+  };
+  regime_note: string;
+  adr_refs: string[];
+}
+
 export interface Precomputed {
   generated_at: string;
   engine_version: string;
@@ -73,6 +156,9 @@ export interface Precomputed {
   modes: string[];
   gas_multipliers: number[];
   init_presets: string[];
+  /** §02 Plant Profile — identity + capability envelope + realized operating profile.
+   *  Optional for back-compat with pre-profile precomputed.json files. */
+  plant_profile?: PlantProfile;
   aged_state_summary: Record<string, { eoh: number; rotor_life: number; insp_done: number }>;
   historical_decomp: Record<string, PnlDecomposition>;
   grid: Record<string, GridCell>;

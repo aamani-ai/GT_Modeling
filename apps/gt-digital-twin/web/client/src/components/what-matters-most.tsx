@@ -16,7 +16,7 @@ export function WhatMattersMost({ ranks }: { ranks: SensitivityRank[] }) {
     <section>
       <header className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="max-w-2xl">
-          <p className="eyebrow mb-2">§08 · What matters most</p>
+          <p className="eyebrow mb-2">§09 · What matters most</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
             Where the headline actually moves.
           </h2>

@@ -11,7 +11,7 @@ export function EngineLayers({ data, policy, initState }: { data: Precomputed; p
   return (
     <section className="space-y-7">
       <header className="max-w-2xl">
-        <p className="eyebrow mb-2">§07 · Engine mechanics</p>
+        <p className="eyebrow mb-2">§08 · Engine mechanics</p>
         <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
           Three layers, one engine.
         </h2>
