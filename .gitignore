@@ -71,3 +71,10 @@ docs/extra/gas-turbine-digital-twin/.git/
 docs/discussion/
 docs/decisions/
 docs/learning_logs/
+
+# GT Digital Twin dashboard app — generated artifacts
+apps/gt-digital-twin/web/node_modules/
+apps/gt-digital-twin/web/dist/
+apps/gt-digital-twin/web/.vite/
+apps/gt-digital-twin/precompute.log
+apps/gt-digital-twin/qa-*.png

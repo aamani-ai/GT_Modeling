@@ -1,33 +1,50 @@
-# dashboard/ — Future scope (placeholder)
+# dashboard/ — Pointer to the active dashboard app
 
-> Reserved folder for the future visualization / UI layer over model outputs. **Not in v1 build.**
+> **The active dashboard app now lives at [`apps/gt-digital-twin/`](../apps/gt-digital-twin/).**
+> This folder remains as a stable pointer; do not put new code here.
 
-## Status
+## Where the app is
 
-🅿️ **Future scope.** Will be designed once there's a working Lockport simulation producing real outputs (Phase L of the consolidation plan) and we know what views the deal team actually wants.
+```
+apps/gt-digital-twin/
+├── README.md                       ← app overview + run instructions
+├── V1.2_HANDOFF.md                 ← v1.2 corrections handoff (typography, sections, 6-panel)
+├── scripts/
+│   ├── precompute.py                ← runs the REAL engine over the knob grid
+│   ├── build_monthly_forecast_panel.py  ← REAL-DATA monthly export consumed by §01
+│   └── build_monthly_trajectories.py    ← DEPRECATED (illustrative monthly shape)
+└── web/                            ← Vite + React + Tailwind + shadcn webapp
+    ├── client/src/                 ← React source
+    └── client/public/              ← precomputed.json + monthly_forecast_panel.json + img/
+```
 
-## Why a placeholder now
+## Quick run
 
-Two reasons:
+```bash
+# (One-time) precompute the engine grid — ~16–22 min
+cd /path/to/GT_Modeling
+python apps/gt-digital-twin/scripts/precompute.py
 
-1. **Reserved naming** — establishing the folder name early prevents future "where should the dashboard live?" relitigation. It's a sibling to `docs/`, `data/`, `src/`, and `notebooks/` — visualization is its own concern, not a sub-concern of any of those.
-2. **Clear non-scope** — by writing this README, anyone walking into gt_models understands the dashboard doesn't exist yet and isn't blocking other work.
+# (One-time) build the real-data monthly panel for §01 (forward 6-panel)
+python apps/gt-digital-twin/scripts/build_monthly_forecast_panel.py
 
-## What it will contain (eventually)
+# Dev server
+cd apps/gt-digital-twin/web
+npm install
+npm run dev                         # http://localhost:5000
 
-Open. Possible candidates when the time comes:
+# Static build
+npm run build                       # → dist/public
+```
 
-- Streamlit or Dash app for interactive exploration of model outputs
-- Plotly-based static reports
-- A web app that consumes the `data/outputs/<asset>/runs/<run_id>/` bundles
-- Mode A/B/C trade-off visualizations
-- P10/P50/P90 distributional views
-- LTSA cost stream decomposition charts
-- Assumption-status drill-downs from the model_card
+See [`apps/gt-digital-twin/README.md`](../apps/gt-digital-twin/README.md) for the full architecture, design decisions, status taxonomy, and honest limitations.
 
-These are speculations. Real design comes when there's a deal team asking specific questions of specific outputs.
+## Why this pointer file exists
+
+`dashboard/` was originally reserved as a future-scope placeholder (sibling to `docs/`, `data/`, `src/`, `notebooks/`). v1 of the dashboard ended up under `apps/gt-digital-twin/` to keep the app self-contained — its own `scripts/`, `web/`, lockfile, and build pipeline don't need to live at the repo root. This file leaves a breadcrumb so anyone landing in `dashboard/` finds the real app.
 
 ## See also
 
+- [`apps/gt-digital-twin/README.md`](../apps/gt-digital-twin/README.md) — app entry point
+- [`apps/gt-digital-twin/V1.2_HANDOFF.md`](../apps/gt-digital-twin/V1.2_HANDOFF.md) — v1.2 corrections handoff
 - [consolidation plan §4.4](../docs/plans/consolidation_plan.md#44-dashboard--future-scope-new-placeholder-only)
-- [consolidation plan §10](../docs/plans/consolidation_plan.md#10-anti-patterns-ulysses-pact-against-future-self) — anti-pattern: "Build the dashboard before there's a working model with outputs"

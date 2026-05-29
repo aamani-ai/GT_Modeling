@@ -1,0 +1,3915 @@
+{
+  "generated_at": "2026-05-28T03:45:29.684860+00:00",
+  "engine_version": "gt_engine.run_path + forward.run_forward (verbatim from N4)",
+  "basis": "RT",
+  "n_scenarios": 25,
+  "modes": [
+    "A",
+    "B",
+    "C"
+  ],
+  "gas_multipliers": [
+    0.75,
+    1.0,
+    1.25
+  ],
+  "init_presets": [
+    "aged",
+    "fresh"
+  ],
+  "aged_state_summary": {
+    "A": {
+      "eoh": 42138.0,
+      "rotor_life": 0.17570050000000323,
+      "insp_done": 1
+    },
+    "B": {
+      "eoh": 42370.0,
+      "rotor_life": 0.35115050000000664,
+      "insp_done": 0
+    },
+    "C": {
+      "eoh": 42370.0,
+      "rotor_life": 0.35115050000000664,
+      "insp_done": 0
+    }
+  },
+  "historical_decomp": {
+    "A": {
+      "gross_revenue": 132078536.09148896,
+      "fuel_cost": -95415933.70702618,
+      "vom_cost": -3075780.397785123,
+      "wear_penalty_internal": -2113750.5208904045,
+      "ltsa_fixed_fee": -107663311.86598681,
+      "ltsa_eoh_reserve": -3836442.0796670043,
+      "ltsa_inspections": -13945591.892481253,
+      "ltsa_other": -54343950.605295435,
+      "net_pl": -146202474.45675284,
+      "total_mwh": 2233682.2060894137,
+      "fired_hours": 11838.0
+    },
+    "B": {
+      "gross_revenue": 126051166.72045386,
+      "fuel_cost": -92196329.18595697,
+      "vom_cost": -2963701.856806627,
+      "wear_penalty_internal": -2155632.3705983814,
+      "ltsa_fixed_fee": -107663311.86598681,
+      "ltsa_eoh_reserve": -3891208.408037902,
+      "ltsa_inspections": -0.0,
+      "ltsa_other": -42349445.38001813,
+      "net_pl": -123012829.97635257,
+      "total_mwh": 2152288.9301427933,
+      "fired_hours": 11505.0
+    },
+    "C": {
+      "gross_revenue": 126051166.72045386,
+      "fuel_cost": -92196329.18595697,
+      "vom_cost": -2963701.856806627,
+      "wear_penalty_internal": -2155632.3705983814,
+      "ltsa_fixed_fee": -107663311.86598681,
+      "ltsa_eoh_reserve": -3891208.408037902,
+      "ltsa_inspections": -0.0,
+      "ltsa_other": -42349445.38001813,
+      "net_pl": -123012829.97635257,
+      "total_mwh": 2152288.9301427933,
+      "fired_hours": 11505.0
+    }
+  },
+  "grid": {
+    "A|gas0.75|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": 48704.411450991174,
+          "ltsa_owner_usd": 15566972.92368259,
+          "net_pl_usd": -15518268.512231598,
+          "total_mwh": 207650.2733071724,
+          "fired_hours": 1318
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 4850825.724187813,
+          "ltsa_owner_usd": 18903482.1381596,
+          "net_pl_usd": -14052656.413971785,
+          "total_mwh": 417385.47224866797,
+          "fired_hours": 2299
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 3642115.3566247947,
+          "ltsa_owner_usd": 19492684.947121177,
+          "net_pl_usd": -15850569.590496382,
+          "total_mwh": 346854.47692271724,
+          "fired_hours": 2009
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 8384483.855864676,
+          "ltsa_owner_usd": 18169631.59725203,
+          "net_pl_usd": -9785147.741387354,
+          "total_mwh": 601887.1270700921,
+          "fired_hours": 3100
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 5926339.179596142,
+          "ltsa_owner_usd": 17681163.07290035,
+          "net_pl_usd": -11754823.89330421,
+          "total_mwh": 533311.7918492783,
+          "fired_hours": 2738
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": 3051636.9818014055,
+          "ltsa_owner_usd": 19736738.8410547,
+          "net_pl_usd": -16685101.859253295,
+          "total_mwh": 451832.33453754487,
+          "fired_hours": 2535
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 4922141.048825195,
+          "ltsa_owner_usd": 15697652.461517015,
+          "net_pl_usd": -10775511.41269182,
+          "total_mwh": 451598.53705148277,
+          "fired_hours": 2291
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 3264132.7859586044,
+          "ltsa_owner_usd": 17203331.04876228,
+          "net_pl_usd": -13939198.262803676,
+          "total_mwh": 355461.11856227036,
+          "fired_hours": 2005
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 11711987.482138226,
+          "ltsa_owner_usd": 16591842.897300696,
+          "net_pl_usd": -4879855.41516247,
+          "total_mwh": 401586.0738985518,
+          "fired_hours": 2111
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 25954378.39231481,
+          "ltsa_owner_usd": 18459109.255811375,
+          "net_pl_usd": 7495269.136503436,
+          "total_mwh": 493548.21634542965,
+          "fired_hours": 2453
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -137018.94893770432,
+          "ltsa_owner_usd": 17000103.92912119,
+          "net_pl_usd": -17137122.87805889,
+          "total_mwh": 293183.7994515862,
+          "fired_hours": 1780
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 8267935.9788815435,
+          "ltsa_owner_usd": 19095229.162716866,
+          "net_pl_usd": -10827293.183835322,
+          "total_mwh": 388286.4066303793,
+          "fired_hours": 2131
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 4502841.263385147,
+          "ltsa_owner_usd": 19922274.745604057,
+          "net_pl_usd": -15419433.48221891,
+          "total_mwh": 343697.42885067244,
+          "fired_hours": 1915
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": 429063.7689579525,
+          "ltsa_owner_usd": 18213505.68659854,
+          "net_pl_usd": -17784441.917640585,
+          "total_mwh": 375629.23610395205,
+          "fired_hours": 2153
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": 1999046.0153938923,
+          "ltsa_owner_usd": 16997097.690798875,
+          "net_pl_usd": -14998051.675404983,
+          "total_mwh": 391919.4960506132,
+          "fired_hours": 2153
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 11381479.33199574,
+          "ltsa_owner_usd": 18959062.868386596,
+          "net_pl_usd": -7577583.536390856,
+          "total_mwh": 487093.2870665518,
+          "fired_hours": 2571
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 6347383.75873565,
+          "ltsa_owner_usd": 17858640.668806396,
+          "net_pl_usd": -11511256.910070747,
+          "total_mwh": 512912.646862129,
+          "fired_hours": 2702
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 9542641.408984933,
+          "ltsa_owner_usd": 18340862.133580625,
+          "net_pl_usd": -8798220.724595692,
+          "total_mwh": 424409.84340098035,
+          "fired_hours": 2170
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 20317545.359466814,
+          "ltsa_owner_usd": 16932491.296892006,
+          "net_pl_usd": 3385054.0625748076,
+          "total_mwh": 772708.1418754827,
+          "fired_hours": 3537
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 8051680.812525045,
+          "ltsa_owner_usd": 19497688.91359593,
+          "net_pl_usd": -11446008.101070885,
+          "total_mwh": 545167.77947773,
+          "fired_hours": 2763
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": 1465703.8285058166,
+          "ltsa_owner_usd": 16643726.797330888,
+          "net_pl_usd": -15178022.968825072,
+          "total_mwh": 222725.89880309312,
+          "fired_hours": 1241
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": 3499002.455495812,
+          "ltsa_owner_usd": 18268224.49070292,
+          "net_pl_usd": -14769222.035207108,
+          "total_mwh": 443081.159237608,
+          "fired_hours": 2445
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 8590315.619024828,
+          "ltsa_owner_usd": 18664825.22851437,
+          "net_pl_usd": -10074509.609489542,
+          "total_mwh": 472774.3453043835,
+          "fired_hours": 2456
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 5406567.652707759,
+          "ltsa_owner_usd": 19220498.438670393,
+          "net_pl_usd": -13813930.785962634,
+          "total_mwh": 418208.89975410345,
+          "fired_hours": 2323
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": 272452.86748721893,
+          "ltsa_owner_usd": 18994896.234404784,
+          "net_pl_usd": -18722443.366917565,
+          "total_mwh": 310591.1711863021,
+          "fired_hours": 1869
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -16969465.71850906,
+          "P50": -13925882.281424638,
+          "P90": -5548142.025596906,
+          "mean": -11872114.20882595
+        },
+        "spark_margin_usd": {
+          "P10": 166048.60960805806,
+          "P50": 4869528.309649979,
+          "P90": 11630113.341582095,
+          "mean": 6148896.511345175
+        },
+        "ltsa_owner_usd": {
+          "P10": 15847067.539607892,
+          "P50": 18236428.651240706,
+          "P90": 19507197.046005614,
+          "mean": 18021010.720171124
+        },
+        "total_mwh": {
+          "P10": 249476.3096659123,
+          "P50": 417634.589389668,
+          "P90": 544620.7018205812,
+          "mean": 419828.1098994788
+        },
+        "fired_hours": {
+          "P10": 1602.0490504275783,
+          "P50": 2259.2335307254752,
+          "P90": 2761.8464106190613,
+          "mean": 2258.4879118873214
+        }
+      },
+      "p50_path": {
+        "path_id": 8.0,
+        "window": "2001_2002",
+        "probability": 0.04203514695520301,
+        "spark_margin_usd": 3264132.7859586044,
+        "ltsa_owner_usd": 17203331.04876228,
+        "net_pl_usd": -13939198.262803676,
+        "total_mwh": 355461.11856227036,
+        "fired_hours": 2005.0
+      },
+      "knobs": {
+        "policy": "A",
+        "gas_mult": 0.75,
+        "init_state": "aged"
+      }
+    },
+    "A|gas1.0|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -888476.0941280525,
+          "ltsa_owner_usd": 15153724.449085873,
+          "net_pl_usd": -16042200.543213924,
+          "total_mwh": 160338.46631779312,
+          "fired_hours": 1064
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 1909851.4816849271,
+          "ltsa_owner_usd": 18303659.116867766,
+          "net_pl_usd": -16393807.635182839,
+          "total_mwh": 271662.69980234315,
+          "fired_hours": 1692
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 1225912.7811315157,
+          "ltsa_owner_usd": 18844423.857088327,
+          "net_pl_usd": -17618511.07595681,
+          "total_mwh": 277954.24077271204,
+          "fired_hours": 1702
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 95732.41678605368,
+          "ltsa_owner_usd": 17234498.931836493,
+          "net_pl_usd": -17138766.51505044,
+          "total_mwh": 315153.84326533176,
+          "fired_hours": 1791
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 383365.7908037766,
+          "ltsa_owner_usd": 17716515.28803122,
+          "net_pl_usd": -17333149.497227445,
+          "total_mwh": 305160.0505366869,
+          "fired_hours": 1797
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -4028539.6562223444,
+          "ltsa_owner_usd": 17818375.207875937,
+          "net_pl_usd": -21846914.86409828,
+          "total_mwh": 232245.9058012769,
+          "fired_hours": 1473
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 2155267.200873824,
+          "ltsa_owner_usd": 15041036.258693269,
+          "net_pl_usd": -12885769.057819445,
+          "total_mwh": 335669.38811193104,
+          "fired_hours": 1898
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1631794.4260321546,
+          "ltsa_owner_usd": 16046179.023716077,
+          "net_pl_usd": -14414384.597683923,
+          "total_mwh": 176685.27020161622,
+          "fired_hours": 1045
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 7674832.897211345,
+          "ltsa_owner_usd": 15788439.717932181,
+          "net_pl_usd": -8113606.8207208365,
+          "total_mwh": 305621.0273215173,
+          "fired_hours": 1704
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 20493666.83866924,
+          "ltsa_owner_usd": 17440375.262602106,
+          "net_pl_usd": 3053291.5760671347,
+          "total_mwh": 387987.71337257285,
+          "fired_hours": 2017
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1081328.1335132539,
+          "ltsa_owner_usd": 16213297.668440925,
+          "net_pl_usd": -17294625.80195418,
+          "total_mwh": 209405.97547693102,
+          "fired_hours": 1331
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 5524006.622886809,
+          "ltsa_owner_usd": 18706887.699608944,
+          "net_pl_usd": -13182881.076722136,
+          "total_mwh": 299201.24576868967,
+          "fired_hours": 1720
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 2959367.765929128,
+          "ltsa_owner_usd": 20211098.470101118,
+          "net_pl_usd": -17251730.70417199,
+          "total_mwh": 250262.51947905176,
+          "fired_hours": 1453
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -3281422.1076510483,
+          "ltsa_owner_usd": 15672482.881452397,
+          "net_pl_usd": -18953904.989103444,
+          "total_mwh": 179365.83507507347,
+          "fired_hours": 1182
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -1297896.796198284,
+          "ltsa_owner_usd": 15033420.76523806,
+          "net_pl_usd": -16331317.561436344,
+          "total_mwh": 213380.7835206238,
+          "fired_hours": 1293
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 5327827.445123562,
+          "ltsa_owner_usd": 18035352.477745906,
+          "net_pl_usd": -12707525.032622345,
+          "total_mwh": 274057.92024648277,
+          "fired_hours": 1606
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 2217663.3036586647,
+          "ltsa_owner_usd": 17848127.381778747,
+          "net_pl_usd": -15630464.078120083,
+          "total_mwh": 284217.8537586752,
+          "fired_hours": 1629
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 6388139.012488166,
+          "ltsa_owner_usd": 17851980.67357682,
+          "net_pl_usd": -11463841.661088655,
+          "total_mwh": 323156.53761602036,
+          "fired_hours": 1800
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 14007199.522283407,
+          "ltsa_owner_usd": 16648771.915845143,
+          "net_pl_usd": -2641572.3935617357,
+          "total_mwh": 559678.9742293103,
+          "fired_hours": 2669
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 16630.442402106943,
+          "ltsa_owner_usd": 16923965.997910786,
+          "net_pl_usd": -16907335.55550868,
+          "total_mwh": 292805.6086888014,
+          "fired_hours": 1744
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": 56000.75962886354,
+          "ltsa_owner_usd": 15307925.961575134,
+          "net_pl_usd": -15251925.20194627,
+          "total_mwh": 106886.1991025269,
+          "fired_hours": 638
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -2187070.7210766496,
+          "ltsa_owner_usd": 15817607.280044438,
+          "net_pl_usd": -18004678.00112109,
+          "total_mwh": 237862.63504753308,
+          "fired_hours": 1531
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 5675039.598808695,
+          "ltsa_owner_usd": 18118288.047315888,
+          "net_pl_usd": -12443248.448507193,
+          "total_mwh": 275029.5486464258,
+          "fired_hours": 1526
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 2403853.9196346104,
+          "ltsa_owner_usd": 19449544.492241316,
+          "net_pl_usd": -17045690.572606705,
+          "total_mwh": 301220.61785900005,
+          "fired_hours": 1786
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -2566245.03080339,
+          "ltsa_owner_usd": 17854811.448546607,
+          "net_pl_usd": -20421056.479349997,
+          "total_mwh": 211756.71825473243,
+          "fired_hours": 1354
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18833450.945170194,
+          "P50": -16352358.160644565,
+          "P90": -8953617.503210502,
+          "mean": -14802809.927994652
+        },
+        "spark_margin_usd": {
+          "P10": -2565323.1386441863,
+          "P50": 1388869.7247545596,
+          "P90": 7352217.719541324,
+          "mean": 2337056.287833761
+        },
+        "ltsa_owner_usd": {
+          "P10": 15126689.034547288,
+          "P50": 17437908.534463614,
+          "P90": 18828213.026726387,
+          "mean": 17139866.21582842
+        },
+        "total_mwh": {
+          "P10": 170011.4225681165,
+          "P50": 274739.63219078403,
+          "P90": 332687.2547341513,
+          "mean": 268166.5302062634
+        },
+        "fired_hours": {
+          "P10": 1061.224053405849,
+          "P50": 1656.5777888689465,
+          "P90": 1874.644085125294,
+          "mean": 1569.4152581026046
+        }
+      },
+      "p50_path": {
+        "path_id": 15.0,
+        "window": "2003_2004",
+        "probability": 0.035528351429538814,
+        "spark_margin_usd": -1297896.796198284,
+        "ltsa_owner_usd": 15033420.76523806,
+        "net_pl_usd": -16331317.561436344,
+        "total_mwh": 213380.7835206238,
+        "fired_hours": 1293.0
+      },
+      "knobs": {
+        "policy": "A",
+        "gas_mult": 1.0,
+        "init_state": "aged"
+      }
+    },
+    "A|gas1.25|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -1693299.109082344,
+          "ltsa_owner_usd": 15368908.33913603,
+          "net_pl_usd": -17062207.448218375,
+          "total_mwh": 136937.21256313793,
+          "fired_hours": 931
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": -33840.92522485461,
+          "ltsa_owner_usd": 17743627.235911325,
+          "net_pl_usd": -17777468.16113618,
+          "total_mwh": 219496.6915964293,
+          "fired_hours": 1442
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": -286005.3232803247,
+          "ltsa_owner_usd": 18054019.54185006,
+          "net_pl_usd": -18340024.865130384,
+          "total_mwh": 218669.6829925421,
+          "fired_hours": 1376
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": -4159509.6846934473,
+          "ltsa_owner_usd": 15565844.850608595,
+          "net_pl_usd": -19725354.535302043,
+          "total_mwh": 196916.6394168404,
+          "fired_hours": 1253
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": -2362184.9575401144,
+          "ltsa_owner_usd": 15265970.253078468,
+          "net_pl_usd": -17628155.21061858,
+          "total_mwh": 195251.45542187552,
+          "fired_hours": 1241
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -5825943.608342363,
+          "ltsa_owner_usd": 15591065.415727597,
+          "net_pl_usd": -21417009.024069957,
+          "total_mwh": 134857.0429067524,
+          "fired_hours": 888
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 623391.3291475779,
+          "ltsa_owner_usd": 14878480.198133929,
+          "net_pl_usd": -14255088.868986351,
+          "total_mwh": 249636.0082390345,
+          "fired_hours": 1504
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 716750.4908942154,
+          "ltsa_owner_usd": 14744949.538519187,
+          "net_pl_usd": -14028199.047624972,
+          "total_mwh": 125324.42168639002,
+          "fired_hours": 768
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 4616345.773181152,
+          "ltsa_owner_usd": 14467894.383082993,
+          "net_pl_usd": -9851548.609901842,
+          "total_mwh": 255666.24569672416,
+          "fired_hours": 1478
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 16226093.139644567,
+          "ltsa_owner_usd": 16554964.246142274,
+          "net_pl_usd": -328871.10649770685,
+          "total_mwh": 332606.7443366348,
+          "fired_hours": 1770
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1818669.1489651436,
+          "ltsa_owner_usd": 15893783.517635122,
+          "net_pl_usd": -17712452.666600265,
+          "total_mwh": 164875.3984824483,
+          "fired_hours": 1072
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 3398340.579984629,
+          "ltsa_owner_usd": 18493787.78597844,
+          "net_pl_usd": -15095447.20599381,
+          "total_mwh": 249561.679799,
+          "fired_hours": 1460
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 1527754.7572591966,
+          "ltsa_owner_usd": 19350563.82764525,
+          "net_pl_usd": -17822809.070386052,
+          "total_mwh": 204414.3833040483,
+          "fired_hours": 1241
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -4142219.630807727,
+          "ltsa_owner_usd": 14207506.754915355,
+          "net_pl_usd": -18349726.38572308,
+          "total_mwh": 110712.3609506683,
+          "fired_hours": 762
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -3180737.5216250345,
+          "ltsa_owner_usd": 14416311.360765938,
+          "net_pl_usd": -17597048.882390972,
+          "total_mwh": 131556.37362277243,
+          "fired_hours": 869
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 2754703.454079352,
+          "ltsa_owner_usd": 16620305.72331149,
+          "net_pl_usd": -13865602.269232137,
+          "total_mwh": 182431.2480184828,
+          "fired_hours": 1130
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": -101281.0107313043,
+          "ltsa_owner_usd": 17332956.908712935,
+          "net_pl_usd": -17434237.91944424,
+          "total_mwh": 193668.30223215348,
+          "fired_hours": 1175
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 3864164.6161802625,
+          "ltsa_owner_usd": 17494917.83956489,
+          "net_pl_usd": -13630753.223384626,
+          "total_mwh": 278558.47047914483,
+          "fired_hours": 1628
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 8984446.2483874,
+          "ltsa_owner_usd": 15754000.886165753,
+          "net_pl_usd": -6769554.637778353,
+          "total_mwh": 440882.4001448276,
+          "fired_hours": 2219
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": -2928030.6869110693,
+          "ltsa_owner_usd": 14897503.964731216,
+          "net_pl_usd": -17825534.651642285,
+          "total_mwh": 188098.4916787093,
+          "fired_hours": 1240
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -689603.4198508984,
+          "ltsa_owner_usd": 14280685.53280103,
+          "net_pl_usd": -14970288.95265193,
+          "total_mwh": 66971.36014727346,
+          "fired_hours": 411
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -4603612.88832571,
+          "ltsa_owner_usd": 14870528.684146049,
+          "net_pl_usd": -19474141.57247176,
+          "total_mwh": 161701.67967869344,
+          "fired_hours": 1095
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 3738641.342914432,
+          "ltsa_owner_usd": 17706047.793176796,
+          "net_pl_usd": -13967406.450262364,
+          "total_mwh": 211521.55435432383,
+          "fired_hours": 1218
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 547841.7011086969,
+          "ltsa_owner_usd": 18511938.832303647,
+          "net_pl_usd": -17964097.13119495,
+          "total_mwh": 227672.779623069,
+          "fired_hours": 1387
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -4076607.8099601595,
+          "ltsa_owner_usd": 16599160.174760824,
+          "net_pl_usd": -20675767.984720983,
+          "total_mwh": 159381.68842869208,
+          "fired_hours": 1043
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -19801767.24768371,
+          "P50": -17608946.037490148,
+          "P90": -10799115.690390801,
+          "mean": -15948899.333036415
+        },
+        "spark_margin_usd": {
+          "P10": -4211521.395462473,
+          "P50": -204871.7367457725,
+          "P90": 4427749.977019355,
+          "mean": 228618.60711726954
+        },
+        "ltsa_owner_usd": {
+          "P10": 14436733.251646742,
+          "P50": 15644341.377718765,
+          "P90": 18352041.527750667,
+          "mean": 16177517.940153683
+        },
+        "total_mwh": {
+          "P10": 127250.4820854144,
+          "P50": 195738.36313706965,
+          "P90": 270360.80479341577,
+          "mean": 199292.4933012058
+        },
+        "fired_hours": {
+          "P10": 799.2152760944409,
+          "P50": 1240.6431084407552,
+          "P90": 1584.0362692380118,
+          "mean": 1220.4445087028307
+        }
+      },
+      "p50_path": {
+        "path_id": 15.0,
+        "window": "2003_2004",
+        "probability": 0.035528351429538814,
+        "spark_margin_usd": -3180737.5216250345,
+        "ltsa_owner_usd": 14416311.360765938,
+        "net_pl_usd": -17597048.882390972,
+        "total_mwh": 131556.37362277243,
+        "fired_hours": 869.0
+      },
+      "knobs": {
+        "policy": "A",
+        "gas_mult": 1.25,
+        "init_state": "aged"
+      }
+    },
+    "B|gas0.75|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -355600.96101311664,
+          "ltsa_owner_usd": 15022852.158910843,
+          "net_pl_usd": -15378453.119923959,
+          "total_mwh": 189611.39339737932,
+          "fired_hours": 1229
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 3581842.620327756,
+          "ltsa_owner_usd": 18526881.091338903,
+          "net_pl_usd": -14945038.471011147,
+          "total_mwh": 340048.22001354967,
+          "fired_hours": 1977
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 2581632.2817318374,
+          "ltsa_owner_usd": 19090592.923846107,
+          "net_pl_usd": -16508960.64211427,
+          "total_mwh": 295986.9414340197,
+          "fired_hours": 1762
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 5084699.837478608,
+          "ltsa_owner_usd": 17208829.109161902,
+          "net_pl_usd": -12124129.271683294,
+          "total_mwh": 497547.73000655277,
+          "fired_hours": 2642
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 4012909.311998699,
+          "ltsa_owner_usd": 17117459.376608778,
+          "net_pl_usd": -13104550.064610079,
+          "total_mwh": 449871.30347325554,
+          "fired_hours": 2402
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": 551307.1359908413,
+          "ltsa_owner_usd": 19119344.189435884,
+          "net_pl_usd": -18568037.05344504,
+          "total_mwh": 362398.8927726728,
+          "fired_hours": 2132
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 3740560.5631931634,
+          "ltsa_owner_usd": 14894677.465465628,
+          "net_pl_usd": -11154116.902272465,
+          "total_mwh": 390733.8405166551,
+          "fired_hours": 2071
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 2815573.476589695,
+          "ltsa_owner_usd": 16542522.341413025,
+          "net_pl_usd": -13726948.86482333,
+          "total_mwh": 268599.2765381355,
+          "fired_hours": 1515
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 10402769.636778358,
+          "ltsa_owner_usd": 16330509.020547496,
+          "net_pl_usd": -5927739.383769138,
+          "total_mwh": 365110.4710746207,
+          "fired_hours": 1967
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 24323523.367332272,
+          "ltsa_owner_usd": 17764284.178363744,
+          "net_pl_usd": 6559239.188968528,
+          "total_mwh": 450116.6341974866,
+          "fired_hours": 2265
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -758700.1154137789,
+          "ltsa_owner_usd": 16432571.676698953,
+          "net_pl_usd": -17191271.79211273,
+          "total_mwh": 265295.1761306207,
+          "fired_hours": 1646
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 7407671.777597725,
+          "ltsa_owner_usd": 18932887.701152455,
+          "net_pl_usd": -11525215.92355473,
+          "total_mwh": 349356.8137075172,
+          "fired_hours": 1953
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 3669084.732139999,
+          "ltsa_owner_usd": 19960649.544566147,
+          "net_pl_usd": -16291564.812426148,
+          "total_mwh": 301841.6173715028,
+          "fired_hours": 1729
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -985086.7194869749,
+          "ltsa_owner_usd": 17351123.069158092,
+          "net_pl_usd": -18336209.788645066,
+          "total_mwh": 294963.7457303252,
+          "fired_hours": 1779
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": 664394.9756678112,
+          "ltsa_owner_usd": 16549026.784758598,
+          "net_pl_usd": -15884631.809090786,
+          "total_mwh": 329496.19459423557,
+          "fired_hours": 1873
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 9186516.844557608,
+          "ltsa_owner_usd": 18361343.331872236,
+          "net_pl_usd": -9174826.487314628,
+          "total_mwh": 411244.35394303454,
+          "fired_hours": 2242
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 4883438.943672768,
+          "ltsa_owner_usd": 17894850.511628386,
+          "net_pl_usd": -13011411.567955617,
+          "total_mwh": 436967.95404565136,
+          "fired_hours": 2356
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 8225222.446159588,
+          "ltsa_owner_usd": 18338559.344278283,
+          "net_pl_usd": -10113336.898118695,
+          "total_mwh": 379900.98501507967,
+          "fired_hours": 1988
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 18064883.558244646,
+          "ltsa_owner_usd": 16605417.810308967,
+          "net_pl_usd": 1459465.7479356788,
+          "total_mwh": 664677.4082082415,
+          "fired_hours": 3082
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 5027811.074379537,
+          "ltsa_owner_usd": 18511665.28070783,
+          "net_pl_usd": -13483854.206328291,
+          "total_mwh": 446994.621969749,
+          "fired_hours": 2378
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": 1018891.7106449513,
+          "ltsa_owner_usd": 16403743.702748306,
+          "net_pl_usd": -15384851.992103355,
+          "total_mwh": 169113.25082607105,
+          "fired_hours": 972
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": 767354.2119506791,
+          "ltsa_owner_usd": 17075083.99191479,
+          "net_pl_usd": -16307729.779964112,
+          "total_mwh": 350329.5855588297,
+          "fired_hours": 2025
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 6921288.381675428,
+          "ltsa_owner_usd": 18174973.163786232,
+          "net_pl_usd": -11253684.782110805,
+          "total_mwh": 382622.02986237867,
+          "fired_hours": 2039
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 3971772.6829436244,
+          "ltsa_owner_usd": 19140610.4021913,
+          "net_pl_usd": -15168837.719247676,
+          "total_mwh": 346642.9217618621,
+          "fired_hours": 1967
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -615001.0031367573,
+          "ltsa_owner_usd": 18676255.96149409,
+          "net_pl_usd": -19291256.964630846,
+          "total_mwh": 271582.70768448693,
+          "fired_hours": 1672
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18206233.183752492,
+          "P50": -14316840.116730362,
+          "P90": -6732114.3009960465,
+          "mean": -12847971.042650968
+        },
+        "spark_margin_usd": {
+          "P10": -555983.9517027241,
+          "P50": 3671507.6136960867,
+          "P90": 10101477.060425438,
+          "mean": 4678383.990330106
+        },
+        "ltsa_owner_usd": {
+          "P10": 15526696.587604461,
+          "P50": 17544219.45733805,
+          "P90": 19114254.280241262,
+          "mean": 17526355.03298108
+        },
+        "total_mwh": {
+          "P10": 236143.6588046182,
+          "P50": 349764.5511150421,
+          "P90": 452350.84356843284,
+          "mean": 355028.91092916235
+        },
+        "fired_hours": {
+          "P10": 1398.2358645306927,
+          "P50": 1973.6494289273126,
+          "P90": 2439.2452776039395,
+          "mean": 1968.7384369500676
+        }
+      },
+      "p50_path": {
+        "path_id": 8.0,
+        "window": "2001_2002",
+        "probability": 0.04203514695520301,
+        "spark_margin_usd": 2815573.476589695,
+        "ltsa_owner_usd": 16542522.341413025,
+        "net_pl_usd": -13726948.86482333,
+        "total_mwh": 268599.2765381355,
+        "fired_hours": 1515.0
+      },
+      "knobs": {
+        "policy": "B",
+        "gas_mult": 0.75,
+        "init_state": "aged"
+      }
+    },
+    "B|gas1.0|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -1194369.1579443975,
+          "ltsa_owner_usd": 14835478.829940196,
+          "net_pl_usd": -16029847.987884594,
+          "total_mwh": 148545.06841775862,
+          "fired_hours": 998
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 930146.7133597971,
+          "ltsa_owner_usd": 17740193.863754135,
+          "net_pl_usd": -16810047.15039434,
+          "total_mwh": 243752.03865737416,
+          "fired_hours": 1565
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 400657.6368569564,
+          "ltsa_owner_usd": 18040612.891641065,
+          "net_pl_usd": -17639955.254784107,
+          "total_mwh": 235038.96797803522,
+          "fired_hours": 1473
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": -1673736.7659507706,
+          "ltsa_owner_usd": 15936519.08347934,
+          "net_pl_usd": -17610255.84943011,
+          "total_mwh": 258678.0428170369,
+          "fired_hours": 1536
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": -996709.4171435246,
+          "ltsa_owner_usd": 16584995.0765816,
+          "net_pl_usd": -17581704.493725125,
+          "total_mwh": 268866.15191932314,
+          "fired_hours": 1647
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -4915165.318135859,
+          "ltsa_owner_usd": 16993943.647447597,
+          "net_pl_usd": -21909108.96558346,
+          "total_mwh": 196954.23054778727,
+          "fired_hours": 1275
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 1351349.7069810051,
+          "ltsa_owner_usd": 14971154.829347111,
+          "net_pl_usd": -13619805.122366106,
+          "total_mwh": 298797.583949931,
+          "fired_hours": 1750
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1519390.2302210014,
+          "ltsa_owner_usd": 14783705.859589022,
+          "net_pl_usd": -13264315.62936802,
+          "total_mwh": 142447.78621022002,
+          "fired_hours": 851
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 6730838.424820017,
+          "ltsa_owner_usd": 15067733.430044921,
+          "net_pl_usd": -8336895.005224904,
+          "total_mwh": 283694.95571406896,
+          "fired_hours": 1593
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 19180334.554128055,
+          "ltsa_owner_usd": 17018744.512737196,
+          "net_pl_usd": 2161590.0413908586,
+          "total_mwh": 357415.1682649514,
+          "fired_hours": 1866
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1413546.017251878,
+          "ltsa_owner_usd": 16273917.556913009,
+          "net_pl_usd": -17687463.574164886,
+          "total_mwh": 185228.15054741382,
+          "fired_hours": 1193
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 4545922.310709305,
+          "ltsa_owner_usd": 18420939.001162887,
+          "net_pl_usd": -13875016.690453582,
+          "total_mwh": 285430.64255189657,
+          "fired_hours": 1671
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 2258075.6240658117,
+          "ltsa_owner_usd": 19677221.19711962,
+          "net_pl_usd": -17419145.573053807,
+          "total_mwh": 220630.09903980073,
+          "fired_hours": 1310
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -3272515.400260755,
+          "ltsa_owner_usd": 15301828.788877046,
+          "net_pl_usd": -18574344.1891378,
+          "total_mwh": 141785.01684579827,
+          "fired_hours": 948
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -2140296.2828590344,
+          "ltsa_owner_usd": 14406720.425824981,
+          "net_pl_usd": -16547016.708684016,
+          "total_mwh": 179089.6163210838,
+          "fired_hours": 1124
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 3986192.8911074735,
+          "ltsa_owner_usd": 17400732.66324069,
+          "net_pl_usd": -13414539.772133216,
+          "total_mwh": 244239.10930100008,
+          "fired_hours": 1484
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 1293676.9484788757,
+          "ltsa_owner_usd": 17518348.9401196,
+          "net_pl_usd": -16224671.991640726,
+          "total_mwh": 240561.20796022416,
+          "fired_hours": 1418
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 5109201.921985522,
+          "ltsa_owner_usd": 17562234.040393934,
+          "net_pl_usd": -12453032.118408412,
+          "total_mwh": 301625.07132713275,
+          "fired_hours": 1722
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 12128579.955194397,
+          "ltsa_owner_usd": 16074578.643297,
+          "net_pl_usd": -3945998.688102603,
+          "total_mwh": 496485.16167058627,
+          "fired_hours": 2406
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": -1255635.4613926453,
+          "ltsa_owner_usd": 15367277.538953358,
+          "net_pl_usd": -16622913.000346003,
+          "total_mwh": 236718.96569981863,
+          "fired_hours": 1472
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -275288.4638676606,
+          "ltsa_owner_usd": 14584663.154703297,
+          "net_pl_usd": -14859951.618570957,
+          "total_mwh": 92266.42668370655,
+          "fired_hours": 568
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -3818402.820548861,
+          "ltsa_owner_usd": 15145416.612199852,
+          "net_pl_usd": -18963819.432748713,
+          "total_mwh": 196878.46160030382,
+          "fired_hours": 1303
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 4302025.541673221,
+          "ltsa_owner_usd": 17342249.30164371,
+          "net_pl_usd": -13040223.75997049,
+          "total_mwh": 238503.23989304894,
+          "fired_hours": 1359
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 1098248.8225683186,
+          "ltsa_owner_usd": 19082345.340881143,
+          "net_pl_usd": -17984096.518312823,
+          "total_mwh": 265281.6280123448,
+          "fired_hours": 1610
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -3129078.0011161314,
+          "ltsa_owner_usd": 17395089.056311693,
+          "net_pl_usd": -20524167.057427824,
+          "total_mwh": 192795.80749123587,
+          "fired_hours": 1250
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18874915.425692096,
+          "P50": -16584602.223843541,
+          "P90": -9368941.805050636,
+          "mean": -15109391.219175769
+        },
+        "spark_margin_usd": {
+          "P10": -3260751.1808498763,
+          "P50": 577850.5200640272,
+          "P90": 6324242.454566614,
+          "mean": 1400255.6795965668
+        },
+        "ltsa_owner_usd": {
+          "P10": 14795627.831129447,
+          "P50": 16540356.24181007,
+          "P90": 18298352.153088186,
+          "mean": 16509646.898772333
+        },
+        "total_mwh": {
+          "P10": 143730.58018559375,
+          "P50": 238459.14834307824,
+          "P90": 300622.59637726005,
+          "mean": 235269.98182584837
+        },
+        "fired_hours": {
+          "P10": 956.5651906899901,
+          "P50": 1472.529047853772,
+          "P90": 1743.3268814643698,
+          "mean": 1409.3810675988113
+        }
+      },
+      "p50_path": {
+        "path_id": 15.0,
+        "window": "2003_2004",
+        "probability": 0.035528351429538814,
+        "spark_margin_usd": -2140296.2828590344,
+        "ltsa_owner_usd": 14406720.425824981,
+        "net_pl_usd": -16547016.708684016,
+        "total_mwh": 179089.6163210838,
+        "fired_hours": 1124.0
+      },
+      "knobs": {
+        "policy": "B",
+        "gas_mult": 1.0,
+        "init_state": "aged"
+      }
+    },
+    "B|gas1.25|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -1718021.5054946612,
+          "ltsa_owner_usd": 14569694.525611918,
+          "net_pl_usd": -16287716.03110658,
+          "total_mwh": 120714.97142324141,
+          "fired_hours": 825
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": -944340.7314433863,
+          "ltsa_owner_usd": 17284608.374259718,
+          "net_pl_usd": -18228949.105703104,
+          "total_mwh": 207674.54440498384,
+          "fired_hours": 1384
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": -938806.0117671611,
+          "ltsa_owner_usd": 17227093.91770149,
+          "net_pl_usd": -18165899.92946865,
+          "total_mwh": 188292.80674820626,
+          "fired_hours": 1202
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": -5554692.91181664,
+          "ltsa_owner_usd": 15379853.33900805,
+          "net_pl_usd": -20934546.25082469,
+          "total_mwh": 173596.84876020934,
+          "fired_hours": 1145
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": -2907660.581291161,
+          "ltsa_owner_usd": 14976491.48855113,
+          "net_pl_usd": -17884152.06984229,
+          "total_mwh": 171576.7093661314,
+          "fired_hours": 1097
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -6260833.648227564,
+          "ltsa_owner_usd": 15242526.749852777,
+          "net_pl_usd": -21503360.39808034,
+          "total_mwh": 112867.44511119966,
+          "fired_hours": 754
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 322458.8642460266,
+          "ltsa_owner_usd": 14867451.940900128,
+          "net_pl_usd": -14544993.076654103,
+          "total_mwh": 207080.00158593102,
+          "fired_hours": 1267
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 864083.1253623373,
+          "ltsa_owner_usd": 14186862.861700695,
+          "net_pl_usd": -13322779.736338358,
+          "total_mwh": 101040.5840398045,
+          "fired_hours": 613
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 3495984.3486653646,
+          "ltsa_owner_usd": 14446030.662579969,
+          "net_pl_usd": -10950046.313914604,
+          "total_mwh": 243691.3414050345,
+          "fired_hours": 1424
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 14468399.904115066,
+          "ltsa_owner_usd": 16066746.439761445,
+          "net_pl_usd": -1598346.535646379,
+          "total_mwh": 319127.8456518142,
+          "fired_hours": 1731
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -2001548.5441749238,
+          "ltsa_owner_usd": 15566854.991660021,
+          "net_pl_usd": -17568403.535834946,
+          "total_mwh": 148464.64246375865,
+          "fired_hours": 976
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 2575553.9662401034,
+          "ltsa_owner_usd": 18002601.219976015,
+          "net_pl_usd": -15427047.253735911,
+          "total_mwh": 237944.65463010347,
+          "fired_hours": 1409
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 1032486.1904751242,
+          "ltsa_owner_usd": 18918285.56400377,
+          "net_pl_usd": -17885799.373528644,
+          "total_mwh": 183504.45132421723,
+          "fired_hours": 1126
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -3843539.70623154,
+          "ltsa_owner_usd": 13525784.771661807,
+          "net_pl_usd": -17369324.477893345,
+          "total_mwh": 87512.8153526145,
+          "fired_hours": 607
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -3097357.61657736,
+          "ltsa_owner_usd": 14463933.750369294,
+          "net_pl_usd": -17561291.366946653,
+          "total_mwh": 101279.84250426345,
+          "fired_hours": 683
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 1864930.510582881,
+          "ltsa_owner_usd": 15862033.011459617,
+          "net_pl_usd": -13997102.500876736,
+          "total_mwh": 166402.29990096556,
+          "fired_hours": 1057
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": -573157.1828526289,
+          "ltsa_owner_usd": 16859844.86167175,
+          "net_pl_usd": -17433002.04452438,
+          "total_mwh": 162371.65530751794,
+          "fired_hours": 1000
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 2795563.4454494053,
+          "ltsa_owner_usd": 16666488.552063761,
+          "net_pl_usd": -13870925.106614355,
+          "total_mwh": 247288.3869296783,
+          "fired_hours": 1468
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 7287033.295349026,
+          "ltsa_owner_usd": 15327953.937303372,
+          "net_pl_usd": -8040920.641954346,
+          "total_mwh": 409156.81001262076,
+          "fired_hours": 2101
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": -3705066.041272889,
+          "ltsa_owner_usd": 14613762.84957364,
+          "net_pl_usd": -18318828.890846528,
+          "total_mwh": 168293.6143665931,
+          "fired_hours": 1142
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -204553.60906276107,
+          "ltsa_owner_usd": 13720921.771570988,
+          "net_pl_usd": -13925475.380633749,
+          "total_mwh": 46703.416109953796,
+          "fired_hours": 282
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -5883866.480855764,
+          "ltsa_owner_usd": 14528375.102464475,
+          "net_pl_usd": -20412241.583320238,
+          "total_mwh": 141225.46077218105,
+          "fired_hours": 968
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 2451032.6625216077,
+          "ltsa_owner_usd": 17289024.162311368,
+          "net_pl_usd": -14837991.49978976,
+          "total_mwh": 194131.81399506624,
+          "fired_hours": 1141
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": -617162.4518026959,
+          "ltsa_owner_usd": 18382292.352171835,
+          "net_pl_usd": -18999454.80397453,
+          "total_mwh": 204083.72161658623,
+          "fired_hours": 1270
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -4571357.738638671,
+          "ltsa_owner_usd": 16541230.06921901,
+          "net_pl_usd": -21112587.80785768,
+          "total_mwh": 147592.1718287269,
+          "fired_hours": 973
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -20948860.6929213,
+          "P50": -17485958.101370163,
+          "P90": -11483564.37553764,
+          "mean": -16171371.70727611
+        },
+        "spark_margin_usd": {
+          "P10": -5593244.492452946,
+          "P50": -939889.7727349261,
+          "P90": 3320366.498283315,
+          "mean": -417990.61904514837
+        },
+        "ltsa_owner_usd": {
+          "P10": 14261274.162034182,
+          "P50": 15358633.41422703,
+          "P90": 17677984.516094048,
+          "mean": 15753381.088230966
+        },
+        "total_mwh": {
+          "P10": 101114.52977273538,
+          "P50": 172167.40772722446,
+          "P90": 246000.2912138778,
+          "mean": 177616.04308934615
+        },
+        "fired_hours": {
+          "P10": 634.6343497684245,
+          "P50": 1126.8250705803262,
+          "P90": 1452.24367689902,
+          "mean": 1101.8952323040658
+        }
+      },
+      "p50_path": {
+        "path_id": 17.0,
+        "window": "2010_2011",
+        "probability": 0.033552625264657236,
+        "spark_margin_usd": -573157.1828526289,
+        "ltsa_owner_usd": 16859844.86167175,
+        "net_pl_usd": -17433002.04452438,
+        "total_mwh": 162371.65530751794,
+        "fired_hours": 1000.0
+      },
+      "knobs": {
+        "policy": "B",
+        "gas_mult": 1.25,
+        "init_state": "aged"
+      }
+    },
+    "C|gas0.75|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -365124.94284904725,
+          "ltsa_owner_usd": 14977096.421193311,
+          "net_pl_usd": -15342221.364042358,
+          "total_mwh": 188926.38283186208,
+          "fired_hours": 1226
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 3569525.2276496603,
+          "ltsa_owner_usd": 18480220.187394276,
+          "net_pl_usd": -14910694.959744615,
+          "total_mwh": 339367.13062553003,
+          "fired_hours": 1974
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 2579216.9020512393,
+          "ltsa_owner_usd": 19089508.629309043,
+          "net_pl_usd": -16510291.727257803,
+          "total_mwh": 295758.84546912316,
+          "fired_hours": 1761
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 5014157.551438484,
+          "ltsa_owner_usd": 17332573.86450128,
+          "net_pl_usd": -12318416.313062795,
+          "total_mwh": 494798.93671695516,
+          "fired_hours": 2630
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 3971646.524812397,
+          "ltsa_owner_usd": 17157952.35459233,
+          "net_pl_usd": -13186305.829779934,
+          "total_mwh": 447580.85739316203,
+          "fired_hours": 2392
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": 510967.715686582,
+          "ltsa_owner_usd": 19069949.816297647,
+          "net_pl_usd": -18558982.100611065,
+          "total_mwh": 361486.6510383493,
+          "fired_hours": 2128
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 3737568.5860263444,
+          "ltsa_owner_usd": 14894497.734901961,
+          "net_pl_usd": -11156929.148875616,
+          "total_mwh": 390505.520867931,
+          "fired_hours": 2070
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 2815573.476589695,
+          "ltsa_owner_usd": 16542522.341413025,
+          "net_pl_usd": -13726948.86482333,
+          "total_mwh": 268599.2765381355,
+          "fired_hours": 1515
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 10402769.636778358,
+          "ltsa_owner_usd": 16330509.020547496,
+          "net_pl_usd": -5927739.383769138,
+          "total_mwh": 365110.4710746207,
+          "fired_hours": 1967
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 24317495.777724497,
+          "ltsa_owner_usd": 17631294.905999284,
+          "net_pl_usd": 6686200.871725213,
+          "total_mwh": 448972.17142435693,
+          "fired_hours": 2260
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -758700.1154137789,
+          "ltsa_owner_usd": 16432571.676698953,
+          "net_pl_usd": -17191271.79211273,
+          "total_mwh": 265295.1761306207,
+          "fired_hours": 1646
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 7397575.131839158,
+          "ltsa_owner_usd": 18885082.404975932,
+          "net_pl_usd": -11487507.273136774,
+          "total_mwh": 348210.26000679313,
+          "fired_hours": 1948
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 3645519.300237204,
+          "ltsa_owner_usd": 19912531.91018474,
+          "net_pl_usd": -16267012.609947536,
+          "total_mwh": 300013.8220056917,
+          "fired_hours": 1721
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -985086.7194869749,
+          "ltsa_owner_usd": 17351123.069158092,
+          "net_pl_usd": -18336209.788645066,
+          "total_mwh": 294963.7457303252,
+          "fired_hours": 1779
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": 664394.9756678112,
+          "ltsa_owner_usd": 16549026.784758598,
+          "net_pl_usd": -15884631.809090786,
+          "total_mwh": 329496.19459423557,
+          "fired_hours": 1873
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 9184263.289273195,
+          "ltsa_owner_usd": 18227928.260498896,
+          "net_pl_usd": -9043664.971225701,
+          "total_mwh": 410557.00330055173,
+          "fired_hours": 2239
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 4865722.385005865,
+          "ltsa_owner_usd": 17802470.940276194,
+          "net_pl_usd": -12936748.55527033,
+          "total_mwh": 434688.12434414413,
+          "fired_hours": 2346
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 8220775.915066108,
+          "ltsa_owner_usd": 18338378.2363486,
+          "net_pl_usd": -10117602.321282491,
+          "total_mwh": 379670.9275150797,
+          "fired_hours": 1987
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 18039659.523993675,
+          "ltsa_owner_usd": 16468868.704789374,
+          "net_pl_usd": 1570790.8192043006,
+          "total_mwh": 662858.0261073794,
+          "fired_hours": 3074
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 5023748.226742577,
+          "ltsa_owner_usd": 18510400.628047526,
+          "net_pl_usd": -13486652.40130495,
+          "total_mwh": 446534.506969749,
+          "fired_hours": 2376
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": 1018891.7106449513,
+          "ltsa_owner_usd": 16403743.702748306,
+          "net_pl_usd": -15384851.992103355,
+          "total_mwh": 169113.25082607105,
+          "fired_hours": 972
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": 764846.2885128453,
+          "ltsa_owner_usd": 17073997.651544422,
+          "net_pl_usd": -16309151.363031577,
+          "total_mwh": 350100.4508406507,
+          "fired_hours": 2024
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 6921288.381675428,
+          "ltsa_owner_usd": 18174973.163786232,
+          "net_pl_usd": -11253684.782110805,
+          "total_mwh": 382622.02986237867,
+          "fired_hours": 2039
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 3968437.845578623,
+          "ltsa_owner_usd": 19140431.432299554,
+          "net_pl_usd": -15171993.586720932,
+          "total_mwh": 346414.3096035173,
+          "fired_hours": 1966
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -623650.8300419399,
+          "ltsa_owner_usd": 18629131.19356501,
+          "net_pl_usd": -19252782.023606952,
+          "total_mwh": 270893.1246774049,
+          "fired_hours": 1669
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18206233.183752492,
+          "P50": -14300208.387214746,
+          "P90": -6699622.707674701,
+          "mean": -12838658.264962342
+        },
+        "spark_margin_usd": {
+          "P10": -564832.6607903724,
+          "P50": 3648639.5789874247,
+          "P90": 10100918.805199273,
+          "mean": 4665353.596208809
+        },
+        "ltsa_owner_usd": {
+          "P10": 15498570.683986444,
+          "P50": 17482065.13644945,
+          "P90": 19087456.604301345,
+          "mean": 17504011.86117115
+        },
+        "total_mwh": {
+          "P10": 235879.8097124084,
+          "P50": 349002.5336620028,
+          "P90": 451130.80990214023,
+          "mean": 354246.88163462514
+        },
+        "fired_hours": {
+          "P10": 1397.0110659068887,
+          "P50": 1971.9398614889863,
+          "P90": 2428.9349002905733,
+          "mean": 1965.3174087984153
+        }
+      },
+      "p50_path": {
+        "path_id": 8.0,
+        "window": "2001_2002",
+        "probability": 0.04203514695520301,
+        "spark_margin_usd": 2815573.476589695,
+        "ltsa_owner_usd": 16542522.341413025,
+        "net_pl_usd": -13726948.86482333,
+        "total_mwh": 268599.2765381355,
+        "fired_hours": 1515.0
+      },
+      "knobs": {
+        "policy": "C",
+        "gas_mult": 0.75,
+        "init_state": "aged"
+      }
+    },
+    "C|gas1.0|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -1194369.1579443975,
+          "ltsa_owner_usd": 14835478.829940196,
+          "net_pl_usd": -16029847.987884594,
+          "total_mwh": 148545.06841775862,
+          "fired_hours": 998
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 930146.7133597971,
+          "ltsa_owner_usd": 17740193.863754135,
+          "net_pl_usd": -16810047.15039434,
+          "total_mwh": 243752.03865737416,
+          "fired_hours": 1565
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 400657.6368569564,
+          "ltsa_owner_usd": 18040612.891641065,
+          "net_pl_usd": -17639955.254784107,
+          "total_mwh": 235038.96797803522,
+          "fired_hours": 1473
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": -1673736.7659507706,
+          "ltsa_owner_usd": 15936519.08347934,
+          "net_pl_usd": -17610255.84943011,
+          "total_mwh": 258678.0428170369,
+          "fired_hours": 1536
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": -996709.4171435246,
+          "ltsa_owner_usd": 16584995.0765816,
+          "net_pl_usd": -17581704.493725125,
+          "total_mwh": 268866.15191932314,
+          "fired_hours": 1647
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -4915165.318135859,
+          "ltsa_owner_usd": 16993943.647447597,
+          "net_pl_usd": -21909108.96558346,
+          "total_mwh": 196954.23054778727,
+          "fired_hours": 1275
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 1346349.0321477544,
+          "ltsa_owner_usd": 14970793.670252802,
+          "net_pl_usd": -13624444.638105048,
+          "total_mwh": 298337.46894993103,
+          "fired_hours": 1748
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1519390.2302210014,
+          "ltsa_owner_usd": 14783705.859589022,
+          "net_pl_usd": -13264315.62936802,
+          "total_mwh": 142447.78621022002,
+          "fired_hours": 851
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 6730838.424820017,
+          "ltsa_owner_usd": 15067733.430044921,
+          "net_pl_usd": -8336895.005224904,
+          "total_mwh": 283694.95571406896,
+          "fired_hours": 1593
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 19175355.85693042,
+          "ltsa_owner_usd": 16973105.314456448,
+          "net_pl_usd": 2202250.542473972,
+          "total_mwh": 356955.0532649514,
+          "fired_hours": 1864
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1413546.017251878,
+          "ltsa_owner_usd": 16273917.556913009,
+          "net_pl_usd": -17687463.574164886,
+          "total_mwh": 185228.15054741382,
+          "fired_hours": 1193
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 4538617.186653852,
+          "ltsa_owner_usd": 18374685.083602216,
+          "net_pl_usd": -13836067.896948364,
+          "total_mwh": 284975.01843489654,
+          "fired_hours": 1669
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 2258075.6240658117,
+          "ltsa_owner_usd": 19677221.19711962,
+          "net_pl_usd": -17419145.573053807,
+          "total_mwh": 220630.09903980073,
+          "fired_hours": 1310
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -3272515.400260755,
+          "ltsa_owner_usd": 15301828.788877046,
+          "net_pl_usd": -18574344.1891378,
+          "total_mwh": 141785.01684579827,
+          "fired_hours": 948
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -2140296.2828590344,
+          "ltsa_owner_usd": 14406720.425824981,
+          "net_pl_usd": -16547016.708684016,
+          "total_mwh": 179089.6163210838,
+          "fired_hours": 1124
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 3976121.209927616,
+          "ltsa_owner_usd": 17309586.089783892,
+          "net_pl_usd": -13333464.879856275,
+          "total_mwh": 243550.055220138,
+          "fired_hours": 1481
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 1300659.1458541006,
+          "ltsa_owner_usd": 17385370.99816395,
+          "net_pl_usd": -16084711.85230985,
+          "total_mwh": 240332.434577459,
+          "fired_hours": 1417
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 5105444.818639236,
+          "ltsa_owner_usd": 17562053.01779169,
+          "net_pl_usd": -12456608.199152453,
+          "total_mwh": 301395.1279058848,
+          "fired_hours": 1721
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 12120485.265693177,
+          "ltsa_owner_usd": 16027758.599243993,
+          "net_pl_usd": -3907273.3335508164,
+          "total_mwh": 495569.5429987242,
+          "fired_hours": 2402
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": -1255635.4613926453,
+          "ltsa_owner_usd": 15367277.538953358,
+          "net_pl_usd": -16622913.000346003,
+          "total_mwh": 236718.96569981863,
+          "fired_hours": 1472
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -275288.4638676606,
+          "ltsa_owner_usd": 14584663.154703297,
+          "net_pl_usd": -14859951.618570957,
+          "total_mwh": 92266.42668370655,
+          "fired_hours": 568
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -3818402.820548861,
+          "ltsa_owner_usd": 15145416.612199852,
+          "net_pl_usd": -18963819.432748713,
+          "total_mwh": 196878.46160030382,
+          "fired_hours": 1303
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 4302025.541673221,
+          "ltsa_owner_usd": 17342249.30164371,
+          "net_pl_usd": -13040223.75997049,
+          "total_mwh": 238503.23989304894,
+          "fired_hours": 1359
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 1096349.6856859142,
+          "ltsa_owner_usd": 19081272.4320164,
+          "net_pl_usd": -17984922.746330485,
+          "total_mwh": 265052.22435737937,
+          "fired_hours": 1609
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -3129078.0011161314,
+          "ltsa_owner_usd": 17395089.056311693,
+          "net_pl_usd": -20524167.057427824,
+          "total_mwh": 192795.80749123587,
+          "fired_hours": 1250
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18874915.425692096,
+          "P50": -16584602.223843541,
+          "P90": -9369838.442501314,
+          "mean": -15098011.098319136
+        },
+        "spark_margin_usd": {
+          "P10": -3260751.1808498763,
+          "P50": 577850.5200640272,
+          "P90": 6323300.428978415,
+          "mean": 1399033.568112179
+        },
+        "ltsa_owner_usd": {
+          "P10": 14795627.831129447,
+          "P50": 16540356.24181007,
+          "P90": 18267006.81483068,
+          "mean": 16497044.666431313
+        },
+        "total_mwh": {
+          "P10": 143730.58018559375,
+          "P50": 238459.14834307824,
+          "P90": 300311.0464937757,
+          "mean": 235141.43727555874
+        },
+        "fired_hours": {
+          "P10": 956.5651906899901,
+          "P50": 1472.529047853772,
+          "P90": 1741.5652071263564,
+          "mean": 1408.8205064197107
+        }
+      },
+      "p50_path": {
+        "path_id": 15.0,
+        "window": "2003_2004",
+        "probability": 0.035528351429538814,
+        "spark_margin_usd": -2140296.2828590344,
+        "ltsa_owner_usd": 14406720.425824981,
+        "net_pl_usd": -16547016.708684016,
+        "total_mwh": 179089.6163210838,
+        "fired_hours": 1124.0
+      },
+      "knobs": {
+        "policy": "C",
+        "gas_mult": 1.0,
+        "init_state": "aged"
+      }
+    },
+    "C|gas1.25|aged": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -1718021.5054946612,
+          "ltsa_owner_usd": 14569694.525611918,
+          "net_pl_usd": -16287716.03110658,
+          "total_mwh": 120714.97142324141,
+          "fired_hours": 825
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": -944340.7314433863,
+          "ltsa_owner_usd": 17284608.374259718,
+          "net_pl_usd": -18228949.105703104,
+          "total_mwh": 207674.54440498384,
+          "fired_hours": 1384
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": -938806.0117671611,
+          "ltsa_owner_usd": 17227093.91770149,
+          "net_pl_usd": -18165899.92946865,
+          "total_mwh": 188292.80674820626,
+          "fired_hours": 1202
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": -5554692.91181664,
+          "ltsa_owner_usd": 15379853.33900805,
+          "net_pl_usd": -20934546.25082469,
+          "total_mwh": 173596.84876020934,
+          "fired_hours": 1145
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": -2907660.581291161,
+          "ltsa_owner_usd": 14976491.48855113,
+          "net_pl_usd": -17884152.06984229,
+          "total_mwh": 171576.7093661314,
+          "fired_hours": 1097
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -6260833.648227564,
+          "ltsa_owner_usd": 15242526.749852777,
+          "net_pl_usd": -21503360.39808034,
+          "total_mwh": 112867.44511119966,
+          "fired_hours": 754
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 322458.8642460266,
+          "ltsa_owner_usd": 14867451.940900128,
+          "net_pl_usd": -14544993.076654103,
+          "total_mwh": 207080.00158593102,
+          "fired_hours": 1267
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 864083.1253623373,
+          "ltsa_owner_usd": 14186862.861700695,
+          "net_pl_usd": -13322779.736338358,
+          "total_mwh": 101040.5840398045,
+          "fired_hours": 613
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 3495984.3486653646,
+          "ltsa_owner_usd": 14446030.662579969,
+          "net_pl_usd": -10950046.313914604,
+          "total_mwh": 243691.3414050345,
+          "fired_hours": 1424
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 14468399.904115066,
+          "ltsa_owner_usd": 16066746.439761445,
+          "net_pl_usd": -1598346.535646379,
+          "total_mwh": 319127.8456518142,
+          "fired_hours": 1731
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -2001548.5441749238,
+          "ltsa_owner_usd": 15566854.991660021,
+          "net_pl_usd": -17568403.535834946,
+          "total_mwh": 148464.64246375865,
+          "fired_hours": 976
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 2575553.9662401034,
+          "ltsa_owner_usd": 18002601.219976015,
+          "net_pl_usd": -15427047.253735911,
+          "total_mwh": 237944.65463010347,
+          "fired_hours": 1409
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 1030064.4276490994,
+          "ltsa_owner_usd": 18917199.01883789,
+          "net_pl_usd": -17887134.591188792,
+          "total_mwh": 183274.47349007276,
+          "fired_hours": 1125
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -3843539.70623154,
+          "ltsa_owner_usd": 13525784.771661807,
+          "net_pl_usd": -17369324.477893345,
+          "total_mwh": 87512.8153526145,
+          "fired_hours": 607
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -3097357.61657736,
+          "ltsa_owner_usd": 14463933.750369294,
+          "net_pl_usd": -17561291.366946653,
+          "total_mwh": 101279.84250426345,
+          "fired_hours": 683
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 1864930.510582881,
+          "ltsa_owner_usd": 15862033.011459617,
+          "net_pl_usd": -13997102.500876736,
+          "total_mwh": 166402.29990096556,
+          "fired_hours": 1057
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": -573157.1828526289,
+          "ltsa_owner_usd": 16859844.86167175,
+          "net_pl_usd": -17433002.04452438,
+          "total_mwh": 162371.65530751794,
+          "fired_hours": 1000
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 2793357.554548574,
+          "ltsa_owner_usd": 16665403.030489516,
+          "net_pl_usd": -13872045.47594094,
+          "total_mwh": 247060.1813597062,
+          "fired_hours": 1467
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 7283344.1276579145,
+          "ltsa_owner_usd": 15282540.358812012,
+          "net_pl_usd": -7999196.231154097,
+          "total_mwh": 408926.75251262076,
+          "fired_hours": 2100
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": -3705066.041272889,
+          "ltsa_owner_usd": 14613762.84957364,
+          "net_pl_usd": -18318828.890846528,
+          "total_mwh": 168293.6143665931,
+          "fired_hours": 1142
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -204553.60906276107,
+          "ltsa_owner_usd": 13720921.771570988,
+          "net_pl_usd": -13925475.380633749,
+          "total_mwh": 46703.416109953796,
+          "fired_hours": 282
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -5883866.480855764,
+          "ltsa_owner_usd": 14528375.102464475,
+          "net_pl_usd": -20412241.583320238,
+          "total_mwh": 141225.46077218105,
+          "fired_hours": 968
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 2451032.6625216077,
+          "ltsa_owner_usd": 17289024.162311368,
+          "net_pl_usd": -14837991.49978976,
+          "total_mwh": 194131.81399506624,
+          "fired_hours": 1141
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": -620278.6534935886,
+          "ltsa_owner_usd": 18381216.608146682,
+          "net_pl_usd": -19001495.26164027,
+          "total_mwh": 203854.9029808621,
+          "fired_hours": 1269
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -4571357.738638671,
+          "ltsa_owner_usd": 16541230.06921901,
+          "net_pl_usd": -21112587.80785768,
+          "total_mwh": 147592.1718287269,
+          "fired_hours": 973
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -20948860.6929213,
+          "P50": -17485958.101370163,
+          "P90": -11483564.37553764,
+          "mean": -16170211.970996939
+        },
+        "spark_margin_usd": {
+          "P10": -5593244.492452946,
+          "P50": -939889.7727349261,
+          "P90": 3319813.411109014,
+          "mean": -418359.9138128577
+        },
+        "ltsa_owner_usd": {
+          "P10": 14261274.162034182,
+          "P50": 15340065.325039659,
+          "P90": 17677984.516094048,
+          "mean": 15751852.057184082
+        },
+        "total_mwh": {
+          "P10": 101114.52977273538,
+          "P50": 172167.40772722446,
+          "P90": 245853.8056596767,
+          "mean": 177586.05164041312
+        },
+        "fired_hours": {
+          "P10": 634.6343497684245,
+          "P50": 1125.8800752856812,
+          "P90": 1451.6017751513152,
+          "mean": 1101.7644297612155
+        }
+      },
+      "p50_path": {
+        "path_id": 17.0,
+        "window": "2010_2011",
+        "probability": 0.033552625264657236,
+        "spark_margin_usd": -573157.1828526289,
+        "ltsa_owner_usd": 16859844.86167175,
+        "net_pl_usd": -17433002.04452438,
+        "total_mwh": 162371.65530751794,
+        "fired_hours": 1000.0
+      },
+      "knobs": {
+        "policy": "C",
+        "gas_mult": 1.25,
+        "init_state": "aged"
+      }
+    },
+    "A|gas1.0|fresh": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -697820.5860915175,
+          "ltsa_owner_usd": 15099243.355337737,
+          "net_pl_usd": -15797063.941429254,
+          "total_mwh": 180713.03491734486,
+          "fired_hours": 1187
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 2536195.0394062917,
+          "ltsa_owner_usd": 18677405.877755303,
+          "net_pl_usd": -16141210.83834901,
+          "total_mwh": 304389.4671375215,
+          "fired_hours": 1855
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 1830403.0943275061,
+          "ltsa_owner_usd": 19129124.779397544,
+          "net_pl_usd": -17298721.685070038,
+          "total_mwh": 295323.4304630314,
+          "fired_hours": 1784
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 1141023.4864164512,
+          "ltsa_owner_usd": 17467603.398152635,
+          "net_pl_usd": -16326579.911736183,
+          "total_mwh": 381677.02439027274,
+          "fired_hours": 2120
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 1223807.6520555294,
+          "ltsa_owner_usd": 17747202.997345682,
+          "net_pl_usd": -16523395.345290152,
+          "total_mwh": 359741.7578909176,
+          "fired_hours": 2063
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -2930468.7074806476,
+          "ltsa_owner_usd": 18513809.209642563,
+          "net_pl_usd": -21444277.91712321,
+          "total_mwh": 265585.5190911476,
+          "fired_hours": 1656
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 2935928.6281489674,
+          "ltsa_owner_usd": 14965230.633477341,
+          "net_pl_usd": -12029302.005328374,
+          "total_mwh": 359910.8427968965,
+          "fired_hours": 1960
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1961828.8235432762,
+          "ltsa_owner_usd": 16356691.901169635,
+          "net_pl_usd": -14394863.077626359,
+          "total_mwh": 219476.4711677883,
+          "fired_hours": 1278
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 8740445.305390785,
+          "ltsa_owner_usd": 16027359.894222384,
+          "net_pl_usd": -7286914.5888316,
+          "total_mwh": 320753.49929506896,
+          "fired_hours": 1759
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 21802687.43309373,
+          "ltsa_owner_usd": 17843662.777273957,
+          "net_pl_usd": 3959024.6558197737,
+          "total_mwh": 403685.013596869,
+          "fired_hours": 2073
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1005943.2503891836,
+          "ltsa_owner_usd": 16410397.437964452,
+          "net_pl_usd": -17416340.688353635,
+          "total_mwh": 236583.58029841384,
+          "fired_hours": 1491
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 6275096.965692438,
+          "ltsa_owner_usd": 19076447.462911278,
+          "net_pl_usd": -12801350.49721884,
+          "total_mwh": 317443.63374603447,
+          "fired_hours": 1799
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 3304411.0339296656,
+          "ltsa_owner_usd": 20125473.280290805,
+          "net_pl_usd": -16821062.24636114,
+          "total_mwh": 280402.4737785631,
+          "fired_hours": 1616
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -2758748.696600227,
+          "ltsa_owner_usd": 16220900.681760157,
+          "net_pl_usd": -18979649.378360383,
+          "total_mwh": 216578.0748706131,
+          "fired_hours": 1385
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -912906.7563954787,
+          "ltsa_owner_usd": 16479744.968524422,
+          "net_pl_usd": -17392651.7249199,
+          "total_mwh": 257267.02423642937,
+          "fired_hours": 1526
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 6584935.440995324,
+          "ltsa_owner_usd": 18567930.792692386,
+          "net_pl_usd": -11982995.351697061,
+          "total_mwh": 320149.1936940345,
+          "fired_hours": 1816
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 3053145.5794094913,
+          "ltsa_owner_usd": 17952299.54790632,
+          "net_pl_usd": -14899153.96849683,
+          "total_mwh": 333093.7058199231,
+          "fired_hours": 1871
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 7223399.732240821,
+          "ltsa_owner_usd": 18048484.621850327,
+          "net_pl_usd": -10825084.889609504,
+          "total_mwh": 342182.0584334517,
+          "fired_hours": 1861
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 15470910.706913719,
+          "ltsa_owner_usd": 16653988.323834557,
+          "net_pl_usd": -1183077.6169208381,
+          "total_mwh": 610251.3502613103,
+          "fired_hours": 2881
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 1484521.6869706428,
+          "ltsa_owner_usd": 18197561.218215574,
+          "net_pl_usd": -16713039.53124493,
+          "total_mwh": 335774.50962369074,
+          "fired_hours": 1917
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -5222.403182440903,
+          "ltsa_owner_usd": 16131521.974356439,
+          "net_pl_usd": -16136744.37753888,
+          "total_mwh": 130855.59599457898,
+          "fired_hours": 781
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -1371543.4978929688,
+          "ltsa_owner_usd": 16940638.865228053,
+          "net_pl_usd": -18312182.36312102,
+          "total_mwh": 268962.44667933794,
+          "fired_hours": 1694
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 6385602.252307402,
+          "ltsa_owner_usd": 18462780.456083857,
+          "net_pl_usd": -12077178.203776455,
+          "total_mwh": 315846.2931122786,
+          "fired_hours": 1718
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 3201313.1734822476,
+          "ltsa_owner_usd": 19609622.383185096,
+          "net_pl_usd": -16408309.20970285,
+          "total_mwh": 326480.4676023448,
+          "fired_hours": 1896
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -2093872.8183013322,
+          "ltsa_owner_usd": 18149123.65129896,
+          "net_pl_usd": -20242996.46960029,
+          "total_mwh": 236577.18034853792,
+          "fired_hours": 1497
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18894949.825781785,
+          "P50": -16151888.175473206,
+          "P90": -8174046.682770058,
+          "mean": -14435490.909118962
+        },
+        "spark_margin_usd": {
+          "P10": -2092116.608242356,
+          "P50": 1883169.0555763193,
+          "P90": 8360073.615646888,
+          "mean": 3061427.3796040462
+        },
+        "ltsa_owner_usd": {
+          "P10": 15456849.667065537,
+          "P50": 17800079.172818843,
+          "P90": 19122915.917254444,
+          "mean": 17496918.288723014
+        },
+        "total_mwh": {
+          "P10": 202986.05954279465,
+          "P50": 307821.09370435873,
+          "P90": 379657.2985180407,
+          "mean": 301289.25927496195
+        },
+        "fired_hours": {
+          "P10": 1240.8477750779477,
+          "P50": 1784.6840491881985,
+          "P90": 2075.2139028973147,
+          "mean": 1731.247551954787
+        }
+      },
+      "p50_path": {
+        "path_id": 2.0,
+        "window": "2011_2012",
+        "probability": 0.06175994191644057,
+        "spark_margin_usd": 2536195.0394062917,
+        "ltsa_owner_usd": 18677405.877755303,
+        "net_pl_usd": -16141210.83834901,
+        "total_mwh": 304389.4671375215,
+        "fired_hours": 1855.0
+      },
+      "knobs": {
+        "policy": "A",
+        "gas_mult": 1.0,
+        "init_state": "fresh"
+      }
+    },
+    "B|gas1.0|fresh": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -697820.5860915175,
+          "ltsa_owner_usd": 15099243.355337737,
+          "net_pl_usd": -15797063.941429254,
+          "total_mwh": 180713.03491734486,
+          "fired_hours": 1187
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 2536195.0394062917,
+          "ltsa_owner_usd": 18677405.877755303,
+          "net_pl_usd": -16141210.83834901,
+          "total_mwh": 304389.4671375215,
+          "fired_hours": 1855
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 1830403.0943275061,
+          "ltsa_owner_usd": 19129124.779397544,
+          "net_pl_usd": -17298721.685070038,
+          "total_mwh": 295323.4304630314,
+          "fired_hours": 1784
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 1141023.4864164512,
+          "ltsa_owner_usd": 17467603.398152635,
+          "net_pl_usd": -16326579.911736183,
+          "total_mwh": 381677.02439027274,
+          "fired_hours": 2120
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 1223807.6520555294,
+          "ltsa_owner_usd": 17747202.997345682,
+          "net_pl_usd": -16523395.345290152,
+          "total_mwh": 359741.7578909176,
+          "fired_hours": 2063
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -2930468.7074806476,
+          "ltsa_owner_usd": 18513809.209642563,
+          "net_pl_usd": -21444277.91712321,
+          "total_mwh": 265585.5190911476,
+          "fired_hours": 1656
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 2935928.6281489674,
+          "ltsa_owner_usd": 14965230.633477341,
+          "net_pl_usd": -12029302.005328374,
+          "total_mwh": 359910.8427968965,
+          "fired_hours": 1960
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1961828.8235432762,
+          "ltsa_owner_usd": 16356691.901169635,
+          "net_pl_usd": -14394863.077626359,
+          "total_mwh": 219476.4711677883,
+          "fired_hours": 1278
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 8740445.305390785,
+          "ltsa_owner_usd": 16027359.894222384,
+          "net_pl_usd": -7286914.5888316,
+          "total_mwh": 320753.49929506896,
+          "fired_hours": 1759
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 21802687.43309373,
+          "ltsa_owner_usd": 17843662.777273957,
+          "net_pl_usd": 3959024.6558197737,
+          "total_mwh": 403685.013596869,
+          "fired_hours": 2073
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1005943.2503891836,
+          "ltsa_owner_usd": 16410397.437964452,
+          "net_pl_usd": -17416340.688353635,
+          "total_mwh": 236583.58029841384,
+          "fired_hours": 1491
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 6275096.965692438,
+          "ltsa_owner_usd": 19076447.462911278,
+          "net_pl_usd": -12801350.49721884,
+          "total_mwh": 317443.63374603447,
+          "fired_hours": 1799
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 3304411.0339296656,
+          "ltsa_owner_usd": 20125473.280290805,
+          "net_pl_usd": -16821062.24636114,
+          "total_mwh": 280402.4737785631,
+          "fired_hours": 1616
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -2758748.696600227,
+          "ltsa_owner_usd": 16220900.681760157,
+          "net_pl_usd": -18979649.378360383,
+          "total_mwh": 216578.0748706131,
+          "fired_hours": 1385
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -912906.7563954787,
+          "ltsa_owner_usd": 16479744.968524422,
+          "net_pl_usd": -17392651.7249199,
+          "total_mwh": 257267.02423642937,
+          "fired_hours": 1526
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 6584935.440995324,
+          "ltsa_owner_usd": 18567930.792692386,
+          "net_pl_usd": -11982995.351697061,
+          "total_mwh": 320149.1936940345,
+          "fired_hours": 1816
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 3053145.5794094913,
+          "ltsa_owner_usd": 17952299.54790632,
+          "net_pl_usd": -14899153.96849683,
+          "total_mwh": 333093.7058199231,
+          "fired_hours": 1871
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 7223399.732240821,
+          "ltsa_owner_usd": 18048484.621850327,
+          "net_pl_usd": -10825084.889609504,
+          "total_mwh": 342182.0584334517,
+          "fired_hours": 1861
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 15470910.706913719,
+          "ltsa_owner_usd": 16653988.323834557,
+          "net_pl_usd": -1183077.6169208381,
+          "total_mwh": 610251.3502613103,
+          "fired_hours": 2881
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 1484521.6869706428,
+          "ltsa_owner_usd": 18197561.218215574,
+          "net_pl_usd": -16713039.53124493,
+          "total_mwh": 335774.50962369074,
+          "fired_hours": 1917
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -5222.403182440903,
+          "ltsa_owner_usd": 16131521.974356439,
+          "net_pl_usd": -16136744.37753888,
+          "total_mwh": 130855.59599457898,
+          "fired_hours": 781
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -1371543.4978929688,
+          "ltsa_owner_usd": 16940638.865228053,
+          "net_pl_usd": -18312182.36312102,
+          "total_mwh": 268962.44667933794,
+          "fired_hours": 1694
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 6385602.252307402,
+          "ltsa_owner_usd": 18462780.456083857,
+          "net_pl_usd": -12077178.203776455,
+          "total_mwh": 315846.2931122786,
+          "fired_hours": 1718
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 3201313.1734822476,
+          "ltsa_owner_usd": 19609622.383185096,
+          "net_pl_usd": -16408309.20970285,
+          "total_mwh": 326480.4676023448,
+          "fired_hours": 1896
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -2093872.8183013322,
+          "ltsa_owner_usd": 18149123.65129896,
+          "net_pl_usd": -20242996.46960029,
+          "total_mwh": 236577.18034853792,
+          "fired_hours": 1497
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18894949.825781785,
+          "P50": -16151888.175473206,
+          "P90": -8174046.682770058,
+          "mean": -14435490.909118962
+        },
+        "spark_margin_usd": {
+          "P10": -2092116.608242356,
+          "P50": 1883169.0555763193,
+          "P90": 8360073.615646888,
+          "mean": 3061427.3796040462
+        },
+        "ltsa_owner_usd": {
+          "P10": 15456849.667065537,
+          "P50": 17800079.172818843,
+          "P90": 19122915.917254444,
+          "mean": 17496918.288723014
+        },
+        "total_mwh": {
+          "P10": 202986.05954279465,
+          "P50": 307821.09370435873,
+          "P90": 379657.2985180407,
+          "mean": 301289.25927496195
+        },
+        "fired_hours": {
+          "P10": 1240.8477750779477,
+          "P50": 1784.6840491881985,
+          "P90": 2075.2139028973147,
+          "mean": 1731.247551954787
+        }
+      },
+      "p50_path": {
+        "path_id": 2.0,
+        "window": "2011_2012",
+        "probability": 0.06175994191644057,
+        "spark_margin_usd": 2536195.0394062917,
+        "ltsa_owner_usd": 18677405.877755303,
+        "net_pl_usd": -16141210.83834901,
+        "total_mwh": 304389.4671375215,
+        "fired_hours": 1855.0
+      },
+      "knobs": {
+        "policy": "B",
+        "gas_mult": 1.0,
+        "init_state": "fresh"
+      }
+    },
+    "C|gas1.0|fresh": {
+      "per_path": [
+        {
+          "path_id": 1,
+          "window": "2019_2020",
+          "probability": 0.07190652309654831,
+          "spark_margin_usd": -697820.5860915175,
+          "ltsa_owner_usd": 15099243.355337737,
+          "net_pl_usd": -15797063.941429254,
+          "total_mwh": 180713.03491734486,
+          "fired_hours": 1187
+        },
+        {
+          "path_id": 2,
+          "window": "2011_2012",
+          "probability": 0.06175994191644057,
+          "spark_margin_usd": 2536195.0394062917,
+          "ltsa_owner_usd": 18677405.877755303,
+          "net_pl_usd": -16141210.83834901,
+          "total_mwh": 304389.4671375215,
+          "fired_hours": 1855
+        },
+        {
+          "path_id": 3,
+          "window": "2016_2017",
+          "probability": 0.05672123493110342,
+          "spark_margin_usd": 1830403.0943275061,
+          "ltsa_owner_usd": 19129124.779397544,
+          "net_pl_usd": -17298721.685070038,
+          "total_mwh": 295323.4304630314,
+          "fired_hours": 1784
+        },
+        {
+          "path_id": 4,
+          "window": "2007_2008",
+          "probability": 0.051532208360651734,
+          "spark_margin_usd": 1141023.4864164512,
+          "ltsa_owner_usd": 17467603.398152635,
+          "net_pl_usd": -16326579.911736183,
+          "total_mwh": 381677.02439027274,
+          "fired_hours": 2120
+        },
+        {
+          "path_id": 5,
+          "window": "2002_2003",
+          "probability": 0.050118870064374106,
+          "spark_margin_usd": 1223807.6520555294,
+          "ltsa_owner_usd": 17747202.997345682,
+          "net_pl_usd": -16523395.345290152,
+          "total_mwh": 359741.7578909176,
+          "fired_hours": 2063
+        },
+        {
+          "path_id": 6,
+          "window": "2005_2006",
+          "probability": 0.04909042536869895,
+          "spark_margin_usd": -2930468.7074806476,
+          "ltsa_owner_usd": 18513809.209642563,
+          "net_pl_usd": -21444277.91712321,
+          "total_mwh": 265585.5190911476,
+          "fired_hours": 1656
+        },
+        {
+          "path_id": 7,
+          "window": "2023_2024",
+          "probability": 0.04220708243614538,
+          "spark_margin_usd": 2935928.6281489674,
+          "ltsa_owner_usd": 14965230.633477341,
+          "net_pl_usd": -12029302.005328374,
+          "total_mwh": 359910.8427968965,
+          "fired_hours": 1960
+        },
+        {
+          "path_id": 8,
+          "window": "2001_2002",
+          "probability": 0.04203514695520301,
+          "spark_margin_usd": 1961828.8235432762,
+          "ltsa_owner_usd": 16356691.901169635,
+          "net_pl_usd": -14394863.077626359,
+          "total_mwh": 219476.4711677883,
+          "fired_hours": 1278
+        },
+        {
+          "path_id": 9,
+          "window": "2021_2022",
+          "probability": 0.041456945538426854,
+          "spark_margin_usd": 8740445.305390785,
+          "ltsa_owner_usd": 16027359.894222384,
+          "net_pl_usd": -7286914.5888316,
+          "total_mwh": 320753.49929506896,
+          "fired_hours": 1759
+        },
+        {
+          "path_id": 10,
+          "window": "2013_2014",
+          "probability": 0.03858886747449505,
+          "spark_margin_usd": 21802687.43309373,
+          "ltsa_owner_usd": 17843662.777273957,
+          "net_pl_usd": 3959024.6558197737,
+          "total_mwh": 403685.013596869,
+          "fired_hours": 2073
+        },
+        {
+          "path_id": 11,
+          "window": "2020_2021",
+          "probability": 0.037755836321062,
+          "spark_margin_usd": -1005943.2503891836,
+          "ltsa_owner_usd": 16410397.437964452,
+          "net_pl_usd": -17416340.688353635,
+          "total_mwh": 236583.58029841384,
+          "fired_hours": 1491
+        },
+        {
+          "path_id": 12,
+          "window": "2017_2018",
+          "probability": 0.037464538626187004,
+          "spark_margin_usd": 6275096.965692438,
+          "ltsa_owner_usd": 19076447.462911278,
+          "net_pl_usd": -12801350.49721884,
+          "total_mwh": 317443.63374603447,
+          "fired_hours": 1799
+        },
+        {
+          "path_id": 13,
+          "window": "2015_2016",
+          "probability": 0.037185630726411616,
+          "spark_margin_usd": 3304411.0339296656,
+          "ltsa_owner_usd": 20125473.280290805,
+          "net_pl_usd": -16821062.24636114,
+          "total_mwh": 280402.4737785631,
+          "fired_hours": 1616
+        },
+        {
+          "path_id": 14,
+          "window": "2004_2005",
+          "probability": 0.03666128593682023,
+          "spark_margin_usd": -2758748.696600227,
+          "ltsa_owner_usd": 16220900.681760157,
+          "net_pl_usd": -18979649.378360383,
+          "total_mwh": 216578.0748706131,
+          "fired_hours": 1385
+        },
+        {
+          "path_id": 15,
+          "window": "2003_2004",
+          "probability": 0.035528351429538814,
+          "spark_margin_usd": -912906.7563954787,
+          "ltsa_owner_usd": 16479744.968524422,
+          "net_pl_usd": -17392651.7249199,
+          "total_mwh": 257267.02423642937,
+          "fired_hours": 1526
+        },
+        {
+          "path_id": 16,
+          "window": "2022_2023",
+          "probability": 0.034327651116709934,
+          "spark_margin_usd": 6584935.440995324,
+          "ltsa_owner_usd": 18567930.792692386,
+          "net_pl_usd": -11982995.351697061,
+          "total_mwh": 320149.1936940345,
+          "fired_hours": 1816
+        },
+        {
+          "path_id": 17,
+          "window": "2010_2011",
+          "probability": 0.033552625264657236,
+          "spark_margin_usd": 3053145.5794094913,
+          "ltsa_owner_usd": 17952299.54790632,
+          "net_pl_usd": -14899153.96849683,
+          "total_mwh": 333093.7058199231,
+          "fired_hours": 1871
+        },
+        {
+          "path_id": 18,
+          "window": "2014_2015",
+          "probability": 0.03341790456325776,
+          "spark_margin_usd": 7223399.732240821,
+          "ltsa_owner_usd": 18048484.621850327,
+          "net_pl_usd": -10825084.889609504,
+          "total_mwh": 342182.0584334517,
+          "fired_hours": 1861
+        },
+        {
+          "path_id": 19,
+          "window": "2024_2025",
+          "probability": 0.031295903762744395,
+          "spark_margin_usd": 15470910.706913719,
+          "ltsa_owner_usd": 16653988.323834557,
+          "net_pl_usd": -1183077.6169208381,
+          "total_mwh": 610251.3502613103,
+          "fired_hours": 2881
+        },
+        {
+          "path_id": 20,
+          "window": "2008_2009",
+          "probability": 0.030618275215520695,
+          "spark_margin_usd": 1484521.6869706428,
+          "ltsa_owner_usd": 18197561.218215574,
+          "net_pl_usd": -16713039.53124493,
+          "total_mwh": 335774.50962369074,
+          "fired_hours": 1917
+        },
+        {
+          "path_id": 21,
+          "window": "2000_2001",
+          "probability": 0.030335170204734484,
+          "spark_margin_usd": -5222.403182440903,
+          "ltsa_owner_usd": 16131521.974356439,
+          "net_pl_usd": -16136744.37753888,
+          "total_mwh": 130855.59599457898,
+          "fired_hours": 781
+        },
+        {
+          "path_id": 22,
+          "window": "2006_2007",
+          "probability": 0.029912734410771816,
+          "spark_margin_usd": -1371543.4978929688,
+          "ltsa_owner_usd": 16940638.865228053,
+          "net_pl_usd": -18312182.36312102,
+          "total_mwh": 268962.44667933794,
+          "fired_hours": 1694
+        },
+        {
+          "path_id": 23,
+          "window": "2012_2013",
+          "probability": 0.02926883208712756,
+          "spark_margin_usd": 6385602.252307402,
+          "ltsa_owner_usd": 18462780.456083857,
+          "net_pl_usd": -12077178.203776455,
+          "total_mwh": 315846.2931122786,
+          "fired_hours": 1718
+        },
+        {
+          "path_id": 24,
+          "window": "2018_2019",
+          "probability": 0.028903103797987915,
+          "spark_margin_usd": 3201313.1734822476,
+          "ltsa_owner_usd": 19609622.383185096,
+          "net_pl_usd": -16408309.20970285,
+          "total_mwh": 326480.4676023448,
+          "fired_hours": 1896
+        },
+        {
+          "path_id": 25,
+          "window": "2009_2010",
+          "probability": 0.02835491039438114,
+          "spark_margin_usd": -2093872.8183013322,
+          "ltsa_owner_usd": 18149123.65129896,
+          "net_pl_usd": -20242996.46960029,
+          "total_mwh": 236577.18034853792,
+          "fired_hours": 1497
+        }
+      ],
+      "quantiles": {
+        "net_pl_usd": {
+          "P10": -18894949.825781785,
+          "P50": -16151888.175473206,
+          "P90": -8174046.682770058,
+          "mean": -14435490.909118962
+        },
+        "spark_margin_usd": {
+          "P10": -2092116.608242356,
+          "P50": 1883169.0555763193,
+          "P90": 8360073.615646888,
+          "mean": 3061427.3796040462
+        },
+        "ltsa_owner_usd": {
+          "P10": 15456849.667065537,
+          "P50": 17800079.172818843,
+          "P90": 19122915.917254444,
+          "mean": 17496918.288723014
+        },
+        "total_mwh": {
+          "P10": 202986.05954279465,
+          "P50": 307821.09370435873,
+          "P90": 379657.2985180407,
+          "mean": 301289.25927496195
+        },
+        "fired_hours": {
+          "P10": 1240.8477750779477,
+          "P50": 1784.6840491881985,
+          "P90": 2075.2139028973147,
+          "mean": 1731.247551954787
+        }
+      },
+      "p50_path": {
+        "path_id": 2.0,
+        "window": "2011_2012",
+        "probability": 0.06175994191644057,
+        "spark_margin_usd": 2536195.0394062917,
+        "ltsa_owner_usd": 18677405.877755303,
+        "net_pl_usd": -16141210.83834901,
+        "total_mwh": 304389.4671375215,
+        "fired_hours": 1855.0
+      },
+      "knobs": {
+        "policy": "C",
+        "gas_mult": 1.0,
+        "init_state": "fresh"
+      }
+    }
+  },
+  "sensitivity_ranks": [
+    {
+      "knob": "Gas price (\u00b125%)",
+      "delta_p50_low": 2426475.879219927,
+      "delta_p50_high": -1256587.8768455833,
+      "rationale": "Fuel is the largest single cost stream. A 25% move in Henry Hub moves the headline through the dispatch profitability boundary.",
+      "status": "real_observed",
+      "source": "Henry Hub historical series; user-adjusted multiplier",
+      "abs_max": 2426475.879219927
+    },
+    {
+      "knob": "Dispatch policy (A \u2192 C, aged)",
+      "delta_p50_low": -232244.06319897622,
+      "delta_p50_high": 0.0,
+      "rationale": "A enters freshly overhauled (MI taken in history); B/C enter mid-life carrying the deferred MI. Most of the gap is inherited state, not in-forward policy. B\u2248C in a 1-yr horizon because C's distinctive headroom<1,000 regime is never reached.",
+      "status": "assumed_industry",
+      "source": "ADR-009 \u00a7 scope; dispatch_mechanics \u00a73.7",
+      "abs_max": 232244.06319897622
+    },
+    {
+      "knob": "Initial plant state (aged \u2194 fresh)",
+      "delta_p50_low": 0.0,
+      "delta_p50_high": 200469.98517135903,
+      "rationale": "Fresh start parks EOH ~20k from MI threshold \u2192 wear premium dormant for all policies. Aged start is required for A/B/C to bind. Carries an inspection in/out of window.",
+      "status": "modeling_convention",
+      "source": "ADR-009 \u00a7 initial-condition; default init_state EOH=24k \u2192 MI fires in-horizon",
+      "abs_max": 200469.98517135903
+    }
+  ],
+  "scenarios_meta": [
+    {
+      "path_id": 1,
+      "window": "2019_2020",
+      "probability": 0.07190652309654831
+    },
+    {
+      "path_id": 2,
+      "window": "2011_2012",
+      "probability": 0.06175994191644057
+    },
+    {
+      "path_id": 3,
+      "window": "2016_2017",
+      "probability": 0.05672123493110342
+    },
+    {
+      "path_id": 4,
+      "window": "2007_2008",
+      "probability": 0.051532208360651734
+    },
+    {
+      "path_id": 5,
+      "window": "2002_2003",
+      "probability": 0.050118870064374106
+    },
+    {
+      "path_id": 6,
+      "window": "2005_2006",
+      "probability": 0.04909042536869895
+    },
+    {
+      "path_id": 7,
+      "window": "2023_2024",
+      "probability": 0.04220708243614538
+    },
+    {
+      "path_id": 8,
+      "window": "2001_2002",
+      "probability": 0.04203514695520301
+    },
+    {
+      "path_id": 9,
+      "window": "2021_2022",
+      "probability": 0.041456945538426854
+    },
+    {
+      "path_id": 10,
+      "window": "2013_2014",
+      "probability": 0.03858886747449505
+    },
+    {
+      "path_id": 11,
+      "window": "2020_2021",
+      "probability": 0.037755836321062
+    },
+    {
+      "path_id": 12,
+      "window": "2017_2018",
+      "probability": 0.037464538626187004
+    },
+    {
+      "path_id": 13,
+      "window": "2015_2016",
+      "probability": 0.037185630726411616
+    },
+    {
+      "path_id": 14,
+      "window": "2004_2005",
+      "probability": 0.03666128593682023
+    },
+    {
+      "path_id": 15,
+      "window": "2003_2004",
+      "probability": 0.035528351429538814
+    },
+    {
+      "path_id": 16,
+      "window": "2022_2023",
+      "probability": 0.034327651116709934
+    },
+    {
+      "path_id": 17,
+      "window": "2010_2011",
+      "probability": 0.033552625264657236
+    },
+    {
+      "path_id": 18,
+      "window": "2014_2015",
+      "probability": 0.03341790456325776
+    },
+    {
+      "path_id": 19,
+      "window": "2024_2025",
+      "probability": 0.031295903762744395
+    },
+    {
+      "path_id": 20,
+      "window": "2008_2009",
+      "probability": 0.030618275215520695
+    },
+    {
+      "path_id": 21,
+      "window": "2000_2001",
+      "probability": 0.030335170204734484
+    },
+    {
+      "path_id": 22,
+      "window": "2006_2007",
+      "probability": 0.029912734410771816
+    },
+    {
+      "path_id": 23,
+      "window": "2012_2013",
+      "probability": 0.02926883208712756
+    },
+    {
+      "path_id": 24,
+      "window": "2018_2019",
+      "probability": 0.028903103797987915
+    },
+    {
+      "path_id": 25,
+      "window": "2009_2010",
+      "probability": 0.02835491039438114
+    }
+  ],
+  "constants": {
+    "MODE_3xCC_MW": 221.3,
+    "MODE_2xCC_MW": 172.60000000000002,
+    "MODE_1xCC_MW": 123.9,
+    "HR_3xCC": 8901.0,
+    "HR_2xCC": 9598.0,
+    "HR_1xCC": 10424.0,
+    "VOM_USD_PER_MWH": 1.3770000000000002,
+    "LTSA_FIXED_DAILY": 27945.205479452055,
+    "LTSA_EOH_RESERVE_USD_PER_EOH": 175.0
+  },
+  "calibration_register": {
+    "policy": {
+      "status": "assumed_industry",
+      "source": "Prototype understanding doc \u00a75; relabeled per ADR-009 (A=myopic merchant, B=NPV-rational, C=risk-averse).",
+      "why_v1": "Bracketing knob, not optimizer. A/B differ via near-threshold wear premium; magnitudes (2.5\u00d7/4.0\u00d7) deferred for re-derivation.",
+      "upgrade": "Re-derive premium from inspection pull-forward economics once revenue stack + real LTSA terms are in."
+    },
+    "gas_price": {
+      "status": "real_observed",
+      "source": "Henry Hub daily series, sim window 1999-2026 (RT basis).",
+      "why_v1": "Largest single cost driver, directly observed. Multiplier knob brackets sensitivity for showcase.",
+      "upgrade": "Forward-curve anchoring + basis differential (Iroquois/TGP) for delivered cost; locational gas pricing for v2."
+    },
+    "init_state": {
+      "status": "modeling_convention",
+      "source": "Default EOH=24k 'post-HGP mid-clock'; aged option uses ADR-009 mode-specific historical end-state.",
+      "why_v1": "Initial EOH is first-order on MI timing. Aged option reveals A/B/C divergence; fresh shows the dormant-policy artifact for transparency.",
+      "upgrade": "Calibrate from MOR / data-room (1992 vintage, accrued EOH); flagged in parameter_calibration_register.md \u00a73.12."
+    },
+    "scenario": {
+      "status": "real_observed",
+      "source": "forward.select.select(basis='RT'): 25 SEAS5-conditioned temperature-analog windows 1999-2026.",
+      "why_v1": "Captures multiple gas regimes including high-gas years. Probability-weighted, not equal-weighted.",
+      "upgrade": "Joint price/gas/regime conditioning; winter (Nov-Mar) climate-index conditioning; multi-year horizon."
+    },
+    "capacity_revenue": {
+      "status": "deferred",
+      "source": "NYISO ICAP Zone A pricing not yet modeled.",
+      "why_v1": "Cogen survivorship reality is largely capacity + steam revenue. Excluded by design so the energy-only headline cannot be misread as valuation.",
+      "upgrade": "Add ICAP module ($/kW-mo \u00d7 CSF \u00d7 CR factor); document MAS auction history. Strategic spine \u00a72.4."
+    },
+    "steam_revenue": {
+      "status": "deferred",
+      "source": "Steam host contract not in data room yet.",
+      "why_v1": "Required for cogen valuation but assumption-heavy. Excluded so engine mechanics are not entangled with host-contract assumptions.",
+      "upgrade": "Model steam $/Mlb with host take/pay terms; couple HRSG output to capacity envelope."
+    },
+    "ltsa_deeper": {
+      "status": "placeholder",
+      "source": "Athens-prototype LTSA terms (fixed fee $850k/mo, EOH reserve $175/EOH, MI $30M/65% OEM, CI $3.75M/75% OEM).",
+      "why_v1": "Placeholders structurally correct (7 streams), values not contract-grade.",
+      "upgrade": "Real Lockport LTSA terms from data room (PURPA-era contract + amendments)."
+    },
+    "multi_year": {
+      "status": "deferred",
+      "source": "Forward horizon = 1 year (Apr\u2192Mar analog windows).",
+      "why_v1": "Forward A=B=C overlap is now resolved on 1yr (aged start). Multi-year is where the in-forward policy effect truly bites (C's headroom<1,000 regime becomes reachable).",
+      "upgrade": "Multi-year forward with aged-state hand-off across years; aging-clock anchored to 1992 vintage."
+    },
+    "wear_constants": {
+      "status": "assumed_industry",
+      "source": "GER-3620 equivalent-hours, Kumar 2012 start C&M, F-class fatigue/TBC literature.",
+      "why_v1": "Wear physics defensible at literature/vendor level (Tier-2 cited). Sensitivity rank in parameter_calibration_register \u00a73.",
+      "upgrade": "Friday load-temp paper + MOR EFOR calibration \u2192 Tier-3 calibrated."
+    }
+  }
+}
