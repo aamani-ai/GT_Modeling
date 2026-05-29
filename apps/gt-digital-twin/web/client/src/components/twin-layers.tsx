@@ -88,16 +88,16 @@ export function TwinLayers() {
                 <line
                   x1={x1}
                   y1={y}
-                  x2={x2 - 6}
+                  x2={x2 - 9}
                   y2={y}
                   stroke={isLive ? "hsl(var(--signal))" : "hsl(var(--primary))"}
-                  strokeWidth="1.4"
-                  opacity={isLive ? 0.85 : 0.5}
+                  strokeWidth="1.6"
+                  opacity={0.9}
                 />
                 <polygon
-                  points={`${x2 - 6},${y - 4} ${x2},${y} ${x2 - 6},${y + 4}`}
+                  points={`${x2 - 9},${y - 6} ${x2},${y} ${x2 - 9},${y + 6}`}
                   fill={isLive ? "hsl(var(--signal))" : "hsl(var(--primary))"}
-                  opacity={isLive ? 0.85 : 0.55}
+                  opacity={0.9}
                 />
               </g>
             );
@@ -110,16 +110,23 @@ export function TwinLayers() {
             const isOutput = l.kind === "output";
             const isCore = l.kind === "core";
 
-            // All five cards share the same clean card fill so every label
-            // stays legible. The kind (input / core / output) is differentiated
-            // by border color only — institutional, not brochure-styled.
+            // Differentiate kind via BOTH fill tint AND border color (text stays
+            // foreground/black for legibility because both tints are very light).
+            //   01 boundary input → card fill, neutral border
+            //   02–04 core / live engine module → signal-soft fill (light blue),
+            //     signal border, with a live-tick dot in the top-right
+            //   05 composed output → accent fill (light teal), primary border
             const borderColor = isCore
               ? "hsl(var(--signal))"
               : isOutput
                 ? "hsl(var(--primary))"
                 : "hsl(var(--border-strong))";
 
-            const fill = "hsl(var(--card))";
+            const fill = isCore
+              ? "hsl(var(--signal-soft))"
+              : isOutput
+                ? "hsl(var(--accent))"
+                : "hsl(var(--card))";
 
             return (
               <g key={l.id}>
@@ -211,11 +218,11 @@ export function TwinLayers() {
             Boundary input
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-sm border-2 border-[hsl(var(--signal))] bg-card" />
+            <span className="w-2.5 h-2.5 rounded-sm border border-[hsl(var(--signal))] bg-[hsl(var(--signal-soft))]" />
             Live engine module
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-sm border-2 border-[hsl(var(--primary))] bg-card" />
+            <span className="w-2.5 h-2.5 rounded-sm border border-[hsl(var(--primary))] bg-[hsl(var(--accent))]" />
             Composed output
           </span>
           <span className="ml-auto font-mono text-[10px]">5 modules · 1 probability-weighted distribution</span>

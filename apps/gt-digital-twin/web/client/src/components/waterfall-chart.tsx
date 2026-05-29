@@ -69,10 +69,10 @@ export function WaterfallChart({ data, policy }: { data: Precomputed; policy: st
   const ticks = Array.from({ length: tickCount }, (_, i) => yMin + (i * (yMax - yMin) / (tickCount - 1)));
 
   return (
-    <section className="card-clean p-5 lg:p-6">
+    <section className="card-clean p-5 lg:p-6 h-full flex flex-col">
       <header className="flex items-start justify-between gap-4 mb-1">
         <div>
-          <h2 className="text-sm font-medium tracking-tight">P&L decomposition</h2>
+          <h2 className="text-sm font-medium tracking-tight">Historical P&L decomposition</h2>
           <p className="text-[11.5px] text-muted-foreground mt-0.5 leading-relaxed">
             Where each dollar comes from and where it goes. Energy-only — capacity and steam revenue are excluded by design.
           </p>

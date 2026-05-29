@@ -16,6 +16,8 @@ import { EngineLayers } from "@/components/engine-layers";
 import { AssumptionPanel } from "@/components/assumption-panel";
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { TwinLayers } from "@/components/twin-layers";
+import { ReferencesContext } from "@/components/info-popover";
+import { TwinConfiguration } from "@/components/twin-configuration";
 
 export default function Showcase() {
   const [policy, setPolicy] = useState<string>("A");
@@ -59,6 +61,7 @@ export default function Showcase() {
   if (isError || !data) return <ErrorShell />;
 
   return (
+    <ReferencesContext.Provider value={data.references ?? {}}>
     <div className="min-h-screen bg-background text-foreground">
       <Header generatedAt={data.generated_at} basis={data.basis} nScen={data.n_scenarios} />
       <Banner />
@@ -75,8 +78,6 @@ export default function Showcase() {
           setGasMult={setGasMult}
           initState={initState}
           setInitState={setInitState}
-          comparePolicies={comparePolicies}
-          setComparePolicies={setComparePolicies}
           data={data}
         />
 
@@ -93,6 +94,7 @@ export default function Showcase() {
               §06  Model vs. observed ── collapsed
               §07  Engine mechanics ── collapsed
               §08  What matters most ── open
+              §09  Twin configuration deep-dive (every knob, sourced) ── open
             ─────────────────────────────────────────────────────────── */}
         {/* Methodology block — collapsed by default; sits ABOVE §01 so the
             reader knows it's there but isn't forced through it. Mirrors the
@@ -118,6 +120,7 @@ export default function Showcase() {
             gasMult={gasMult}
             initState={initState}
             comparePolicies={comparePolicies}
+            setComparePolicies={setComparePolicies}
           />
 
           {/* §02 — Interactive forecast envelope (was §01) */}
@@ -195,9 +198,17 @@ export default function Showcase() {
           <WhatMattersMost ranks={data.sensitivity_ranks} />
         </div>
 
+        {/* §09 — Twin configuration deep-dive: every knob in the engine, sourced.
+            The natural home for the [KEY] citation links (Saturday-Isaiah, GER-3620,
+            Kumar 2012, NERC-GADS) since the per-constant rows live here. */}
+        <div className="mt-20">
+          <TwinConfiguration data={data} policy={policy} gasMult={gasMult} initState={initState} />
+        </div>
+
         <Footer data={data} />
       </main>
     </div>
+    </ReferencesContext.Provider>
   );
 }
 
@@ -242,9 +253,6 @@ function Footer({ data }: { data: Precomputed }) {
           <p className="font-mono text-[11px]">{new Date(data.generated_at).toUTCString()}</p>
         </div>
       </div>
-      <p className="mt-8 text-[11px] leading-relaxed max-w-3xl">
-        Data in this showcase comes from precomputed runs of <span className="font-mono">src/gt_engine.run_path</span> and <span className="font-mono">src/forward.run_forward</span> against a 12-cell knob matrix. Live recompute is intentionally off — <span className="font-mono">run_forward</span> is slow (~110s/mode) and v1 prioritizes a shareable preview over a live cockpit. See <span className="font-mono">apps/gt-digital-twin/README.md</span> for the live-integration handoff.
-      </p>
     </footer>
   );
 }

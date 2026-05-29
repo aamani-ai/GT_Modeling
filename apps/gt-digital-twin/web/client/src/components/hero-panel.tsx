@@ -1,6 +1,8 @@
-import { Precomputed, GridCell, fmtMoneyM, fmtNumber } from "@/lib/data";
+import { useContext } from "react";
+import { Precomputed, GridCell, Reference, fmtMoneyM, fmtNumber } from "@/lib/data";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { TermInfo } from "./term-info";
+import { ReferencesContext, renderCitations } from "./info-popover";
 
 interface Props {
   data: Precomputed;
@@ -18,14 +20,14 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
   const computed = new Date(data.generated_at);
 
   return (
-    <section className="grid grid-cols-12 gap-6 lg:gap-10 pt-12 pb-12 border-b border-border">
+    <section className="grid grid-cols-12 gap-6 lg:gap-8 pt-12 pb-12 border-b border-border">
       {/* LEFT — product positioning */}
-      <div className="col-span-12 lg:col-span-7 flex flex-col justify-between">
+      <div className="col-span-12 lg:col-span-6 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-2 mb-5">
             <span className="inline-flex items-center gap-1.5 text-[10.5px] tracking-[0.18em] uppercase font-medium text-primary">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" aria-hidden />
-              Engine Showcase v1
+              GT Digital Twin · v1
             </span>
             <span className="text-muted-foreground/40 text-xs">/</span>
             <span className="text-[10.5px] tracking-[0.18em] uppercase font-medium text-muted-foreground">
@@ -33,21 +35,38 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
             </span>
           </div>
 
-          <h1 className="display text-[clamp(2.4rem,5vw,3.6rem)] leading-[1.02] tracking-[-0.015em] text-foreground">
-            A transparent forward engine
-            <span className="block text-foreground/70 mt-1 font-normal">for a 1992-vintage 3-on-1 CCGT.</span>
+          <h1 className="display text-[clamp(2.2rem,4.5vw,3.2rem)] leading-[1.05] tracking-[-0.02em] text-foreground">
+            Asset risk-twin engine.
           </h1>
-
-          <p className="mt-7 text-[15px] text-foreground/80 leading-[1.6] max-w-[58ch]">
-            The GT Digital Twin replays one asset — Lockport Energy Associates, 221 MW — through
-            a probability-weighted ensemble of SEAS5-conditioned analog windows. It surfaces the
-            distribution of outcomes, not a single point estimate.
+          <p className="mt-2 font-mono text-[12px] text-muted-foreground tracking-tight">
+            Lockport Energy Associates · 1992 · 3-on-1 CCGT · 221 MW · NYISO Zone A
           </p>
 
-          <ul className="mt-8 space-y-3 max-w-[60ch]">
-            <Proof n="01" title="25 SEAS5-conditioned analog windows" body="Each forward run weights 25 Apr→Mar reanalysis windows (1999–2026) by anomaly match against the current SEAS5 ensemble." termKeys={["seas5", "analog_scenarios"]} />
-            <Proof n="02" title="Energy-only, by design" body="Capacity and steam revenue are deliberately excluded so engine mechanics aren't entangled with host-contract assumptions." termKeys={["energy_only"]} />
-            <Proof n="03" title="Every control carries a status badge" body="From the parameter calibration register — real-observed, assumed-industry, modeling-convention, or deferred." />
+          <p className="mt-6 text-[14px] text-foreground/80 leading-[1.6]">
+            Built so the decisions an owner-operator runs — acquisition · diligence ·
+            monitoring · exit — can compose on a transparent, sourced engine. v1 ships the
+            engineering layer (wear · dispatch · LTSA · forward distribution); the risk-output
+            layer (EBITDA-at-risk, outage exposure, capacity / market sensitivity, DSCR,
+            insurance gap, exit-value haircut) is the roadmap.
+          </p>
+
+          <ul className="mt-7 space-y-2.5">
+            <Proof
+              n="01"
+              title="Engineering layer, sourced."
+              body="Every constant carries a status badge linked to its citation — [GER-3620], [Kumar2012], [NERC-GADS], [Saturday-Isaiah-2018]."
+            />
+            <Proof
+              n="02"
+              title="Decision-relevant, not descriptive."
+              body="Distribution + provenance inspectable in minutes via §03 assumptions, §08 what-matters-most, §09 twin configuration."
+            />
+            <Proof
+              n="03"
+              title="Energy-only by design."
+              body="Capacity, steam, ancillary deliberately excluded. The headline is the engine output, not a valuation."
+              termKeys={["energy_only"]}
+            />
           </ul>
         </div>
 
@@ -60,7 +79,7 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
       </div>
 
       {/* RIGHT — live KPI card / forecast anchor */}
-      <div className="col-span-12 lg:col-span-5">
+      <div className="col-span-12 lg:col-span-6">
         <KpiCard data={data} cell={cell} policy={policy} initState={initState} gasMult={gasMult} aged={aged} />
       </div>
     </section>
@@ -68,6 +87,7 @@ export function HeroPanel({ data, cell, policy, initState, gasMult }: Props) {
 }
 
 function Proof({ n, title, body, termKeys }: { n: string; title: string; body: string; termKeys?: any[] }) {
+  const refs = useContext(ReferencesContext) as Record<string, Reference>;
   return (
     <li className="flex gap-4">
       <span className="font-mono text-[10.5px] text-muted-foreground/70 pt-1 tracking-wider">{n}</span>
@@ -78,7 +98,9 @@ function Proof({ n, title, body, termKeys }: { n: string; title: string; body: s
             <TermInfo key={k} termKey={k} side="top" />
           ))}
         </p>
-        <p className="text-[12.5px] text-muted-foreground leading-[1.55] mt-0.5">{body}</p>
+        <p className="text-[12.5px] text-muted-foreground leading-[1.55] mt-0.5">
+          {renderCitations(body, refs)}
+        </p>
       </div>
     </li>
   );

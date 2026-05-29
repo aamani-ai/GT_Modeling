@@ -32,27 +32,28 @@ export function AssumptionPanel({ register }: { register: Record<string, Calibra
 
   return (
     <section>
-      <header className="mb-6 max-w-2xl">
-        <p className="eyebrow mb-2">§03 · Assumptions &amp; provenance</p>
-        <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
-          What's real. What's a placeholder. What's deferred.
-        </h2>
-        <p className="mt-3 text-[13.5px] text-foreground/75 leading-[1.6]">
-          Every active control and every roadmap item carries a status badge from
-          <span className="font-mono text-foreground/85"> docs/assumptions/parameter_calibration_register.md</span>.
-          This is the v1 contract.
-        </p>
+      <header className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="max-w-2xl">
+          <p className="eyebrow mb-2">§03 · Assumptions &amp; provenance</p>
+          <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
+            What's real. What's a placeholder. What's deferred.
+          </h2>
+          <p className="mt-3 text-[13.5px] text-foreground/75 leading-[1.6]">
+            Every active control and every roadmap item carries a status badge from
+            <span className="font-mono text-foreground/85"> docs/assumptions/parameter_calibration_register.md</span>.
+            This is the v1 contract.
+          </p>
+        </div>
+        {/* Status tally — moved here so the right side carries data, not blank space. */}
+        <div className="flex flex-wrap gap-2 lg:justify-end shrink-0">
+          {counts.filter((c) => c.count > 0).map((c) => (
+            <div key={c.key} className="inline-flex items-center gap-2 px-3 py-1.5 border border-card-border rounded-sm bg-card">
+              <StatusBadge status={c.key} size="xs" />
+              <span className="font-mono text-[10.5px] text-foreground/80">{c.count}</span>
+            </div>
+          ))}
+        </div>
       </header>
-
-      {/* Status legend strip */}
-      <div className="flex flex-wrap gap-2.5 mb-4">
-        {counts.filter((c) => c.count > 0).map((c) => (
-          <div key={c.key} className="inline-flex items-center gap-2 px-3 py-1.5 border border-card-border rounded-sm bg-card">
-            <StatusBadge status={c.key} size="xs" />
-            <span className="font-mono text-[10.5px] text-foreground/80">{c.count}</span>
-          </div>
-        ))}
-      </div>
 
       <div className="card-clean overflow-hidden">
         <div className="grid grid-cols-12 px-5 py-2.5 border-b border-card-border bg-secondary/30 text-[10px] eyebrow">

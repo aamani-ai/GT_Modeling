@@ -28,6 +28,7 @@ import {
 } from "@/lib/data";
 import { InfoPopover } from "./info-popover";
 import { TermInfo, TERMS } from "./term-info";
+import { DossierCell } from "./pnl-decomposition";
 
 interface Props {
   data: Precomputed;
@@ -292,7 +293,7 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
 
   return (
     <section className="space-y-6">
-      <header className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+      <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="max-w-2xl">
           <p className="eyebrow mb-2">§02 · Forward forecast (interactive)</p>
           <h2 className="display text-3xl md:text-4xl tracking-[-0.015em] leading-[1.05] text-foreground">
@@ -305,7 +306,14 @@ export function ForecastSixPanel({ data, monthly, monthlyCell, cell, policy, ini
             notebook 06 §5.
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        {/* Right-side: data-sources tally — what powers the six panels. */}
+        <div className="flex items-start gap-4 shrink-0">
+          <dl className="grid grid-cols-2 gap-x-5 gap-y-2 text-right">
+            <DossierCell label="Temperature" value={`SEAS5 · ${monthly.temperature_f_daily.n_members}-member`} />
+            <DossierCell label="Power" value="NYISO RT LBMP" />
+            <DossierCell label="Gas" value="Henry Hub spot" />
+            <DossierCell label="Paths" value={`${data.n_scenarios} analog windows`} />
+          </dl>
           <InfoPopover
             title="Forward forecast · six-panel interactive"
             status="real_observed"

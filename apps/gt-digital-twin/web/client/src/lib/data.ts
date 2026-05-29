@@ -57,6 +57,14 @@ export interface CalibrationEntry {
   upgrade: string;
 }
 
+/** External reference (e.g. GER-3620, Saturday-Isaiah-2018) from §9 of the
+ *  calibration register. Keyed by the citation tag used inline in `source` /
+ *  `upgrade` text via `[KEY]` brackets. */
+export interface Reference {
+  title: string;
+  url: string;
+}
+
 export interface Precomputed {
   generated_at: string;
   engine_version: string;
@@ -72,6 +80,9 @@ export interface Precomputed {
   scenarios_meta: { path_id: number; window: string; probability: number }[];
   constants: Record<string, number>;
   calibration_register: Record<string, CalibrationEntry>;
+  /** §9 references from the calibration register, keyed by citation tag.
+   *  Optional for back-compat with pre-references precomputed.json files. */
+  references?: Record<string, Reference>;
 }
 
 // Format gas multiplier to match Python's str(float) semantics for JSON keys.

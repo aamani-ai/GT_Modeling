@@ -4,9 +4,11 @@
 
 /* GT Digital Twin — technical diligence aesthetic.
    Palette: warm bone (light) / deep charcoal (dark). Single restrained teal accent.
-   Typography (v1.2): Geist (UI/body) + IBM Plex Mono (tabular numbers) + Source Serif 4 (display).
-   v1.2 swapped the trendy Instrument Serif italic for upright Source Serif 4 to read as
-   institutional / professional rather than editorial. Numbers stay tabular lining.
+   Typography (v1.3): Inter for body AND headings + IBM Plex Mono for tabular numbers.
+   Bloomberg-Terminal pattern: a single sans family carries the entire UI, differentiated
+   by weight + size + tracking — no separate serif/display face. Avoids the editorial /
+   AI-startup look a display serif tends to introduce on data-dense pages. Numbers stay
+   tabular lining.
 */
 
 :root {
@@ -14,6 +16,7 @@
   --background: 42 17% 96%;        /* #F7F6F2 */
   --foreground: 40 15% 13%;        /* #28251D */
   --border: 42 11% 81%;            /* #D4D1CA */
+  --border-strong: 40 8% 52%;      /* #8C887F — used by .control-disabled dashed border + twin-layers SVG strokes; ~40% darker than --border for visibility against backgrounds */
   --card: 44 27% 97%;              /* #F9F8F5 */
   --card-foreground: 40 15% 13%;
   --card-border: 42 11% 81%;
@@ -28,6 +31,8 @@
   --muted-foreground: 40 4% 47%;   /* #7A7974 */
   --accent: 184 60% 92%;
   --accent-foreground: 184 98% 22%;
+  --signal: 192 70% 38%;            /* #1D8BA8 — distinct cyan-blue for live engine module strokes/dots */
+  --signal-soft: 192 55% 92%;       /* #DAEFF4 — very light tint of --signal for filled "live" boxes */
   --destructive: 318 58% 41%;
   --destructive-foreground: 0 0% 98%;
   --input: 42 11% 81%;
@@ -56,10 +61,10 @@
   --badge-outline: rgba(40, 37, 29, 0.08);
   --button-outline: rgba(40, 37, 29, 0.12);
 
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
-  --font-display: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-serif: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius: 0.375rem;
 
   /* status colors */
@@ -75,6 +80,7 @@
   --background: 36 8% 9%;           /* #171614 */
   --foreground: 60 2% 80%;          /* #CDCCCA */
   --border: 30 3% 22%;              /* #393836 */
+  --border-strong: 30 4% 46%;       /* #76746F — lighter than --border so it's visible against the dark card background */
   --card: 30 4% 11%;                /* #1C1B19 */
   --card-foreground: 60 2% 80%;
   --card-border: 30 3% 22%;
@@ -89,6 +95,8 @@
   --muted-foreground: 40 1% 47%;
   --accent: 188 25% 18%;
   --accent-foreground: 188 35% 70%;
+  --signal: 192 55% 60%;            /* lighter cyan-blue against dark card */
+  --signal-soft: 192 35% 22%;       /* muted dark cyan tint for filled live boxes in dark mode */
   --destructive: 318 55% 60%;
   --destructive-foreground: 36 8% 9%;
   --input: 30 3% 22%;
@@ -148,23 +156,22 @@
     font-optical-sizing: auto;
   }
 
-  /* Display headings — Source Serif 4 upright, semibold, slightly tightened.
-     Replaces the v1.1 italic Instrument Serif treatment. */
+  /* Display headings — Inter, heavier weight + tighter tracking so headlines
+     still read as headlines without a separate display face. Bloomberg-Terminal
+     pattern: one family across the whole UI; weight + size do the hierarchy. */
   .display {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-weight: 600;
+    font-weight: 700;
     font-style: normal;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.028em;
     line-height: 1.08;
   }
 
   .display-sm {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
   }
 
   /* tabular numbers everywhere by default for the dashboard */
@@ -212,7 +219,9 @@
 
   /* Roadmap affordance — dashed border + diagonal stripe pattern.
      Used for disabled controls that signal "future feature" (e.g. the
-     PolicyWorkbenchAffordance next to the A/B/C selector). */
+     PolicyWorkbenchAffordance next to the A/B/C selector and the RoadmapRow
+     entries in §09 Twin configuration). Border is 1.5px so it reads at a
+     glance on the larger ConfigCard tiles (Capacity, Steam, multi-year). */
   .control-disabled {
     border: 1px dashed hsl(var(--border-strong));
     background:

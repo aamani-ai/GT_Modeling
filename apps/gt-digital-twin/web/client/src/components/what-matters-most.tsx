@@ -1,22 +1,37 @@
 import { SensitivityRank, fmtMoneyM } from "@/lib/data";
 import { StatusBadge } from "./status-badge";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { DossierCell } from "./pnl-decomposition";
 
 // Premium ranked sensitivity cards — replaces a tornado chart with composed cards.
 export function WhatMattersMost({ ranks }: { ranks: SensitivityRank[] }) {
   const maxAbs = Math.max(...ranks.map((r) => r.abs_max));
+  const biggestSwing = ranks.reduce(
+    (acc, r) => Math.max(acc, Math.abs(r.delta_p50_low), Math.abs(r.delta_p50_high)),
+    0,
+  );
+  const biggestRank = ranks[0]?.knob ?? "—";
 
   return (
     <section>
-      <header className="mb-6 max-w-2xl">
-        <p className="eyebrow mb-2">§08 · What matters most</p>
-        <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
-          Where the headline actually moves.
-        </h2>
-        <p className="mt-3 text-[13.5px] text-foreground/75 leading-[1.6]">
-          Ranked by how much each v1 knob moves the P50 Net P&amp;L from the baseline
-          (Mode A · gas 1.0× · aged). The bar is the swing range, signed.
-        </p>
+      <header className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="max-w-2xl">
+          <p className="eyebrow mb-2">§08 · What matters most</p>
+          <h2 className="display text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05]">
+            Where the headline actually moves.
+          </h2>
+          <p className="mt-3 text-[13.5px] text-foreground/75 leading-[1.6]">
+            Ranked by how much each v1 knob moves the P50 Net P&amp;L from the baseline
+            (Mode A · gas 1.0× · aged). The bar is the swing range, signed.
+          </p>
+        </div>
+        {/* Right-side: at-a-glance summary of the ranking below. */}
+        <dl className="grid grid-cols-2 gap-x-5 gap-y-2 text-right shrink-0">
+          <DossierCell label="Knobs ranked" value={ranks.length} />
+          <DossierCell label="Biggest swing" value={`±${fmtMoneyM(biggestSwing, 1)}`} />
+          <DossierCell label="Top driver" value={biggestRank} />
+          <DossierCell label="Baseline" value="A · 1.0× · aged" />
+        </dl>
       </header>
 
       <ol className="space-y-3">

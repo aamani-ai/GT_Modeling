@@ -3907,9 +3907,27 @@
     },
     "wear_constants": {
       "status": "assumed_industry",
-      "source": "GER-3620 equivalent-hours, Kumar 2012 start C&M, F-class fatigue/TBC literature.",
-      "why_v1": "Wear physics defensible at literature/vendor level (Tier-2 cited). Sensitivity rank in parameter_calibration_register \u00a73.",
-      "upgrade": "Friday load-temp paper + MOR EFOR calibration \u2192 Tier-3 calibrated."
+      "source": "Wear physics traces to [GER-3620] (equivalent-hours convention, trip-from-load factored starts), [Kumar2012] (start C&M), and F-class fatigue/TBC literature. Load \u00d7 ambient creep coupling has analog evidence in [Saturday-Isaiah-2018] (LM2500+ Cranfield-PYTHIA + Larson-Miller + MLRI).",
+      "why_v1": "Wear physics defensible at literature/vendor level (Tier-2 cited). Per-constant sensitivity rank in parameter_calibration_register \u00a73.",
+      "upgrade": "Cross-check AMBIENT_WEAR_SENS_PER_F against [Saturday-Isaiah-2018] (6.85%/\u00b0F LM2500+ vs current 0.4%/\u00b0F \u2014 ~17\u00d7 delta; heavy-duty F-class vs aero-derivative caveat \u2014 register \u00a73.7). Then [NERC-GADS] Class CC EFOR calibration for HRSG/BG baselines \u2192 Tier-3 calibrated."
+    }
+  },
+  "references": {
+    "GER-3620": {
+      "title": "GE Power, GER-3620: Heavy-Duty Gas Turbine Operating and Maintenance Considerations",
+      "url": "https://www.gevernova.com/content/dam/gepower-new/global/en_US/downloads/gas-new-site/resources/reference/ger-3620-heavy-duty-gas-turbine-operating-maintenance-considerations.pdf"
+    },
+    "Kumar2012": {
+      "title": "Kumar et al., Power Plant Cycling Costs (NREL/SR-5500-55433), 2012 \u2014 Table 1-1 Gas-CC start C&M",
+      "url": "https://www.nrel.gov/docs/fy12osti/55433.pdf"
+    },
+    "NERC-GADS": {
+      "title": "NERC Generating Availability Data System (GADS) \u2014 Class CC availability statistics",
+      "url": "https://www.nerc.com/pa/RAPA/gads/Pages/default.aspx"
+    },
+    "Saturday-Isaiah-2018": {
+      "title": "Saturday & Isaiah (2018), Effects of Ambient Temperature and Shaft Power Variations on Creep Life Consumption of Industrial Gas Turbine Blades, Energy and Power Engineering 10, 120-131",
+      "url": "https://doi.org/10.4236/epe.2018.103009"
     }
   }
 }

@@ -1,4 +1,5 @@
 import { GridCell, Precomputed, fmtMoneyM, keyFor } from "@/lib/data";
+import { Switch } from "@/components/ui/switch";
 import { InfoPopover } from "./info-popover";
 import { TermInfo } from "./term-info";
 
@@ -9,11 +10,12 @@ interface Props {
   gasMult: number;
   initState: string;
   comparePolicies: boolean;
+  setComparePolicies: (v: boolean) => void;
 }
 
 // Forward Net P&L distribution rendered as a layered dotplot + P10/P50/P90 markers.
 // When comparePolicies is on (aged), overlay A/B/C strips.
-export function DistributionChart({ cell, data, policy, gasMult, initState, comparePolicies }: Props) {
+export function DistributionChart({ cell, data, policy, gasMult, initState, comparePolicies, setComparePolicies }: Props) {
   if (!cell) return null;
 
   const cells = comparePolicies
@@ -66,13 +68,21 @@ export function DistributionChart({ cell, data, policy, gasMult, initState, comp
             </span>
           </p>
         </div>
-        <InfoPopover
-          title="Forward distribution"
-          status="real_observed"
-          source="src/forward.run_forward(basis='RT', aged_start=True). 25 Apr→Mar analog windows 1999–2026 scored against the SEAS5 ensemble, softmaxed → probability weights."
-          whyV1="Captures multiple gas regimes including high-gas years (e.g. 2022). The spread is the policy/state-driven uncertainty, not outage RNG noise (seed fixed)."
-          upgrade="Joint price/gas/regime conditioning; winter (Nov–Mar) climate-index conditioning; outage-RNG Monte Carlo over each window."
-        />
+        <div className="flex items-center gap-3 shrink-0">
+          {/* Overlay toggle lives in the card header — it controls THIS chart,
+              so it belongs anchored to it (not floating outside the card). */}
+          <label htmlFor="overlay-abc" className="text-[11px] text-muted-foreground select-none cursor-pointer leading-tight whitespace-nowrap">
+            Overlay A·B·C
+          </label>
+          <Switch checked={comparePolicies} onCheckedChange={setComparePolicies} data-testid="switch-compare" id="overlay-abc" />
+          <InfoPopover
+            title="Forward distribution"
+            status="real_observed"
+            source="src/forward.run_forward(basis='RT', aged_start=True). 25 Apr→Mar analog windows 1999–2026 scored against the SEAS5 ensemble, softmaxed → probability weights."
+            whyV1="Captures multiple gas regimes including high-gas years (e.g. 2022). The spread is the policy/state-driven uncertainty, not outage RNG noise (seed fixed)."
+            upgrade="Joint price/gas/regime conditioning; winter (Nov–Mar) climate-index conditioning; outage-RNG Monte Carlo over each window."
+          />
+        </div>
       </header>
 
       <div className="flex-1 mt-3 -mx-2">
@@ -128,8 +138,19 @@ export function DistributionChart({ cell, data, policy, gasMult, initState, comp
         </svg>
       </div>
 
-      <footer className="mt-3 pt-3 border-t border-card-border text-[10.5px] text-muted-foreground font-mono leading-relaxed">
-        <span>Dots are individual analog windows sized by probability. RT basis · 25 paths · seed 42.</span>
+      <footer className="mt-3 pt-3 border-t border-card-border space-y-2.5">
+        <p className="text-[10.5px] text-muted-foreground font-mono leading-relaxed">
+          Dots are individual analog windows sized by probability. RT basis · 25 paths · seed 42.
+        </p>
+        <p className="text-[11px] leading-[1.55] text-muted-foreground">
+          <span className="font-medium text-foreground/85">Why A·B·C P50s overlap.</span>{" "}
+          A 1-yr horizon doesn't give the LTSA streams (fixed fee · EOH reserve · inspection events)
+          room to compound differently — A/B/C's wear-hurdle differential only shifts the dispatch
+          decision when EOH headroom approaches the next inspection threshold, and headroom stays
+          well above that in a single year. Policy divergence emerges over multi-year horizons
+          where inspection timing actually slides. Custom hurdle curves + longer horizons are on
+          the workbench roadmap (next to A·B·C).
+        </p>
       </footer>
     </section>
   );
