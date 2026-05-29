@@ -1,15 +1,12 @@
 import type { Express } from "express";
-import { createServer } from 'node:http';
 import type { Server } from 'node:http';
-import { storage } from "./storage";
 
+// The dashboard ships static precomputed JSONs and an SPA — no /api endpoints
+// are registered in v1. This file is kept as the place to add future routes
+// (e.g., a live-recompute endpoint when run_forward becomes callable).
 export async function registerRoutes(
-  httpServer: Server,
-  app: Express
+  _httpServer: Server,
+  _app: Express
 ): Promise<Server> {
-  // prefix all routes with /api
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. app.get("/api/items", async (_req, res) => { ... })
-
-  return httpServer;
+  return _httpServer;
 }
